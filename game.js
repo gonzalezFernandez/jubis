@@ -465,11 +465,13 @@ function renderSelection() {
         <button class="char-btn" disabled>🔒 Bloqueado</button>`;
     }
 
+    const isNew = unlocked && localStorage.getItem(`penona_${pid}_new`) === '1';
     card.innerHTML = `
       <div class="char-photo-container">
         ${photoBlock}
         ${achBadges}
         ${!unlocked ? '<div class="lock-overlay">🔒</div>' : ''}
+        ${isNew ? '<div class="char-new-badge">¡NUEVO!</div>' : ''}
       </div>
       <div class="char-card-body">${bodyHtml}</div>
     `;
@@ -500,6 +502,7 @@ function renderSelection() {
 let tickId = null, msgId = null, tickN = 0;
 
 function startGame(pid) {
+  localStorage.removeItem(`penona_${pid}_new`);
   const ch   = CHARS[pid];
   const save = loadSave(pid);
   let useSave = false;
@@ -1440,13 +1443,15 @@ function renderSpecial() {
   const area = document.getElementById('special-area');
   if (!area || !S.pid) return;
   const ch = CHARS[S.pid];
+  let content = '';
   switch (S.pid) {
-    case 'muchaga':    area.innerHTML = buildWSK(ch);          break;
-    case 'fita':       area.innerHTML = buildDobletazo();      break;
-    case 'noah':       area.innerHTML = buildNoah(ch);         break;
-    case 'nanduko':    area.innerHTML = buildNandu();          break;
-    case 'extraperlo': area.innerHTML = buildXP(ch);           break;
+    case 'muchaga':    content = buildWSK(ch);     break;
+    case 'fita':       content = buildDobletazo(); break;
+    case 'noah':       content = buildNoah(ch);    break;
+    case 'nanduko':    content = buildNandu();      break;
+    case 'extraperlo': content = buildXP(ch);       break;
   }
+  area.innerHTML = content + buildCompletionBanner();
 }
 
 function buildWSK(ch) {
@@ -1757,13 +1762,35 @@ function buildXP(ch) {
 function checkAchievements() {
   if (!S.pid) return;
   const list = ACHIEVEMENTS[S.pid] || [];
-  let newUnlock = false;
   list.forEach(a => {
     if (!S.achievements[a.id] && a.cond(S)) {
-      S.achievements[a.id] = true; newUnlock = true;
+      S.achievements[a.id] = true;
       toast(`🏆 LOGRO: ${a.name}\n${a.desc}`, '🏆');
     }
   });
+  if (list.length && list.every(a => S.achievements[a.id])) {
+    const idx = UNLOCK_ORDER.indexOf(S.pid);
+    const nextPid = UNLOCK_ORDER[idx + 1];
+    if (nextPid && !localStorage.getItem(`penona_${nextPid}_new`)) {
+      localStorage.setItem(`penona_${nextPid}_new`, '1');
+      const nextCh = CHARS[nextPid];
+      toast(`🔓 ¡${nextCh.name} DESBLOQUEADO! Vuelve al menú.`, '🎉');
+    }
+  }
+}
+
+function buildCompletionBanner() {
+  const list = ACHIEVEMENTS[S.pid] || [];
+  if (!list.length || !list.every(a => S.achievements[a.id])) return '';
+  const idx    = UNLOCK_ORDER.indexOf(S.pid);
+  const next   = UNLOCK_ORDER[idx + 1] ? CHARS[UNLOCK_ORDER[idx + 1]] : null;
+  const nextLine = next
+    ? `<div class="completion-next">${next.icon} <b>${next.name}</b> desbloqueado</div>`
+    : `<div class="completion-next">🏆 Leyenda total de La Peñona</div>`;
+  return `<div class="completion-banner">
+    <div class="completion-title">✅ ¡LOGROS COMPLETADOS!</div>
+    ${nextLine}
+  </div>`;
 }
 
 function toggleAchievements() {
