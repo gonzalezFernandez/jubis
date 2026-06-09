@@ -17,7 +17,7 @@
 }
 
 html { scroll-behavior: smooth; touch-action: manipulation; }
-* { touch-action: manipulation; }
+* { touch-action: manipulation; -webkit-tap-highlight-color: transparent; outline: none; }
 
 body {
   background: var(--bg);
