@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 100">
+  <!-- Rock/mountain outline — faithful to the actual logo style -->
+  <!-- Main rock formation -->
+  <path d="M30 80 L30 55 L55 30 L72 48 L88 20 L108 52 L122 38 L140 55 L155 42 L175 62 L188 50 L210 72 L210 80 Z"
+        fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+  <!-- Ground line with slight curve -->
+  <path d="M22 80 Q120 68 238 80" fill="none" stroke="currentColor" stroke-width="2"/>
+  <!-- Horizontal line above text (cable/banner) -->
+  <line x1="22" y1="84" x2="238" y2="84" stroke="currentColor" stroke-width="1.2"/>
+  <!-- LA PEÑONA -->
+  <text x="130" y="96" text-anchor="middle"
+        font-family="Georgia, 'Times New Roman', serif"
+        font-size="13" font-weight="700" fill="currentColor" letter-spacing="3">
+    LA PEÑONA
+  </text>
+  <text x="130" y="108" text-anchor="middle"
+        font-family="Georgia, 'Times New Roman', serif"
+        font-size="7" fill="currentColor" letter-spacing="1.5">
+    CAFETERÍA · BAR
+  </text>
+</svg>

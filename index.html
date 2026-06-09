@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Club Jubilados La Peñona</title>
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="app">
+
+  <!-- SELECTION SCREEN -->
+  <div id="selection-screen" class="screen">
+    <div class="sel-header">
+      <!-- Logo + título en la misma fila -->
+      <div class="sel-title-row">
+        <div class="penona-logo-wrap">
+          <img src="assets/penona.png"
+               class="penona-logo-img"
+               alt="La Peñona"
+               onerror="this.style.display='none'; document.getElementById('penona-svg-fb').style.display='block'">
+          <div id="penona-svg-fb" class="penona-svg-fb" style="display:none">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 115" class="penona-fb-svg">
+              <path d="M30 78 L30 53 L55 28 L72 46 L88 18 L108 50 L122 36 L140 53 L155 40 L175 60 L188 48 L210 70 L210 78 Z"
+                    fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/>
+              <path d="M22 78 Q120 66 238 78" fill="none" stroke="currentColor" stroke-width="2"/>
+              <line x1="22" y1="82" x2="238" y2="82" stroke="currentColor" stroke-width="1"/>
+              <text x="130" y="96" text-anchor="middle" font-family="Georgia,serif" font-size="15" font-weight="700" fill="currentColor" letter-spacing="3">LA PEÑONA</text>
+              <text x="130" y="110" text-anchor="middle" font-family="Georgia,serif" font-size="7.5" fill="currentColor" letter-spacing="2" opacity="0.75">CAFETERÍA · BAR</text>
+            </svg>
+          </div>
+        </div>
+        <h1 class="sel-title">CLUB JUBILADOS</h1>
+      </div>
+      <div class="subtitulo-wrap">
+        <img src="assets/subtítulo.png" class="subtitulo-img" alt="">
+      </div>
+      <p class="sel-tagline">¿Con quién la lías esta noche, crack?</p>
+    </div>
+
+    <div id="characters-grid" class="characters-grid"></div>
+    <div class="sel-footer">v2.0 · Uso interno del club · No distribuir (mucho)</div>
+  </div>
+
+  <!-- GAME SCREEN -->
+  <div id="game-screen" class="screen hidden">
+
+    <header class="game-header" id="game-header">
+      <button class="back-btn" onclick="goBack()">← Salir</button>
+      <div class="hdr-center" id="hdr-center"></div>
+      <div class="hdr-right">
+        <button class="trophy-btn" onclick="toggleAchievements()" title="Logros">🏆</button>
+        <div class="hdr-currency">
+          <span id="hdr-icon">💰</span>
+          <span id="hdr-amount">0</span>
+          <small id="hdr-ps">+0/s</small>
+        </div>
+      </div>
+    </header>
+
+    <div class="game-layout">
+
+      <div class="left-panel">
+        <div id="avatar-display" class="avatar-display"></div>
+
+        <div class="stats-strip">
+          <span>🖱️ <b id="stat-pc">1</b>/click</span>
+          <span>⚡ <b id="stat-ps">0</b>/s</span>
+          <span>🏆 <b id="stat-total">0</b> total</span>
+        </div>
+
+        <div class="click-zone">
+          <button id="main-btn" class="main-btn" onclick="handleMainClick(event)">
+            <span id="main-btn-icon">🎯</span>
+            <span id="main-btn-text">CLICK</span>
+          </button>
+        </div>
+
+        <div id="special-area" class="special-area"></div>
+        <div id="msg-box" class="msg-box">💬 ¡Bienvenido al Club Jubilados La Peñona!</div>
+      </div>
+
+      <div class="right-panel">
+        <div class="upgrades-header">🛒 Mejoras</div>
+        <div id="upgrades-list" class="upgrades-list"></div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<!-- Achievements panel -->
+<div id="ach-overlay" class="ach-overlay hidden" onclick="if(event.target===this)toggleAchievements()">
+  <div class="ach-panel">
+    <div class="ach-header">
+      <span>🏆 Logros</span>
+      <button onclick="toggleAchievements()">✕</button>
+    </div>
+    <div id="ach-list" class="ach-list"></div>
+  </div>
+</div>
+
+<div id="toast" class="toast hidden"></div>
+<div id="particles" class="particles"></div>
+
+<!-- SVG filter defs: drug warp distortion applied to character photos -->
+<svg width="0" height="0" style="position:absolute;pointer-events:none" aria-hidden="true">
+  <defs>
+    <filter id="drug-warp" x="-6%" y="-6%" width="112%" height="112%" color-interpolation-filters="sRGB">
+      <feTurbulence type="fractalNoise" baseFrequency="0.024 0.018" numOctaves="2" seed="11" result="wmap"/>
+      <feDisplacementMap in="SourceGraphic" in2="wmap" scale="11" xChannelSelector="R" yChannelSelector="G" result="warped"/>
+      <!-- subtle RGB channel shift for chromatic aberration feel -->
+      <feColorMatrix type="matrix" in="warped"
+        values="1.22  0.08 -0.12  0  0.03
+               -0.06  1.15  0.06  0  0.02
+                0.04 -0.04  1.28  0  0.04
+                0     0     0     1  0"/>
+    </filter>
+  </defs>
+</svg>
+
+<script src="game.js"></script>
+</body>
+</html>
