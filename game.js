@@ -293,10 +293,10 @@ const ACHIEVEMENTS = {
     { id:'quies_una',      icon:'👃', name:'¿Quiés una?',           desc:'Acepta la oferta por primera vez. Con confianza.',           cond: s => (s.achData.yeyoWins||0) + (s.achData.yeyoFails||0) >= 1 },
     { id:'triplete',       icon:'🚀', name:'¡TRIPLETE!',            desc:'Consigue 3 TRIPLETES. Fita en modo bestia.',                cond: s => (s.achData.yeyoWins||0) >= 3 },
     { id:'rascadura',      icon:'🧱', name:'Rascadura de Pared',    desc:'Era la pared. La cara lo dice todo.',                        cond: s => (s.achData.yeyoFails||0) >= 1 },
-    { id:'noctambulo',     icon:'🌙', name:'Noctámbulo',            desc:'5 minutos. El cuerpo pide más.',                             cond: s => (s.achData.timeSec||0) >= 300 },
+    { id:'noctambulo',     icon:'🌙', name:'Noctámbulo',            desc:'3 minutos. El cuerpo pide más.',                             cond: s => (s.achData.timeSec||0) >= 180 },
     { id:'inmortal',       icon:'💪', name:'El Inmortal',           desc:'5000 vicios. Fita no conoce el límite.',                     cond: s => s.totalCurrency >= 5000 },
     { id:'polvo_total',    icon:'❄️', name:'Polvo Total',           desc:'Compra el Talco Colombiano. Calidad importada.',             cond: s => (s.upgrades.talco||0) >= 1 },
-    { id:'ultimo_salir',   icon:'🔑', name:'El Último en Salir',    desc:'10 minutos. ¿Cuándo fue la última vez que dormiste?',        cond: s => (s.achData.timeSec||0) >= 600 },
+    { id:'ultimo_salir',   icon:'🔑', name:'El Último en Salir',    desc:'5 minutos. ¿Cuándo fue la última vez que dormiste?',         cond: s => (s.achData.timeSec||0) >= 300 },
     { id:'leyenda_noche',  icon:'🦉', name:'Leyenda de La Noche',   desc:'50000 vicios. El sol se asoma y tú sigues aquí.',            cond: s => s.totalCurrency >= 50000 },
   ],
   noah: [
