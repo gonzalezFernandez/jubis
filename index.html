@@ -104,6 +104,15 @@
   </div>
 </div>
 
+<div id="tutorial-overlay" class="tutorial-overlay hidden">
+  <div class="tutorial-card">
+    <button class="tut-skip" onclick="localStorage.setItem('penona_muchaga_tut','1'); document.getElementById('tutorial-overlay').classList.add('hidden');">✕</button>
+    <div id="tut-body"></div>
+    <div id="tut-dots" class="tut-dots"></div>
+    <button id="tut-btn" class="tut-btn" onclick="tutNext()"></button>
+  </div>
+</div>
+
 <div id="toast-container" class="toast-container"></div>
 <div id="particles" class="particles"></div>
 

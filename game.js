@@ -602,6 +602,9 @@ function startGame(pid) {
   }, 14000);
 
   showMsg(`¡Bienvenido al Club Jubilados, ${ch.name}!`);
+  if (pid === 'muchaga' && !localStorage.getItem('penona_muchaga_tut')) {
+    setTimeout(showTutorial, 400);
+  }
 }
 
 function stopGame() {
@@ -1998,4 +2001,45 @@ function saveGame() {
 
 function loadSave(pid) {
   try { return JSON.parse(localStorage.getItem(`penona_${pid}`)); } catch(_) { return null; }
+}
+
+// ── TUTORIAL ─────────────────────────────────────────────────────────────────
+const TUT_STEPS = [
+  { icon: '🍺',  title: '¡Sirve cañas!',        desc: 'Pulsa el botón grande para ganar cañas. Más clicks, más pasta.' },
+  { icon: '🛒',  title: 'Compra mejoras',        desc: 'Invierte en mejoras para ganar cañas automáticamente, sin parar.' },
+  { icon: '⚡',  title: 'Mecánicas especiales',  desc: 'Cuando salte una mecánica, actúa rápido para llevarte el bono.' },
+  { icon: '🏆',  title: 'Consigue logros',       desc: 'Completa todos los logros de Muchaga para desbloquear el siguiente personaje.' },
+];
+let _tutStep = 0;
+
+function showTutorial() {
+  _tutStep = 0;
+  _renderTutStep();
+  document.getElementById('tutorial-overlay').classList.remove('hidden');
+}
+
+function _renderTutStep() {
+  const s = TUT_STEPS[_tutStep];
+  const isLast = _tutStep === TUT_STEPS.length - 1;
+  document.getElementById('tut-body').innerHTML = `
+    <div class="tut-icon">${s.icon}</div>
+    <div class="tut-title">${s.title}</div>
+    <div class="tut-desc">${s.desc}</div>
+  `;
+  document.getElementById('tut-dots').innerHTML = TUT_STEPS.map((_, i) =>
+    `<span class="tut-dot${i === _tutStep ? ' active' : ''}"></span>`
+  ).join('');
+  document.getElementById('tut-btn').textContent = isLast ? '¡A CURRAR! 🍺' : 'Siguiente →';
+}
+
+function tutNext() {
+  if (_tutStep < TUT_STEPS.length - 1) {
+    _tutStep++;
+    const body = document.getElementById('tut-body');
+    body.classList.add('tut-fade');
+    setTimeout(() => { _renderTutStep(); body.classList.remove('tut-fade'); }, 180);
+  } else {
+    localStorage.setItem('penona_muchaga_tut', '1');
+    document.getElementById('tutorial-overlay').classList.add('hidden');
+  }
 }
