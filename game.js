@@ -1106,7 +1106,7 @@ function triggerChupa() {
   S.chupaDone   = 0;
   S.chupaNeed   = 18 + Math.floor(Math.random() * 8);
   renderSpecial();
-  toast('🥤 ¡CHUPA LA BOLSA! ¡Dale caña!', '🥤');
+  toast('🛍️ ¡CHUPA LA BOLSA! ¡Dale caña!', '🛍️');
   showMsg('Sin energía pero con recursos. Chupa la bolsa y vuelves al tajo.');
   clearTimeout(S.chupaTimer);
   S.chupaTimer = setTimeout(() => {
@@ -1129,7 +1129,7 @@ function clickChupa() {
     S.energy       = 100;
     S.achData.dobletazos++;
     renderSpecial();
-    toast('🥤✅ ¡TRIPLETE! ×10 durante 3 segundos. ¡Chupa más!', '⚡');
+    toast('🛍️✅ ¡TRIPLETE! ×10 durante 3 segundos. ¡Chupa más!', '⚡');
     showMsg('La bolsa funciona. Triplete activado. 3 segundos de gloria total.');
     updateDisplays();
   } else {
@@ -1354,8 +1354,9 @@ function clickRaices(routeId) {
 
 function triggerPolice() {
   S.policeActive = true; S.policeNeed = 8 + Math.floor(Math.random() * 8); S.policeDone = 0;
-  renderSpecial(); toast('¡¡POLICÍA DEL BODYBOARD!! ¡CORRE NANDUKO!', '🚨');
-  showMsg('¡Maderos del bodyboard! ¡Pies para qué os quiero! ¡Muévete, empresario!');
+  const isNandu = S.pid === 'nanduko';
+  renderSpecial(); toast(isNandu ? '¡¡LA GUARDIA!! ¡CORRE NANDUKO!' : '¡¡POLICÍA DEL BODYBOARD!! ¡CORRE!', '🚨');
+  showMsg(isNandu ? '¡La guardia! ¡Pies para qué os quiero! ¡Muévete, empresario!' : '¡Maderos del bodyboard! ¡Pies para qué os quiero! ¡Muévete!');
   clearTimeout(S.policeTimer);
   S.policeTimer = setTimeout(() => {
     if (S.policeActive) {
@@ -1592,10 +1593,10 @@ function buildDobletazo() {
   if (S.chupaActive) {
     const pctC = Math.floor((S.chupaDone / S.chupaNeed) * 100);
     html += `<div class="chupa-event">
-      <h4>🥤 ¡CHUPA LA BOLSA!</h4>
+      <h4>🛍️ ¡CHUPA LA BOLSA!</h4>
       <p>${S.chupaDone}/${S.chupaNeed} — ¡Dale! → TRIPLETE ×10 (3s)</p>
       <div class="gresca-track"><div class="gresca-fill" style="width:${pctC}%"></div></div>
-      <button class="chupa-btn" onclick="clickChupa()">🥤 ¡CHUPA!</button>
+      <button class="chupa-btn" onclick="clickChupa()">🛍️ ¡CHUPA!</button>
     </div>`;
   }
 
@@ -1658,7 +1659,7 @@ function buildNandu() {
 
   if (S.policeActive) {
     const pct = Math.floor((S.policeDone / S.policeNeed) * 100);
-    html += `<div class="police-event"><h4>🚨 ¡¡POLICÍA DEL BODYBOARD!! 🚔</h4><p>¡CORRE! ${S.policeDone}/${S.policeNeed} pasos</p><div class="police-track"><div class="police-fill" style="width:${pct}%"></div></div><button class="flee-btn" onclick="clickPolice()">¡¡CORRE!! 🏃</button></div>`;
+    html += `<div class="police-event"><h4>🚨 ¡¡LA GUARDIA!! 🚔</h4><p>¡CORRE! ${S.policeDone}/${S.policeNeed} pasos</p><div class="police-track"><div class="police-fill" style="width:${pct}%"></div></div><button class="flee-btn" onclick="clickPolice()">¡¡CORRE!! 🏃</button></div>`;
   }
 
   if (S.banyoActive) {
