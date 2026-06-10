@@ -626,6 +626,30 @@ body {
 .gresca-btn:hover  { filter: brightness(1.2); }
 .gresca-btn:active { transform: scale(0.95); filter: brightness(1.4); }
 
+/* CHUPA LA BOLSA */
+.chupa-event {
+  width: 100%; padding: 0.8rem;
+  background: linear-gradient(135deg, #0a001a, #150030);
+  border: 2px solid #9b42f0; border-radius: 14px;
+  text-align: center; margin-bottom: 0.5rem;
+  animation: chupa-glow .4s ease-in-out infinite alternate;
+}
+@keyframes chupa-glow {
+  from { box-shadow: 0 0 8px rgba(155,66,240,.4); }
+  to   { box-shadow: 0 0 26px rgba(155,66,240,.9); }
+}
+.chupa-event h4 { color: #c97fff; font-size: 1rem; margin-bottom: 0.3rem; }
+.chupa-event p  { font-size: 0.76rem; color: #9060c0; margin-bottom: 0.55rem; }
+.chupa-btn {
+  width: 100%; padding: 0.85rem;
+  background: linear-gradient(135deg, #2a0050, #4a0090);
+  border: 2px solid #9b42f0; color: #d9aaff;
+  border-radius: 10px; font-size: 0.95rem; font-weight: 900;
+  cursor: pointer; font-family: inherit; letter-spacing: 0.04em;
+  transition: filter .08s, transform .08s;
+}
+.chupa-btn:active { transform: scale(0.93); filter: brightness(1.5); }
+
 /* Whisky buff indicator */
 .wsk-active {
   width: 100%; padding: 0.6rem 1rem; text-align: center;

@@ -353,6 +353,7 @@ let S = {
   // Fita
   energy: 100, tripleActive: false, tripleEnd: 0,
   yeyoActive: false, debuffEnd: 0, dblCoolEnd: 0,
+  chupaActive: false, chupaTimer: null, chupaDone: 0, chupaNeed: 0,
   // Muchaga fight
   fightActive: false, fightTimer: null, fightPunch: null, fightReacted: false,
   // Noah
@@ -360,7 +361,7 @@ let S = {
   // Nanduko
   policeActive: false, policeTimer: null, policeNeed: 0, policeDone: 0,
   banyoActive: false, banyoTimer: null,
-  raicesActive: false, raicesTimer: null, raicesSafe: null, raicesDebuffEnd: 0,
+  raicesActive: false, raicesTimer: null, raicesBad: null, raicesDebuffEnd: 0,
   // Extraperlo
   rocaActive: false, rocaTimer: null, rocaNeed: 0, rocaDone: 0,
   vasosActive: false, vasosTimer: null, vasosNeed: 0, vasosDone: 0, vasosFrase: '',
@@ -526,12 +527,13 @@ function startGame(pid) {
     energy:    useSave ? (save.energy ?? 100) : 100,
     tripleActive: false, tripleEnd: 0,
     yeyoActive: false, debuffEnd: 0, dblCoolEnd: 0,
+    chupaActive: false, chupaTimer: null, chupaDone: 0, chupaNeed: 0,
     app:       useSave ? (save.app || 'instagram') : 'instagram',
     appLit: 'instagram',
     chicaActive: false, chicaTimer: null, stdActive: false,
     policeActive: false, policeTimer: null, policeNeed: 0, policeDone: 0,
     banyoActive: false, banyoTimer: null,
-    raicesActive: false, raicesTimer: null, raicesSafe: null, raicesDebuffEnd: 0,
+    raicesActive: false, raicesTimer: null, raicesBad: null, raicesDebuffEnd: 0,
     rocaActive: false, rocaTimer: null, rocaNeed: 0, rocaDone: 0,
     vasosActive: false, vasosTimer: null, vasosNeed: 0, vasosDone: 0, vasosFrase: '',
     achData: useSave && save.achData ? { raicesEscapes:0, raicesCaptures:0, ...save.achData } : {
@@ -688,6 +690,7 @@ function calcPC() {
   CHARS[S.pid].upgrades.forEach(u => { v += u.cbonus * (S.upgrades[u.id] || 0); });
   if ((S.pid === 'muchaga' || S.pid === 'extraperlo') && S.wskActive && Date.now() < S.wskEnd) v *= 5;
   if ((S.pid === 'muchaga' || S.pid === 'extraperlo') && S.furiaLevel >= 100) v *= 5;
+  if ((S.pid === 'fita' || S.pid === 'extraperlo') && S.tripleActive && Date.now() < S.tripleEnd) v *= 10;
   if (S.pid === 'noah' && S.app === S.appLit) {
     const m = { instagram:2, tiktok:3.5, whatsapp:1.5 };
     v *= m[S.appLit] || 1;
@@ -700,6 +703,7 @@ function calcPS() {
   CHARS[S.pid].upgrades.forEach(u => { v += u.prod * (S.upgrades[u.id] || 0); });
   if ((S.pid === 'muchaga' || S.pid === 'extraperlo') && S.wskActive && Date.now() < S.wskEnd) v *= 5;
   if ((S.pid === 'muchaga' || S.pid === 'extraperlo') && S.furiaLevel >= 100) v *= 5;
+  if ((S.pid === 'fita' || S.pid === 'extraperlo') && S.tripleActive && Date.now() < S.tripleEnd) v *= 10;
   if (S.pid === 'noah') {
     if (S.app === S.appLit) {
       const m = { instagram:2, tiktok:3.5, whatsapp:1.5 };
@@ -1094,6 +1098,43 @@ function stopHold(success) {
 // ——— FITA ———
 function checkFita() {
   if (!S.yeyoActive && !S.tripleActive && Math.random() < 0.06) triggerYeyo();
+  if (!S.chupaActive && !S.tripleActive && S.energy <= 0) triggerChupa();
+}
+
+function triggerChupa() {
+  S.chupaActive = true;
+  S.chupaDone   = 0;
+  S.chupaNeed   = 18 + Math.floor(Math.random() * 8);
+  renderSpecial();
+  toast('🥤 ¡CHUPA LA BOLSA! ¡Dale caña!', '🥤');
+  showMsg('Sin energía pero con recursos. Chupa la bolsa y vuelves al tajo.');
+  clearTimeout(S.chupaTimer);
+  S.chupaTimer = setTimeout(() => {
+    if (S.chupaActive) {
+      S.chupaActive = false;
+      renderSpecial();
+      toast('Se acabó la bolsa. Sin triplete.', '😩');
+    }
+  }, 5000);
+}
+
+function clickChupa() {
+  if (!S.chupaActive) return;
+  S.chupaDone++;
+  if (S.chupaDone >= S.chupaNeed) {
+    clearTimeout(S.chupaTimer);
+    S.chupaActive  = false;
+    S.tripleActive = true;
+    S.tripleEnd    = Date.now() + 3000;
+    S.energy       = 100;
+    S.achData.dobletazos++;
+    renderSpecial();
+    toast('🥤✅ ¡TRIPLETE! ×10 durante 3 segundos. ¡Chupa más!', '⚡');
+    showMsg('La bolsa funciona. Triplete activado. 3 segundos de gloria total.');
+    updateDisplays();
+  } else {
+    renderSpecial();
+  }
 }
 
 function triggerYeyo() {
@@ -1267,7 +1308,7 @@ const RAICES_ROUTES = [
 ];
 
 function triggerRaices() {
-  S.raicesSafe    = RAICES_ROUTES[Math.floor(Math.random() * RAICES_ROUTES.length)].id;
+  S.raicesBad     = RAICES_ROUTES[Math.floor(Math.random() * RAICES_ROUTES.length)].id;
   S.raicesActive  = true;
   renderSpecial();
   toast('🚧 ¡GUARDIA EN CARRETERA! Elige ruta rápido', '🚔');
@@ -1292,7 +1333,7 @@ function clickRaices(routeId) {
   clearTimeout(S.raicesTimer);
   S.raicesActive = false;
   const route = RAICES_ROUTES.find(r => r.id === routeId);
-  if (routeId === S.raicesSafe) {
+  if (routeId !== S.raicesBad) {
     const reward = 60 + Math.floor(Math.random() * 80);
     earn(reward);
     S.achData.raicesEscapes = (S.achData.raicesEscapes || 0) + 1;
@@ -1533,7 +1574,7 @@ function buildDobletazo() {
   else if (debuff) barClass += ' debuff';
   else if (crit) barClass += ' crit';
 
-  let label = triple ? `⚡⚡⚡ TRIPLETE (${triSec}s)` : debuff ? '🤢 INTOXICADO — energía en caída libre' : '⚡ Energía Nocturna';
+  let label = triple ? `⚡⚡⚡ TRIPLETE ×10 (${triSec}s)` : debuff ? '🤢 INTOXICADO — energía en caída libre' : '⚡ Energía Nocturna';
 
   let html = `<div class="energy-box">
     <div class="energy-lbl"><span>${label}</span><span>${Math.floor(pct)}%</span></div>
@@ -1547,6 +1588,16 @@ function buildDobletazo() {
   if (crit && !triple) html += `<div class="energy-warn">⚠️ ¡Fita se desploma! ¡Haz algo YA!</div>`;
   if (pct <= 0)        html += `<div class="energy-warn" style="color:#ff2222">💤 K.O. Producción = 0.</div>`;
   html += `</div>`;
+
+  if (S.chupaActive) {
+    const pctC = Math.floor((S.chupaDone / S.chupaNeed) * 100);
+    html += `<div class="chupa-event">
+      <h4>🥤 ¡CHUPA LA BOLSA!</h4>
+      <p>${S.chupaDone}/${S.chupaNeed} — ¡Dale! → TRIPLETE ×10 (3s)</p>
+      <div class="gresca-track"><div class="gresca-fill" style="width:${pctC}%"></div></div>
+      <button class="chupa-btn" onclick="clickChupa()">🥤 ¡CHUPA!</button>
+    </div>`;
+  }
 
   // ¿QUIÉS UNA? — hold nariz
   if (offer) {
@@ -1618,7 +1669,7 @@ function buildNandu() {
   if (S.raicesActive) {
     html += `<div class="raices-event">
       <h4>🚧 ¡¡GUARDIA EN CARRETERA!!</h4>
-      <p>Elige la ruta libre para llegar a Raíces. Una está despejada.</p>
+      <p>Elige ruta para llegar a Raíces. ¡Solo una está vigilada!</p>
       <div class="raices-btns">
         ${RAICES_ROUTES.map(r => `<button class="raices-btn" onclick="clickRaices('${r.id}')">${r.icon}<span>${r.name}</span></button>`).join('')}
       </div>
