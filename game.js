@@ -1950,8 +1950,8 @@ const TOAST_MAX = 2;
 
 function toast(text, icon = '📢') {
   const container = document.getElementById('toast-container');
-  const items = Array.from(container.children);
-  for (let i = 0; i <= items.length - TOAST_MAX; i++) items[i]._dismiss();
+  const visible = Array.from(container.children).filter(el => !el.classList.contains('toast-hide'));
+  for (let i = 0; i <= visible.length - TOAST_MAX; i++) visible[i]._dismiss();
 
   const el = document.createElement('div');
   el.className = 'toast-item';
