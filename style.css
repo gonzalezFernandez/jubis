@@ -1129,6 +1129,55 @@ body {
   border-radius: 26px 26px 0 0;
   pointer-events: none;
 }
+/* ACHIEVEMENT SECTION IN CARD */
+.card-ach-section {
+  margin: 0.55rem 0 0.65rem;
+  padding: 0.55rem 0.65rem;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 12px;
+}
+.card-ach-header {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 0.3rem;
+}
+.card-ach-label {
+  font-size: 0.6rem; color: var(--dim);
+  text-transform: uppercase; letter-spacing: 0.1em;
+}
+.card-ach-count {
+  font-size: 0.72rem; font-weight: 900;
+  color: var(--c-theme, #ffd93d);
+}
+.card-ach-bar-wrap {
+  height: 3px; background: rgba(255,255,255,0.1);
+  border-radius: 2px; margin-bottom: 0.45rem; overflow: hidden;
+}
+.card-ach-bar {
+  height: 100%;
+  background: var(--c-theme, #ffd93d);
+  border-radius: 2px;
+  transition: width .6s ease;
+  box-shadow: 0 0 6px var(--c-glow, rgba(255,217,61,.4));
+}
+.card-ach-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 0.18rem;
+}
+.card-ach-icon {
+  font-size: 1.05rem;
+  text-align: center;
+  line-height: 1.6;
+  border-radius: 6px;
+  filter: grayscale(1) brightness(0.4);
+  transition: filter .2s;
+}
+.card-ach-icon.got {
+  filter: none;
+  text-shadow: 0 0 6px rgba(255,255,255,0.25);
+}
+
 .char-lock-info {
   font-size: 0.82rem; color: var(--dim); text-align: center;
   line-height: 1.6; margin-bottom: 1rem; padding: 0 0.2rem;

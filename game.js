@@ -438,10 +438,25 @@ function renderSelection() {
          <div class="char-avatar-wrap" style="display:none">${AVATARS[ch.id]}</div>`;
 
     const save         = loadSave(ch.id);
-    const unlockedAchs = save ? (ACHIEVEMENTS[ch.id] || []).filter(a => save.achievements && save.achievements[a.id]) : [];
-    const achBadges    = unlocked && unlockedAchs.length
-      ? `<div class="card-ach-strip">${unlockedAchs.map(a => `<span class="card-ach-badge" title="${a.name}">${a.icon}</span>`).join('')}</div>`
-      : '';
+    const allAchs      = ACHIEVEMENTS[ch.id] || [];
+    const unlockedAchs = save ? allAchs.filter(a => save.achievements && save.achievements[a.id]) : [];
+    const achDone      = unlockedAchs.length;
+    const achTotal     = allAchs.length;
+
+    const achSection = unlocked && achTotal > 0 ? `
+      <div class="card-ach-section">
+        <div class="card-ach-header">
+          <span class="card-ach-label">Logros</span>
+          <span class="card-ach-count">${achDone}/${achTotal}</span>
+        </div>
+        <div class="card-ach-bar-wrap"><div class="card-ach-bar" style="width:${Math.floor((achDone/achTotal)*100)}%"></div></div>
+        <div class="card-ach-grid">
+          ${allAchs.map(a => {
+            const got = save && save.achievements && save.achievements[a.id];
+            return `<span class="card-ach-icon${got ? ' got' : ''}" title="${a.name}">${a.icon}</span>`;
+          }).join('')}
+        </div>
+      </div>` : '';
 
     let bodyHtml;
     if (unlocked) {
@@ -449,6 +464,7 @@ function renderSelection() {
         <div class="char-name">${ch.name}</div>
         <div class="char-role">${ch.role}</div>
         <div class="char-desc">${ch.desc}</div>
+        ${achSection}
         <button class="char-btn" onclick="startGame('${ch.id}')">${ch.btnText}</button>`;
     } else {
       const idx      = UNLOCK_ORDER.indexOf(pid);
@@ -470,7 +486,6 @@ function renderSelection() {
     card.innerHTML = `
       <div class="char-photo-container">
         ${photoBlock}
-        ${achBadges}
         ${!unlocked ? '<div class="lock-overlay">🔒</div>' : ''}
         ${isNew ? '<div class="char-new-badge">¡NUEVO!</div>' : ''}
       </div>
