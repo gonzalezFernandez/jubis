@@ -550,6 +550,7 @@ function startGame(pid) {
     chicaActive: false, chicaTimer: null, stdActive: false,
     policeActive: false, policeTimer: null, policeNeed: 0, policeDone: 0,
     banyoActive: false, banyoTimer: null, banyoBuffEnd: 0,
+    ligaBuffEnd: 0,
     raicesActive: false, raicesTimer: null, raicesBad: null, raicesDebuffEnd: 0,
     rocaActive: false, rocaTimer: null, rocaNeed: 0, rocaDone: 0,
     vasosActive: false, vasosTimer: null, vasosNeed: 0, vasosDone: 0, vasosFrase: '',
@@ -759,6 +760,7 @@ function calcPS() {
   }
   if (S.pid === 'nanduko' && S.raicesDebuffEnd && Date.now() < S.raicesDebuffEnd) v *= 0.5;
   if ((S.pid === 'nanduko' || S.pid === 'extraperlo') && S.banyoBuffEnd && Date.now() < S.banyoBuffEnd) v *= 4;
+  if (S.pid === 'noah' && S.ligaBuffEnd && Date.now() < S.ligaBuffEnd) v *= 5;
   return v;
 }
 
@@ -1275,7 +1277,8 @@ function clickChica() {
   if (Math.random() < 0.5) {
     const b = Math.max(50, Math.floor(S.currency * 0.25));
     S.currency += b; S.totalCurrency += b; S.achData.chicaLiga++;
-    toast(`¡LIGA! +${fmt(b)} ${ch.icon}`, '💕');
+    S.ligaBuffEnd = Date.now() + 10000;
+    toast(`💕 ¡LIGA! +${fmt(b)} ${ch.icon} · ×5 durante 10s`, '💕');
     showMsg('¡Le ha dado el Instagram! Bueno, el número no. El Instagram.');
   } else {
     S.achData.chicaFails++;
@@ -1700,6 +1703,10 @@ function buildNoah(ch) {
     ${onCorrect ? `✅ ${litApp.icon} activo — ${litApp.m}` : `⚡ Cambia a ${litApp.icon} ${litApp.name} para el bonus`}
   </div>`;
   if (S.chicaActive) html += `<div class="chica-event"><div style="font-size:2rem">👩‍🦰</div><h4>¡CHICA A LA VISTA!</h4><p>Te está mirando. ¡Habla ahora o nunca!</p><button class="chica-btn" onclick="clickChica()">💬 ¡LIGAR AHORA!</button></div>`;
+  if (S.ligaBuffEnd && Date.now() < S.ligaBuffEnd) {
+    const sec = Math.ceil((S.ligaBuffEnd - Date.now()) / 1000);
+    html += `<div class="wsk-active">💕 EN MODO LIGUE — ×5 (${sec}s)</div>`;
+  }
   if (S.stdActive) {
     const cost = Math.max(200, Math.floor(S.totalCurrency * 0.1));
     html += `<div class="std-event"><h5>🦠 Picor Sospechoso</h5><p>Producción -50%. Las consecuencias de ligar sin criterio.</p><button class="farmacia-btn" onclick="clickFarmacia()">💊 Farmacia (${fmt(cost)} ${ch.icon})</button></div>`;
