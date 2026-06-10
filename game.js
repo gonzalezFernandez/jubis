@@ -214,7 +214,7 @@ const CHARS = {
 
   noah: {
     id: 'noah', name: 'Noah', role: '📱 El Scrolleador Profesional',
-    desc: 'No lo llamaría adicción sino CONSTANCIA.',
+    desc: 'No lo llamaría adicción sino CONSTANCIA. Full focus en su TDAH.',
     currency: 'Likes', icon: '❤️', clickText: 'SCROLLEAR', clickIcon: '📱', btnText: '¡RETINAS AL FALLO!',
     theme: '#1a9be8', themeD: '#0a70b8', themeG: 'rgba(26,155,232,0.25)',
     special: 'noah',
@@ -251,7 +251,7 @@ const CHARS = {
   extraperlo: {
     id: 'extraperlo', name: 'MODO EXTRAPERLO', role: '🎪 Modo Caos Total',
     desc: '¿Por qué elegir uno cuando puedes tenerlos a todos? El modo Extraperlo mezcla todo. Con Roca Pintada suelta por ahí.',
-    currency: 'Caos', icon: '🌀', clickText: '¡EXTRÁPERLALO!', clickIcon: '🎪', btnText: 'PA DENTRO',
+    currency: 'Caos', icon: '🌀', clickText: '¡EXTRÁPERLALO!', clickIcon: '🎪', btnText: '¡PA DENTRO!',
     theme: '#e63946', themeD: '#b01828', themeG: 'rgba(230,57,70,0.28)',
     special: 'extraperlo',
     upgrades: [
@@ -335,6 +335,8 @@ const ACHIEVEMENTS = {
     { id:'vasos_5',        icon:'🗑️', name:'Del Contenedor',        desc:'5 rondas de vasos. El olfato ya no funciona.',               cond: s => (s.achData.vasosLimpiados||0) >= 5 },
     { id:'triplete_xp',    icon:'⚡', name:'Triplete Extraperlo',   desc:'Consigue el TRIPLETE en modo caos total.',                   cond: s => (s.achData.yeyoWins||0) >= 1 },
     { id:'festivalero',    icon:'🎡', name:'Festivales Hasta el Alba',desc:'10 minutos en modo Extraperlo. Sobrevives.',               cond: s => (s.achData.timeSec||0) >= 600 },
+    { id:'sin_vasos',      icon:'🧹', name:'Ni un Vaso en Pie',       desc:'Limpia 10 rondas de vasos. El suelo ya no se ve.',          cond: s => (s.achData.vasosLimpiados||0) >= 10 },
+    { id:'roca_10',        icon:'🎤', name:'Técnicas y Procedimientos',desc:'10 encuentros con Roca Pintada. Ya os conocéis demasiado.', cond: s => (s.achData.rocaHits||0) >= 10 },
     { id:'caos_5k',        icon:'🌀', name:'¡Otra Ronda!',          desc:'5000 caos acumulados. El festival no para.',                 cond: s => s.totalCurrency >= 5000 },
     { id:'pase_vip',       icon:'🏷️', name:'Pase VIP Conseguido',  desc:'Hazte con el pase VIP. Acceso a casi todo.',                 cond: s => (s.upgrades.pase||0) >= 1 },
     { id:'leyenda_xp',     icon:'🏆', name:'Leyenda del Extraperlo',desc:'50000 caos. Técnicas y Procedimientos te piden una foto.',  cond: s => s.totalCurrency >= 50000 },
