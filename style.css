@@ -1047,23 +1047,31 @@ body {
    ============================================================ */
 .toast {
   position: fixed;
-  top: 68px;
-  right: 16px;
+  top: 16px;
+  left: 50%;
+  transform: translateX(-50%);
   z-index: 9999;
   background: var(--card);
   border: 1.5px solid var(--theme);
   border-radius: 16px;
-  padding: 0.9rem 1.2rem;
-  max-width: 290px;
+  padding: 0.85rem 1.2rem;
+  width: min(88vw, 340px);
   font-size: 0.86rem;
   line-height: 1.45;
-  box-shadow: 0 12px 40px rgba(0,0,0,.5);
-  animation: slide-in .22s ease;
+  box-shadow: 0 8px 32px rgba(0,0,0,.6), 0 0 16px var(--theme-glow);
   font-weight: 600;
+  animation: slide-down .25s cubic-bezier(.22,1,.36,1);
+  cursor: grab;
+  user-select: none;
 }
-@keyframes slide-in {
-  from { transform: translateX(110%); opacity: 0; }
-  to   { transform: translateX(0);    opacity: 1; }
+@keyframes slide-down {
+  from { transform: translateX(-50%) translateY(-110%); opacity: 0; }
+  to   { transform: translateX(-50%) translateY(0);     opacity: 1; }
+}
+.toast.toast-dismissing {
+  transition: transform .2s ease, opacity .2s ease;
+  transform: translateX(-50%) translateY(-120%) !important;
+  opacity: 0;
 }
 .toast-icon { font-size: 1.35rem; display: block; margin-bottom: 0.2rem; }
 
