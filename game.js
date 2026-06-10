@@ -360,7 +360,7 @@ let S = {
   app: 'instagram', appLit: 'instagram', chicaActive: false, chicaTimer: null, stdActive: false,
   // Nanduko
   policeActive: false, policeTimer: null, policeNeed: 0, policeDone: 0,
-  banyoActive: false, banyoTimer: null,
+  banyoActive: false, banyoTimer: null, banyoBuffEnd: 0,
   raicesActive: false, raicesTimer: null, raicesBad: null, raicesDebuffEnd: 0,
   // Extraperlo
   rocaActive: false, rocaTimer: null, rocaNeed: 0, rocaDone: 0,
@@ -532,7 +532,7 @@ function startGame(pid) {
     appLit: 'instagram',
     chicaActive: false, chicaTimer: null, stdActive: false,
     policeActive: false, policeTimer: null, policeNeed: 0, policeDone: 0,
-    banyoActive: false, banyoTimer: null,
+    banyoActive: false, banyoTimer: null, banyoBuffEnd: 0,
     raicesActive: false, raicesTimer: null, raicesBad: null, raicesDebuffEnd: 0,
     rocaActive: false, rocaTimer: null, rocaNeed: 0, rocaDone: 0,
     vasosActive: false, vasosTimer: null, vasosNeed: 0, vasosDone: 0, vasosFrase: '',
@@ -720,6 +720,7 @@ function calcPC() {
     const m = { instagram:2, tiktok:3.5, whatsapp:1.5 };
     v *= m[S.appLit] || 1;
   }
+  if ((S.pid === 'nanduko' || S.pid === 'extraperlo') && S.banyoBuffEnd && Date.now() < S.banyoBuffEnd) v *= 4;
   return v;
 }
 
@@ -737,6 +738,7 @@ function calcPS() {
     if (S.stdActive) v *= 0.5;
   }
   if (S.pid === 'nanduko' && S.raicesDebuffEnd && Date.now() < S.raicesDebuffEnd) v *= 0.5;
+  if ((S.pid === 'nanduko' || S.pid === 'extraperlo') && S.banyoBuffEnd && Date.now() < S.banyoBuffEnd) v *= 4;
   return v;
 }
 
@@ -1319,8 +1321,9 @@ function resolveBanyo() {
   const b = Math.max(150, Math.floor(S.currency * 0.45));
   S.currency += b; S.totalCurrency += b;
   S.achData.banyoWins++;
-  renderSpecial(); toast(`¡Trato cerrado! +${fmt(b)} 💵 💼`, '🤝');
-  showMsg('Reunión productiva. Breve. Discreta. El cliente sale contento y tú también.');
+  S.banyoBuffEnd = Date.now() + 10000;
+  renderSpecial(); toast(`¡Trato cerrado! +${fmt(b)} 💵 × 4 durante 10s 💼`, '🤝');
+  showMsg('Reunión productiva. Breve. Discreta. El cliente sale contento y tú también. ×4 activado.');
   updateDisplays();
 }
 
@@ -1700,6 +1703,11 @@ function buildNandu() {
         ${RAICES_ROUTES.map(r => `<button class="raices-btn" onclick="clickRaices('${r.id}')">${r.icon}<span>${r.name}</span></button>`).join('')}
       </div>
     </div>`;
+  }
+
+  if (S.banyoBuffEnd && Date.now() < S.banyoBuffEnd) {
+    const sec = Math.ceil((S.banyoBuffEnd - Date.now()) / 1000);
+    html += `<div class="wsk-active">💼 REUNIÓN PRODUCTIVA — ×4 (${sec}s)</div>`;
   }
 
   if (S.raicesDebuffEnd && Date.now() < S.raicesDebuffEnd) {
