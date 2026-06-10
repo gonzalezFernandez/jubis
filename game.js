@@ -1151,9 +1151,9 @@ function resolveYeyo() {
     S.achData.yeyoWins++;
     const b = Math.max(200, Math.floor(S.currency * 0.8));
     S.currency += b; S.totalCurrency += b;
-    S.tripleActive = true; S.tripleEnd = Date.now() + 18000;
+    S.tripleActive = true; S.tripleEnd = Date.now() + 15000;
     S.energy = 100; S.achData.dobletazos++;
-    renderSpecial(); toast(`¡TRIPLETE! +${fmt(b)} Vicios 🚀 ¡18s de gloria!`, '⚡');
+    renderSpecial(); toast(`¡TRIPLETE! +${fmt(b)} Vicios 🚀 ¡15s de gloria!`, '⚡');
     showMsg('¡TRIPLETE ACTIVADO! La barra aguanta sola. El olfato: perfecto. Fita está ON.');
   } else {
     const dmg = Math.max(50, Math.floor(S.energy * 0.6));
