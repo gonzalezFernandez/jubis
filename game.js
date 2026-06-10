@@ -1946,13 +1946,29 @@ function showMsg(text) {
   if (el) el.textContent = `💬 ${text}`;
 }
 
-let toastTmr = null;
+const toastQueue = [];
+let toastVisible = 0;
+const TOAST_MAX = 3;
+
 function toast(text, icon = '📢') {
-  const el = document.getElementById('toast');
-  el.classList.remove('hidden');
-  el.innerHTML = `<span class="toast-icon">${icon}</span>${text}`;
-  clearTimeout(toastTmr);
-  toastTmr = setTimeout(() => el.classList.add('hidden'), 3500);
+  toastQueue.push({ text, icon });
+  flushToasts();
+}
+
+function flushToasts() {
+  while (toastVisible < TOAST_MAX && toastQueue.length > 0) {
+    const { text, icon } = toastQueue.shift();
+    toastVisible++;
+    const el = document.createElement('div');
+    el.className = 'toast-item';
+    el.innerHTML = `<span class="ti-icon">${icon}</span><span class="ti-text">${text}</span>`;
+    document.getElementById('toast-container').appendChild(el);
+    requestAnimationFrame(() => requestAnimationFrame(() => el.classList.add('toast-show')));
+    setTimeout(() => {
+      el.classList.add('toast-hide');
+      setTimeout(() => { el.remove(); toastVisible--; flushToasts(); }, 280);
+    }, 2400);
+  }
 }
 
 function spawnParticle(x, y, text) {
