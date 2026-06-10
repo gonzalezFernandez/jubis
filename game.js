@@ -665,6 +665,8 @@ function tick() {
 // ================================================================
 //  CLICK
 // ================================================================
+let clickCombo = 0, comboResetTimer = null;
+
 function handleMainClick(e) {
   if (!S.pid) return;
   const ch  = CHARS[S.pid];
@@ -674,10 +676,33 @@ function handleMainClick(e) {
   S.totalClicks++;
 
   const btn = document.getElementById('main-btn');
-  const r   = btn.getBoundingClientRect();
+
+  // Combo grow effect
+  clearTimeout(comboResetTimer);
+  clickCombo = Math.min(clickCombo + 1, 30);
+  const baseScale  = 1 + Math.min(clickCombo * 0.012, 0.30);
+  const punchScale = baseScale * 1.07;
+  const glowSize   = Math.min(24 + clickCombo * 4, 110);
+  const glowAlpha  = Math.min(0.25 + clickCombo * 0.025, 0.9);
+
+  btn.style.transition = 'transform 0.04s ease-out, box-shadow 0.06s';
+  btn.style.transform  = `scale(${punchScale.toFixed(3)})`;
+  btn.style.boxShadow  = `0 0 ${glowSize}px var(--theme), 0 0 ${Math.floor(glowSize*1.8)}px var(--theme-glow), inset 0 0 24px rgba(0,0,0,.45)`;
+
+  setTimeout(() => {
+    btn.style.transition = 'transform 0.1s ease-out, box-shadow 0.15s';
+    btn.style.transform  = `scale(${baseScale.toFixed(3)})`;
+  }, 45);
+
+  comboResetTimer = setTimeout(() => {
+    clickCombo = 0;
+    btn.style.transition = 'transform 0.35s ease-out, box-shadow 0.35s';
+    btn.style.transform  = '';
+    btn.style.boxShadow  = '';
+  }, 650);
+
+  const r = btn.getBoundingClientRect();
   spawnParticle(r.left + r.width/2, r.top + r.height/4, `+${fmt(val)} ${ch.icon}`);
-  btn.style.transform = 'scale(0.90)';
-  setTimeout(() => { btn.style.transform = ''; }, 90);
   updateDisplays();
   refreshUpgradeStates();
 }

@@ -438,8 +438,9 @@ body {
   padding: 0.5rem;
   cursor: pointer;
   user-select: none;
-  transition: transform .08s, box-shadow .15s, width .4s ease, height .4s ease;
+  transition: transform .06s ease-out, box-shadow .12s ease-out, width .4s ease, height .4s ease;
   box-shadow: 0 0 24px var(--theme-glow), inset 0 0 24px rgba(0,0,0,.45);
+  will-change: transform, box-shadow;
   position: relative;
   overflow: hidden;
   font-family: inherit;
@@ -453,7 +454,7 @@ body {
   transition: opacity .12s;
 }
 .main-btn:hover::after { opacity: 1; }
-.main-btn:active { transform: scale(0.90); box-shadow: 0 0 48px var(--theme-glow); }
+.main-btn:active { filter: brightness(1.15); }
 
 #main-btn-icon {
   font-size: 3.8rem; /* overridden by JS per stage */
