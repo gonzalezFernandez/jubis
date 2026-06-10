@@ -1955,7 +1955,7 @@ function toast(text, icon = '📢') {
 
   const el = document.createElement('div');
   el.className = 'toast-item';
-  el.innerHTML = `<span class="toast-icon">${icon}</span>${text}`;
+  el.innerHTML = `<span class="toast-icon">${icon}</span><span class="toast-text">${text}</span><span class="toast-icon" style="visibility:hidden">${icon}</span>`;
   container.appendChild(el);
 
   const dismiss = () => {

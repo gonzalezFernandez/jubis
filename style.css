@@ -1066,7 +1066,6 @@ body {
   padding: 0.45rem 1rem;
   display: flex;
   align-items: center;
-  justify-content: center;
   gap: 0.45rem;
   font-size: clamp(0.65rem, 2.5vw, 0.76rem);
   font-weight: 600;
@@ -1090,6 +1089,7 @@ body {
   to   { transform: translateY(-120%); opacity: 0; }
 }
 .toast-icon { font-size: 1rem; flex-shrink: 0; }
+.toast-text { flex: 1; text-align: center; }
 
 /* ============================================================
    PARTICLES
