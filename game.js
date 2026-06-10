@@ -1947,34 +1947,25 @@ function showMsg(text) {
 }
 
 let toastTmr = null;
-let toastDragY = 0;
 
 function toast(text, icon = '📢') {
   const el = document.getElementById('toast');
-  el.classList.remove('hidden', 'toast-dismissing');
-  el.style.cssText = '';
+  el.classList.add('hidden');
+  el.classList.remove('toast-enter', 'toast-dismissing');
+  void el.offsetWidth; // fuerza reflow para reiniciar animación
   el.innerHTML = `<span class="toast-icon">${icon}</span>${text}`;
+  el.classList.remove('hidden');
+  el.classList.add('toast-enter');
+  el.onclick = dismissToast;
   clearTimeout(toastTmr);
   toastTmr = setTimeout(dismissToast, 3500);
-
-  let startY = 0;
-  el.ontouchstart = e => { startY = e.touches[0].clientY; el.style.transition = 'none'; };
-  el.ontouchmove  = e => {
-    const dy = e.touches[0].clientY - startY;
-    if (dy < 0) el.style.transform = `translateX(-50%) translateY(${dy}px)`;
-  };
-  el.ontouchend = e => {
-    const dy = e.changedTouches[0].clientY - startY;
-    if (dy < -55) { dismissToast(); }
-    else { el.style.transition = 'transform .2s ease'; el.style.transform = 'translateX(-50%) translateY(0)'; }
-  };
 }
 
 function dismissToast() {
   clearTimeout(toastTmr);
   const el = document.getElementById('toast');
   el.classList.add('toast-dismissing');
-  setTimeout(() => el.classList.add('hidden'), 220);
+  setTimeout(() => { el.classList.add('hidden'); el.classList.remove('toast-dismissing', 'toast-enter'); }, 220);
 }
 
 function spawnParticle(x, y, text) {

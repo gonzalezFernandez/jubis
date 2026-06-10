@@ -1047,25 +1047,27 @@ body {
    ============================================================ */
 .toast {
   position: fixed;
-  top: 16px;
+  top: 12px;
   left: 50%;
   transform: translateX(-50%);
   z-index: 9999;
   background: var(--card);
   border: 1.5px solid var(--theme);
-  border-radius: 16px;
-  padding: 0.85rem 1.2rem;
-  width: min(88vw, 340px);
-  font-size: 0.86rem;
-  line-height: 1.45;
-  box-shadow: 0 8px 32px rgba(0,0,0,.6), 0 0 16px var(--theme-glow);
+  border-radius: 14px;
+  padding: 0.55rem 0.95rem;
+  width: min(80vw, 300px);
+  font-size: 0.78rem;
+  line-height: 1.35;
+  box-shadow: 0 8px 32px rgba(0,0,0,.6), 0 0 14px var(--theme-glow);
   font-weight: 600;
-  animation: slide-down .25s cubic-bezier(.22,1,.36,1);
-  cursor: grab;
+  cursor: pointer;
   user-select: none;
 }
+.toast.toast-enter {
+  animation: slide-down .25s cubic-bezier(.22,1,.36,1) forwards;
+}
 @keyframes slide-down {
-  from { transform: translateX(-50%) translateY(-110%); opacity: 0; }
+  from { transform: translateX(-50%) translateY(-120%); opacity: 0; }
   to   { transform: translateX(-50%) translateY(0);     opacity: 1; }
 }
 .toast.toast-dismissing {
@@ -1073,7 +1075,7 @@ body {
   transform: translateX(-50%) translateY(-120%) !important;
   opacity: 0;
 }
-.toast-icon { font-size: 1.35rem; display: block; margin-bottom: 0.2rem; }
+.toast-icon { font-size: 1.1rem; display: block; margin-bottom: 0.1rem; }
 
 /* ============================================================
    PARTICLES
