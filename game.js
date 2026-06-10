@@ -282,7 +282,7 @@ const ACHIEVEMENTS = {
     { id:'barril_inf',     icon:'🛢️', name:'El Barril Sin Fondo', desc:'5000 cañas. La leyenda del bar.',                             cond: s => s.totalCurrency >= 5000 },
     { id:'dardos_king',    icon:'🎯', name:'Campeón de los Dardos', desc:'Instala el tablero. Los jubilados ya tienen plan para el día.', cond: s => (s.upgrades.dardos||0) >= 1 },
     { id:'maquina',        icon:'🎰', name:'El Traga Tragado',    desc:'Instala la tragaperras. Tres limones y a llorar.',             cond: s => (s.upgrades.maquina||0) >= 1 },
-    { id:'madrugador',     icon:'🌅', name:'El Primero del Bar',  desc:'5 minutos seguidos detrás de la barra.',                      cond: s => (s.achData.timeSec||0) >= 300 },
+    { id:'madrugador',     icon:'🌅', name:'El Primero del Bar',  desc:'3 minutos seguidos detrás de la barra.',                      cond: s => (s.achData.timeSec||0) >= 180 },
     { id:'institucion',    icon:'🏆', name:'Institución del Barrio', desc:'50000 cañas. El bar es tuyo.',                             cond: s => s.totalCurrency >= 50000 },
   ],
   fita: [
