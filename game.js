@@ -742,6 +742,11 @@ function calcPS() {
   return v;
 }
 
+function earn(amount) {
+  S.currency += amount;
+  S.totalCurrency += amount;
+}
+
 function upgradeCost(u) {
   return Math.ceil(u.base * Math.pow(1.15, S.upgrades[u.id] || 0));
 }
