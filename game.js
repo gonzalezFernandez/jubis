@@ -1950,7 +1950,7 @@ const TOAST_MAX = 2;
 
 function toast(text, icon = '📢') {
   const container = document.getElementById('toast-container');
-  if (container.children.length >= TOAST_MAX) container.children[0]._dismiss();
+  while (container.children.length >= TOAST_MAX) container.children[0]._dismiss();
 
   const el = document.createElement('div');
   el.className = 'toast-item';
