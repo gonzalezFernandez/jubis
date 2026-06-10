@@ -1870,7 +1870,7 @@ function checkAchievements() {
   list.forEach(a => {
     if (!S.achievements[a.id] && a.cond(S)) {
       S.achievements[a.id] = true;
-      toast(`🏆 LOGRO: ${a.name}\n${a.desc}`, '🏆');
+      toast(`🏆 LOGRO: ${a.name}\n${a.desc}`, '🏆', 'toast-achievement');
     }
   });
   if (list.length && list.every(a => S.achievements[a.id])) {
@@ -1948,13 +1948,13 @@ function showMsg(text) {
 
 const TOAST_MAX = 2;
 
-function toast(text, icon = '📢') {
+function toast(text, icon = '📢', type = '') {
   const container = document.getElementById('toast-container');
   const visible = Array.from(container.children).filter(el => !el.classList.contains('toast-hide'));
   for (let i = 0; i <= visible.length - TOAST_MAX; i++) visible[i]._dismiss();
 
   const el = document.createElement('div');
-  el.className = 'toast-item';
+  el.className = 'toast-item' + (type ? ' ' + type : '');
   el.innerHTML = `<span class="toast-icon">${icon}</span><span class="toast-text">${text}</span><span class="toast-icon" style="visibility:hidden">${icon}</span>`;
   container.appendChild(el);
 
