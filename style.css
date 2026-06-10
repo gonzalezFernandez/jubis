@@ -1045,37 +1045,52 @@ body {
 /* ============================================================
    TOAST NOTIFICATION
    ============================================================ */
-.toast {
+.toast-container {
   position: fixed;
   top: 12px;
   left: 50%;
   transform: translateX(-50%);
   z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: center;
+  pointer-events: none;
+  width: min(84vw, 320px);
+}
+.toast-item {
+  width: 100%;
   background: var(--card);
   border: 1.5px solid var(--theme);
-  border-radius: 14px;
-  padding: 0.55rem 0.95rem;
-  width: min(80vw, 300px);
-  font-size: 0.78rem;
-  line-height: 1.35;
-  box-shadow: 0 8px 32px rgba(0,0,0,.6), 0 0 14px var(--theme-glow);
+  border-radius: 30px;
+  padding: 0.45rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.76rem;
   font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  box-shadow: 0 6px 24px rgba(0,0,0,.6), 0 0 12px var(--theme-glow);
   cursor: pointer;
+  pointer-events: all;
   user-select: none;
+  animation: toast-in .22s cubic-bezier(.22,1,.36,1) forwards;
 }
-.toast.toast-enter {
-  animation: slide-down .25s cubic-bezier(.22,1,.36,1) forwards;
+.toast-item.toast-hide {
+  animation: toast-out .2s ease forwards;
 }
-@keyframes slide-down {
-  from { transform: translateX(-50%) translateY(-120%); opacity: 0; }
-  to   { transform: translateX(-50%) translateY(0);     opacity: 1; }
+@keyframes toast-in {
+  from { transform: translateY(-120%); opacity: 0; }
+  to   { transform: translateY(0);     opacity: 1; }
 }
-.toast.toast-dismissing {
-  transition: transform .2s ease, opacity .2s ease;
-  transform: translateX(-50%) translateY(-120%) !important;
-  opacity: 0;
+@keyframes toast-out {
+  from { transform: translateY(0);     opacity: 1; }
+  to   { transform: translateY(-120%); opacity: 0; }
 }
-.toast-icon { font-size: 1.1rem; display: block; margin-bottom: 0.1rem; }
+.toast-icon { font-size: 1rem; flex-shrink: 0; }
 
 /* ============================================================
    PARTICLES

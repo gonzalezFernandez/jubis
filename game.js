@@ -1946,26 +1946,25 @@ function showMsg(text) {
   if (el) el.textContent = `💬 ${text}`;
 }
 
-let toastTmr = null;
+const TOAST_MAX = 2;
 
 function toast(text, icon = '📢') {
-  const el = document.getElementById('toast');
-  el.classList.add('hidden');
-  el.classList.remove('toast-enter', 'toast-dismissing');
-  void el.offsetWidth; // fuerza reflow para reiniciar animación
-  el.innerHTML = `<span class="toast-icon">${icon}</span>${text}`;
-  el.classList.remove('hidden');
-  el.classList.add('toast-enter');
-  el.onclick = dismissToast;
-  clearTimeout(toastTmr);
-  toastTmr = setTimeout(dismissToast, 3500);
-}
+  const container = document.getElementById('toast-container');
+  if (container.children.length >= TOAST_MAX) container.children[0]._dismiss();
 
-function dismissToast() {
-  clearTimeout(toastTmr);
-  const el = document.getElementById('toast');
-  el.classList.add('toast-dismissing');
-  setTimeout(() => { el.classList.add('hidden'); el.classList.remove('toast-dismissing', 'toast-enter'); }, 220);
+  const el = document.createElement('div');
+  el.className = 'toast-item';
+  el.innerHTML = `<span class="toast-icon">${icon}</span>${text}`;
+  container.appendChild(el);
+
+  const dismiss = () => {
+    clearTimeout(tmr);
+    el.classList.add('toast-hide');
+    setTimeout(() => el.remove(), 200);
+  };
+  el._dismiss = dismiss;
+  el.onclick = dismiss;
+  const tmr = setTimeout(dismiss, 3200);
 }
 
 function spawnParticle(x, y, text) {
