@@ -234,7 +234,7 @@ const CHARS = {
     id: 'daigo', name: 'Daigo', role: '🎬 El Fotógrafo con Problemillas',
     desc: 'Talento sin límites. Agenda sin fondo. Coopers tampoco ayuda.',
     currency: 'Tomas', icon: '🎬', clickText: '¡DISPARA!', clickIcon: '📸', btnText: '¡A GRABAR!',
-    theme: '#d4720a', themeD: '#a85208', themeG: 'rgba(212,114,10,0.25)',
+    theme: '#0aabba', themeD: '#087a86', themeG: 'rgba(10,171,186,0.25)',
     special: 'daigo',
     upgrades: [
       { id:'camara_foto',  name:'Cámara Réflex',    icon:'📷', desc:'F2.8, bokeh garantizado. Arte al cuello.',            cost:10,    prod:0.1,  cbonus:0,   base:10    },
@@ -675,8 +675,8 @@ function startGame(pid) {
     coopersSlot.style.display = 'flex';
     coopersSlot.innerHTML = `<div class="coopers-widget" id="coopers-widget" onclick="clickCoopers()">
       <div class="coopers-ring" id="coopers-ring">
-        <img src="assets/coopers.png" class="coopers-photo" alt="Coopers"
-             onerror="this.style.background='#d4720a';this.style.display='none'">
+        <img src="assets/cupers.png" class="coopers-photo" alt="Coopers"
+             onerror="this.style.background='#0aabba';this.style.display='none'">
       </div>
       <span class="coopers-label">COOPERS</span>
     </div>`;
