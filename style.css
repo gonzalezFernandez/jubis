@@ -1112,28 +1112,35 @@ body {
 
 /* Coopers secondary button */
 .coopers-slot { display: flex; align-items: flex-start; justify-content: center; }
-.coopers-column { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.coopers-column { display: flex; flex-direction: column; align-items: center; gap: 5px; }
 .coopers-widget {
   cursor: pointer; text-align: center;
-  transition: transform .12s;
+  transition: transform .15s, filter .15s;
+  filter: drop-shadow(0 2px 6px rgba(0,0,0,.5));
 }
-.coopers-widget:active { transform: scale(.92); }
+.coopers-widget:hover  { transform: scale(1.06); filter: drop-shadow(0 0 8px var(--theme)); }
+.coopers-widget:active { transform: scale(.90); }
 .coopers-ring {
-  width: 74px; height: 74px; border-radius: 50%;
-  background: conic-gradient(var(--theme) 0deg, rgba(255,255,255,.12) 0deg);
+  width: 76px; height: 76px; border-radius: 50%;
+  background: conic-gradient(var(--theme) 0deg, rgba(255,255,255,.14) 0deg);
   display: flex; align-items: center; justify-content: center;
-  box-shadow: 0 0 12px var(--theme-glow);
+  box-shadow: 0 0 16px var(--theme-glow), 0 4px 10px rgba(0,0,0,.55);
   flex-shrink: 0;
+}
+.coopers-inner {
+  width: 64px; height: 64px; border-radius: 50%;
+  background: var(--bg); overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
 }
 .coopers-photo {
   width: 64px; height: 64px;
   border-radius: 50%; object-fit: cover; display: block;
-  flex-shrink: 0;
 }
 .coopers-label {
-  display: block; font-size: 0.58rem; font-weight: 900;
-  text-transform: uppercase; letter-spacing: 1px;
-  color: var(--theme); margin-top: 3px;
+  display: inline-block; font-size: 0.56rem; font-weight: 900;
+  text-transform: uppercase; letter-spacing: 1.5px;
+  background: var(--theme); color: #000;
+  border-radius: 8px; padding: 1px 7px;
 }
 
 /* Diarrea bar */

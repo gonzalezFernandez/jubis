@@ -676,8 +676,10 @@ function startGame(pid) {
     coopersSlot.innerHTML = `<div class="coopers-column">
       <div class="coopers-widget" id="coopers-widget" onclick="clickCoopers()">
         <div class="coopers-ring" id="coopers-ring">
-          <img src="assets/cupers.png" class="coopers-photo" alt="Coopers"
-               onerror="this.style.background='#e0007a';this.style.display='none'">
+          <div class="coopers-inner">
+            <img src="assets/cupers.png" class="coopers-photo" alt="Coopers"
+                 onerror="this.style.display='none'">
+          </div>
         </div>
         <span class="coopers-label">COOPERS</span>
       </div>
