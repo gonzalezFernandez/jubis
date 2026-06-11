@@ -1670,7 +1670,7 @@ function buildHoldNose(type, title, subtitle, isHolding) {
   return `<div class="yeyo-event${isHolding ? ' holding' : ''}">
     <h4>${title}</h4>
     <p class="yeyo-sub">${subtitle}</p>
-    <div class="hold-track"><div class="hold-fill" style="width:${100-pct}%"></div></div>
+    <div class="hold-track"><div class="hold-fill" style="width:${pct}%"></div></div>
     <div class="nose-wrap"
       onmousedown="startHold('${type}')"
       ontouchstart="event.preventDefault();startHold('${type}')">
