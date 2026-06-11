@@ -355,6 +355,7 @@ const ACHIEVEMENTS = {
     { id:'ultra',          icon:'⚡', name:'ULTRAPERFECT',          desc:'Activa ULTRAPERFECT. 4 perfects, una leyenda.',              cond: s => (s.achData.ultraActivations||0) >= 1 },
     { id:'papa_rabioso',   icon:'😤', name:'Papá Rabioso',          desc:'Primera vez. Lucia Martiño ya sabe quién es Daigo.',         cond: s => (s.achData.papaRabiosoHits||0) >= 1 },
     { id:'dron_rey',       icon:'🚁', name:'Rey del Aire',          desc:'Instala el dron. El barrio visto desde arriba.',             cond: s => (s.upgrades.dron||0) >= 1 },
+    { id:'molinillo_1',    icon:'🌀', name:'El Molinillo',          desc:'Primer molinillo completado. Arte en estado puro.',         cond: s => (s.achData.molinillos||0) >= 1 },
     { id:'en_la_zona',     icon:'⏱️', name:'En La Zona',           desc:'3 minutos grabando. El flow está activado.',                 cond: s => (s.achData.timeSec||0) >= 180 },
     { id:'daigo_films',    icon:'🏆', name:'Daigo Films',           desc:'50000 tomas. El mundo cinematográfico tiembla.',            cond: s => s.totalCurrency >= 50000 },
   ],
@@ -416,6 +417,7 @@ let S = {
   diarrea: 0, diarreaReady: false, diarreaTimer: null,
   papaRabioso: false, papaClicks: 0, papaNeed: 0, papaTimer: null,
   ultraActive: false, ultraEnd: 0,
+  molinilloActive: false, molinilloDone: 0, molinilloNeed: 0, molinilloTimer: null, molinilloBuffEnd: 0,
   cooperLootBuffEnd: 0, cooperJamonBuffEnd: 0, papaBuffEnd: 0, cagadaDebuffEnd: 0,
   // Extraperlo
   rocaActive: false, rocaTimer: null, rocaNeed: 0, rocaDone: 0,
@@ -428,7 +430,7 @@ let S = {
     raicesEscapes:0, raicesCaptures:0,
     cooperInteractions:0, cagadasEvitadas:0, cagadasRecogidas:0,
     looteos:0, jamones:0, perfectHits:0, perfectPoints:0,
-    ultraActivations:0, papaRabiosoHits:0,
+    ultraActivations:0, papaRabiosoHits:0, molinillos:0,
   },
   achievements: {},
 };
@@ -697,7 +699,7 @@ function stopGame() {
 function goBack() {
   if (!confirm('¿Seguro que quieres salir? Se perderá la sesión actual.')) return;
   stopGame();
-  [S.chicaTimer, S.policeTimer, S.rocaTimer, S.fightTimer, S.banyoTimer, S.raicesTimer, S.coopersTimer, S.diarreaTimer, S.papaTimer].forEach(t => clearTimeout(t));
+  [S.chicaTimer, S.policeTimer, S.rocaTimer, S.fightTimer, S.banyoTimer, S.raicesTimer, S.coopersTimer, S.diarreaTimer, S.papaTimer, S.molinilloTimer].forEach(t => clearTimeout(t));
   document.getElementById('coopers-slot').style.display = 'none';
   clearInterval(holdInterval); holdInterval = null; holdProgress = 0; holdType = null;
   S.pid = null;
@@ -827,6 +829,7 @@ function calcPC() {
   if ((S.pid === 'nanduko' || S.pid === 'extraperlo') && S.banyoBuffEnd && Date.now() < S.banyoBuffEnd) v *= 4;
   if (S.pid === 'daigo') {
     if (S.ultraActive && Date.now() < S.ultraEnd) v *= 10;
+    if (S.molinilloBuffEnd && Date.now() < S.molinilloBuffEnd) v *= 5;
     if (S.cooperLootBuffEnd && Date.now() < S.cooperLootBuffEnd) v *= 2;
     if (S.cooperJamonBuffEnd && Date.now() < S.cooperJamonBuffEnd) v *= 1.5;
     if (S.papaBuffEnd && Date.now() < S.papaBuffEnd) v *= 3;
@@ -853,6 +856,7 @@ function calcPS() {
   if (S.pid === 'noah' && S.ligaBuffEnd && Date.now() < S.ligaBuffEnd) v *= 5;
   if (S.pid === 'daigo') {
     if (S.ultraActive && Date.now() < S.ultraEnd) v *= 10;
+    if (S.molinilloBuffEnd && Date.now() < S.molinilloBuffEnd) v *= 5;
     if (S.cooperLootBuffEnd && Date.now() < S.cooperLootBuffEnd) v *= 2;
     if (S.cooperJamonBuffEnd && Date.now() < S.cooperJamonBuffEnd) v *= 1.5;
     if (S.papaBuffEnd && Date.now() < S.papaBuffEnd) v *= 3;
@@ -1791,6 +1795,7 @@ function clickPerfect() {
     S.ultraActive = true;
     S.ultraEnd = Date.now() + 12000;
     S.achData.ultraActivations = (S.achData.ultraActivations || 0) + 1;
+    triggerMolinillo();
     toast('⚡ ULTRAPERFECT ×10 — 12 segundos de gloria total', '⚡');
     showMsg('ULTRAPERFECT. El universo te debe esto.');
   } else {
@@ -1830,6 +1835,40 @@ function clickPapa() {
     toast('😤✅ ¡HATE SOLTADO! ×3 durante 8s. Lucia lo notará.', '😤');
     showMsg('El hate es energía. Daigo lo sabe mejor que nadie.');
     renderSpecial(); updateDisplays();
+  } else { renderSpecial(); }
+}
+
+function triggerMolinillo() {
+  S.molinilloActive = true;
+  S.molinilloDone   = 0;
+  S.molinilloNeed   = 15 + Math.floor(Math.random() * 6);
+  renderSpecial();
+  toast('🌀 ¡HACER EL MOLINILLO! ¡Dale caña o pierdes el ULTRAPERFECT!', '🌀');
+  clearTimeout(S.molinilloTimer);
+  S.molinilloTimer = setTimeout(() => {
+    if (S.molinilloActive) {
+      S.molinilloActive = false;
+      S.ultraActive     = false;
+      S.ultraEnd        = 0;
+      renderSpecial();
+      toast('🌀❌ Molinillo fallado. ULTRAPERFECT cancelado.', '💀');
+      showMsg('El molinillo no es para todo el mundo. Entrenamiento requerido.');
+    }
+  }, 4000);
+}
+
+function clickMolinillo() {
+  if (!S.molinilloActive) return;
+  S.molinilloDone++;
+  if (S.molinilloDone >= S.molinilloNeed) {
+    clearTimeout(S.molinilloTimer);
+    S.molinilloActive   = false;
+    S.molinilloBuffEnd  = Date.now() + 8000;
+    S.achData.molinillos = (S.achData.molinillos || 0) + 1;
+    renderSpecial();
+    toast('🌀✅ ¡MOLINILLO COMPLETADO! ×5 adicional durante 8s', '🌀');
+    showMsg('El molinillo en su máximo esplendor. Daigo, eres único.');
+    updateDisplays();
   } else { renderSpecial(); }
 }
 
@@ -1889,6 +1928,18 @@ function buildDaigo(ch) {
   // Active buff/debuff indicators
   if (S.ultraActive && Date.now() < S.ultraEnd) {
     html += `<div class="wsk-active">⚡ ULTRAPERFECT ×10 (${Math.ceil((S.ultraEnd-Date.now())/1000)}s)</div>`;
+  }
+  if (S.molinilloActive) {
+    const pM = Math.floor(((S.molinilloDone||0) / S.molinilloNeed) * 100);
+    html += `<div class="papa-event molinillo-event">
+      <h4>🌀 ¡HACER EL MOLINILLO!</h4>
+      <p>${S.molinilloDone}/${S.molinilloNeed} — ¡Dale o pierdes el ULTRAPERFECT!</p>
+      <div class="papa-track"><div class="molinillo-fill" style="width:${pM}%"></div></div>
+      <button class="molinillo-btn" onclick="clickMolinillo()">🌀 ¡GI-RA!</button>
+    </div>`;
+  }
+  if (S.molinilloBuffEnd && Date.now() < S.molinilloBuffEnd) {
+    html += `<div class="wsk-active">🌀 MOLINILLO ×5 (${Math.ceil((S.molinilloBuffEnd-Date.now())/1000)}s)</div>`;
   }
   if (S.cooperLootBuffEnd && Date.now() < S.cooperLootBuffEnd) {
     html += `<div class="wsk-active">🍕 LOOTEO ×2 (${Math.ceil((S.cooperLootBuffEnd-Date.now())/1000)}s)</div>`;
