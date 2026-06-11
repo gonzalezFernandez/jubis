@@ -348,7 +348,6 @@ const ACHIEVEMENTS = {
   daigo: [
     { id:'primera_toma',   icon:'🎬', name:'Primera Toma',         desc:'50 tomas acumuladas. El rodaje ha comenzado.',               cond: s => s.totalCurrency >= 50 },
     { id:'reflex',         icon:'📷', name:'Ojo Artístico',         desc:'Compra la réflex. Ahora sí que eres fotógrafo.',             cond: s => (s.upgrades.camara_foto||0) >= 1 },
-    { id:'cooper_1',       icon:'🐕', name:'Coopers al Rescate',    desc:'Primera interacción con Coopers. Leal hasta el final.',      cond: s => (s.achData.cooperInteractions||0) >= 1 },
     { id:'sin_manchar',    icon:'💩', name:'Sin Manchar',           desc:'Evita 5 cagadas en la calle. La acera te lo agradece.',      cond: s => (s.achData.cagadasEvitadas||0) >= 5 },
     { id:'looteo',         icon:'🍕', name:'Del Mantel Ajeno',      desc:'Primer looteo exitoso. Coopers tiene mucha iniciativa.',     cond: s => (s.achData.looteos||0) >= 1 },
     { id:'triskel',        icon:'🐾', name:'Triskel',               desc:'Lava a Coopers 3 veces. El Triskel ya te conoce.',           cond: s => (s.achData.jamones||0) >= 3 },
@@ -674,12 +673,15 @@ function startGame(pid) {
   const coopersSlot = document.getElementById('coopers-slot');
   if (pid === 'daigo') {
     coopersSlot.style.display = 'flex';
-    coopersSlot.innerHTML = `<div class="coopers-widget" id="coopers-widget" onclick="clickCoopers()">
-      <div class="coopers-ring" id="coopers-ring">
-        <img src="assets/cupers.png" class="coopers-photo" alt="Coopers"
-             onerror="this.style.background='#e0007a';this.style.display='none'">
+    coopersSlot.innerHTML = `<div class="coopers-column">
+      <div class="coopers-widget" id="coopers-widget" onclick="clickCoopers()">
+        <div class="coopers-ring" id="coopers-ring">
+          <img src="assets/cupers.png" class="coopers-photo" alt="Coopers"
+               onerror="this.style.background='#e0007a';this.style.display='none'">
+        </div>
+        <span class="coopers-label">COOPERS</span>
       </div>
-      <span class="coopers-label">COOPERS</span>
+      <div id="coopers-event-mini" class="coopers-event-mini"></div>
     </div>`;
   } else {
     coopersSlot.style.display = 'none';
@@ -1701,11 +1703,32 @@ function tickDaigo() {
   }
 }
 
+function renderCoopersEventMini() {
+  const el = document.getElementById('coopers-event-mini');
+  if (!el) return;
+  if (!S.coopersEvent) { el.innerHTML = ''; return; }
+  if (S.coopersEvent === 'cagar') {
+    el.innerHTML = `<div class="mini-event mini-cagar">💩 <span>¡NO PULSES!</span></div>`;
+  } else if (S.coopersEvent === 'lootear') {
+    const pct = Math.floor(((S.coopersLootDone||0) / (S.coopersLootNeed||1)) * 100);
+    el.innerHTML = `<div class="mini-event mini-loot">
+      <span>🍕 ${S.coopersLootDone}/${S.coopersLootNeed}</span>
+      <div class="mini-bar"><div class="mini-fill" style="width:${pct}%"></div></div>
+    </div>`;
+  } else if (S.coopersEvent === 'jamon') {
+    const pct = Math.floor(((S.coopersJamonDone||0) / (S.coopersJamonNeed||1)) * 100);
+    el.innerHTML = `<div class="mini-event mini-jamon">
+      <span>🐷 ${S.coopersJamonDone}/${S.coopersJamonNeed}</span>
+      <div class="mini-bar"><div class="mini-fill" style="width:${pct}%"></div></div>
+    </div>`;
+  }
+}
+
 function triggerCoopersEvent() {
   const rand = Math.random();
   if (rand < 0.33) {
     S.coopersEvent = 'cagar';
-    renderSpecial();
+    renderCoopersEventMini();
     toast('💩 ¡Coopers va a cagar! ¡NO lo recojas!', '💩');
     clearTimeout(S.coopersTimer);
     S.coopersTimer = setTimeout(() => {
@@ -1714,7 +1737,7 @@ function triggerCoopersEvent() {
         S.coopersEvent = null;
         earn(Math.floor(calcPC() * 5));
         toast('💩 Coopers dejó su obra en la acera. Bien hecho.', '✅');
-        renderSpecial();
+        renderCoopersEventMini();
       }
     }, 5000);
   } else if (rand < 0.66) {
@@ -1722,13 +1745,13 @@ function triggerCoopersEvent() {
     S.coopersLootDone = 0;
     S.coopersLootNeed = 8 + Math.floor(Math.random() * 5);
     S.coopersLootDesc = COOPERS_LOOTS[Math.floor(Math.random() * COOPERS_LOOTS.length)];
-    renderSpecial();
-    toast(`🍕 ¡Coopers encontró comida! ¡Dale!`, '🍕');
+    renderCoopersEventMini();
+    toast(`🍕 ¡Coopers encontró: ${S.coopersLootDesc}! ¡Dale!`, '🍕');
     clearTimeout(S.coopersTimer);
     S.coopersTimer = setTimeout(() => {
       if (S.coopersEvent === 'lootear') {
         S.coopersEvent = null;
-        renderSpecial();
+        renderCoopersEventMini();
         triggerPapaRabioso('Coopers tiró el botín. Lamentable pérdida gastronómica.');
       }
     }, 6000);
@@ -1736,13 +1759,13 @@ function triggerCoopersEvent() {
     S.coopersEvent = 'jamon';
     S.coopersJamonDone = 0;
     S.coopersJamonNeed = 10 + Math.floor(Math.random() * 5);
-    renderSpecial();
+    renderCoopersEventMini();
     toast('🐷 ¡Coopers apesta a jamón! ¡A bañarle!', '🐷');
     clearTimeout(S.coopersTimer);
     S.coopersTimer = setTimeout(() => {
       if (S.coopersEvent === 'jamon') {
         S.coopersEvent = null;
-        renderSpecial();
+        renderCoopersEventMini();
         toast('Coopers sigue apestando. Que se note en el barrio.', '😮‍💨');
       }
     }, 7000);
@@ -1759,7 +1782,7 @@ function clickCoopers() {
     S.achData.cagadasRecogidas = (S.achData.cagadasRecogidas || 0) + 1;
     S.cagadaDebuffEnd = Date.now() + 10000;
     toast('💩 Recogiste la mierda. Brillante movida, Daigo.', '💩');
-    renderSpecial(); updateDisplays();
+    renderCoopersEventMini(); updateDisplays();
   } else if (S.coopersEvent === 'lootear') {
     S.coopersLootDone++;
     if (S.coopersLootDone >= S.coopersLootNeed) {
@@ -1768,8 +1791,8 @@ function clickCoopers() {
       S.achData.looteos = (S.achData.looteos || 0) + 1;
       S.cooperLootBuffEnd = Date.now() + 8000;
       toast('🍕 ¡LOOTEO COMPLETO! ×2 durante 8s', '🍕');
-      renderSpecial(); updateDisplays();
-    } else { renderSpecial(); }
+      renderCoopersEventMini(); updateDisplays();
+    } else { renderCoopersEventMini(); }
   } else if (S.coopersEvent === 'jamon') {
     S.coopersJamonDone++;
     if (S.coopersJamonDone >= S.coopersJamonNeed) {
@@ -1778,8 +1801,8 @@ function clickCoopers() {
       S.achData.jamones = (S.achData.jamones || 0) + 1;
       S.cooperJamonBuffEnd = Date.now() + 12000;
       toast('🐾 ¡Coopers limpio! ×1.5 durante 12s', '🐾');
-      renderSpecial(); updateDisplays();
-    } else { renderSpecial(); }
+      renderCoopersEventMini(); updateDisplays();
+    } else { renderCoopersEventMini(); }
   }
 }
 
@@ -1888,32 +1911,6 @@ function buildDaigo(ch) {
     <div class="diarrea-track"><div class="${dClass}" style="width:${dp}%"></div></div>
     ${S.diarreaReady ? `<button class="perfect-btn" onclick="clickPerfect()">💥 ¡PERFECT!</button>` : ''}
   </div>`;
-
-  // Active Coopers event
-  if (S.coopersEvent === 'cagar') {
-    html += `<div class="coopers-event cagar-event">
-      <div class="cagar-emoji">💩</div>
-      <h4>¡COOPERS VA A CAGAR!</h4>
-      <p>No lo recojas. Deja la obra de arte en la acera.</p>
-      <button class="cagar-btn" onclick="clickCoopers()">💩 RECOGER (NO hagas esto)</button>
-    </div>`;
-  } else if (S.coopersEvent === 'lootear') {
-    const pL = Math.floor(((S.coopersLootDone||0) / (S.coopersLootNeed||1)) * 100);
-    html += `<div class="coopers-event loot-event">
-      <h4>🍕 ¡LOOTEO EN MARCHA!</h4>
-      <p>${S.coopersLootDesc} — ${S.coopersLootDone}/${S.coopersLootNeed}</p>
-      <div class="loot-track"><div class="loot-fill" style="width:${pL}%"></div></div>
-      <button class="loot-btn" onclick="clickCoopers()">🍕 ¡AYUDA A COOPERS!</button>
-    </div>`;
-  } else if (S.coopersEvent === 'jamon') {
-    const pJ = Math.floor(((S.coopersJamonDone||0) / (S.coopersJamonNeed||1)) * 100);
-    html += `<div class="coopers-event jamon-event">
-      <h4>🐷 ¡COOPERS APESTA A JAMÓN!</h4>
-      <p>Lávalo · ${S.coopersJamonDone}/${S.coopersJamonNeed}</p>
-      <div class="loot-track"><div class="loot-fill" style="width:${pJ}%"></div></div>
-      <button class="loot-btn" onclick="clickCoopers()">🚿 ¡A BAÑARLE!</button>
-    </div>`;
-  }
 
   // Papá rabioso
   if (S.papaRabioso) {
