@@ -1681,7 +1681,7 @@ const COOPERS_LOOTS = ['🍕 Pizza de La Luna', '🍔 Hamburguesa del suelo', '�
 function tickDaigo() {
   // Diarrea bar fills
   if (!S.diarreaReady) {
-    S.diarrea = Math.min(100, (S.diarrea || 0) + 0.5);
+    S.diarrea = Math.min(100, (S.diarrea || 0) + 1.5);
     if (S.diarrea >= 100) {
       S.diarreaReady = true;
       toast('💥 ¡DIARREA EXPLOSIVA! ¡PULSA AHORA!', '💥');
