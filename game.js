@@ -230,6 +230,37 @@ const CHARS = {
     msgs:['Scrolleando que es gerundio.','Esta foto tiene buena luz, ¿me pongo aquí?','Le he dado like sin querer. Me muero.','El algoritmo me conoce mejor que mi madre.','Ha abierto el chat y no contesta. ¿QUÉ SIGNIFICA ESO?','Esta canción de TikTok llevo 3 días en la cabeza.','Otro story. ¿Le doy al ❤️ o parece demasiado?','Mis pulgares son atletas de élite.'],
   },
 
+  daigo: {
+    id: 'daigo', name: 'Daigo', role: '🎬 El Fotógrafo con Problemillas',
+    desc: 'Talento sin límites. Agenda sin fondo. Coopers tampoco ayuda.',
+    currency: 'Tomas', icon: '🎬', clickText: '¡DISPARA!', clickIcon: '📸', btnText: '¡A GRABAR!',
+    theme: '#d4720a', themeD: '#a85208', themeG: 'rgba(212,114,10,0.25)',
+    special: 'daigo',
+    upgrades: [
+      { id:'camara_foto',  name:'Cámara Réflex',    icon:'📷', desc:'F2.8, bokeh garantizado. Arte al cuello.',            cost:10,    prod:0.1,  cbonus:0,   base:10    },
+      { id:'camara_video', name:'Cámara de Vídeo',  icon:'🎥', desc:'24fps. Si no está en RAW no existe.',                cost:80,    prod:0.5,  cbonus:1,   base:80    },
+      { id:'dron',         name:'Dron DJI',          icon:'🚁', desc:'Planos aéreos sin pedir permiso. Artistazo.',        cost:450,   prod:2,    cbonus:2,   base:450   },
+      { id:'camara_bodas', name:'Cámara de Bodas',  icon:'💍', desc:'La que paga el alquiler. Y el dron.',                cost:2200,  prod:10,   cbonus:5,   base:2200  },
+      { id:'gimbal',       name:'Gimbal Movi',       icon:'🎞️', desc:'Estabiliza el plano. Lo inestable es tu vida.',     cost:12000, prod:50,   cbonus:15,  base:12000 },
+      { id:'estudio',      name:'Estudio Propio',    icon:'💡', desc:'La guarida. Huele a cable quemado y ambición.',     cost:60000, prod:200,  cbonus:50,  base:60000 },
+      { id:'productora',   name:'Daigo Films',       icon:'🏆', desc:'Tu nombre en los créditos. Pequeñito, pero sale.',  cost:250000,prod:600,  cbonus:120, base:250000},
+    ],
+    msgs:[
+      '¿El contrato? Está en proceso.',
+      'Coopers, eso no se come. ...Coopers.',
+      'Las bodas pagan pero el alma llora un poco.',
+      'Plano perfecto. El cliente quería algo más movido.',
+      'La batería murió. El momento se perdió para siempre.',
+      'El RAW ocupa 4GB. El disco, 4.1GB libres.',
+      'Coopers ha encontrado algo en la calle. No quiero saber qué.',
+      'El dron lleva tres días calibrándose.',
+      'Cliente: ¿puedes hacerlo más viral? Daigo: ...',
+      'Lucia Martiño no entiende el arte visual. Nadie lo entiende.',
+      'Coopers apesta a jamón otra vez.',
+      'Cuatro perfects y la vida tiene sentido.',
+    ],
+  },
+
   nanduko: {
     id: 'nanduko', name: 'Nanduko', role: '💊 El Empresario Independiente',
     desc: 'Cara de siempre estar a punto de cagarse de risa, alma de hombre de negocios. Su empresa de distribución alternativa no falla. La policía, tampoco.',
@@ -313,6 +344,20 @@ const ACHIEVEMENTS = {
     { id:'influencer_loc', icon:'⭐', name:'Influencer Local',      desc:'Famoso en 3 km² de radio.',                                  cond: s => (s.upgrades.influencer||0) >= 1 },
     { id:'rey_scroll',     icon:'👑', name:'Rey del Scroll',        desc:'50000 likes. Fenómeno digital, Noah.',                       cond: s => s.totalCurrency >= 50000 },
   ],
+  daigo: [
+    { id:'primera_toma',   icon:'🎬', name:'Primera Toma',         desc:'50 tomas acumuladas. El rodaje ha comenzado.',               cond: s => s.totalCurrency >= 50 },
+    { id:'reflex',         icon:'📷', name:'Ojo Artístico',         desc:'Compra la réflex. Ahora sí que eres fotógrafo.',             cond: s => (s.upgrades.camara_foto||0) >= 1 },
+    { id:'cooper_1',       icon:'🐕', name:'Coopers al Rescate',    desc:'Primera interacción con Coopers. Leal hasta el final.',      cond: s => (s.achData.cooperInteractions||0) >= 1 },
+    { id:'sin_manchar',    icon:'💩', name:'Sin Manchar',           desc:'Evita 5 cagadas en la calle. La acera te lo agradece.',      cond: s => (s.achData.cagadasEvitadas||0) >= 5 },
+    { id:'looteo',         icon:'🍕', name:'Del Mantel Ajeno',      desc:'Primer looteo exitoso. Coopers tiene mucha iniciativa.',     cond: s => (s.achData.looteos||0) >= 1 },
+    { id:'triskel',        icon:'🐾', name:'Triskel',               desc:'Lava a Coopers 3 veces. El Triskel ya te conoce.',           cond: s => (s.achData.jamones||0) >= 3 },
+    { id:'perfect_1',      icon:'💥', name:'¡PERFECT!',             desc:'Primer punto perfect. La diarrea como arte.',                cond: s => (s.achData.perfectHits||0) >= 1 },
+    { id:'ultra',          icon:'⚡', name:'ULTRAPERFECT',          desc:'Activa ULTRAPERFECT. 4 perfects, una leyenda.',              cond: s => (s.achData.ultraActivations||0) >= 1 },
+    { id:'papa_rabioso',   icon:'😤', name:'Papá Rabioso',          desc:'Primera vez. Lucia Martiño ya sabe quién es Daigo.',         cond: s => (s.achData.papaRabiosoHits||0) >= 1 },
+    { id:'dron_rey',       icon:'🚁', name:'Rey del Aire',          desc:'Instala el dron. El barrio visto desde arriba.',             cond: s => (s.upgrades.dron||0) >= 1 },
+    { id:'en_la_zona',     icon:'⏱️', name:'En La Zona',           desc:'3 minutos grabando. El flow está activado.',                 cond: s => (s.achData.timeSec||0) >= 180 },
+    { id:'daigo_films',    icon:'🏆', name:'Daigo Films',           desc:'50000 tomas. El mundo cinematográfico tiembla.',            cond: s => s.totalCurrency >= 50000 },
+  ],
   nanduko: [
     { id:'primer_trato',   icon:'🤝', name:'Primer Trato',          desc:'50 pasta. El negocio ha comenzado.',                         cond: s => s.totalCurrency >= 50 },
     { id:'reunión_baño',   icon:'🚽', name:'Reunión de Negocios',   desc:'Primera reunión en el baño. El entorno no importa.',         cond: s => (s.achData.banyoWins||0) >= 1 },
@@ -364,6 +409,14 @@ let S = {
   policeActive: false, policeTimer: null, policeNeed: 0, policeDone: 0,
   banyoActive: false, banyoTimer: null, banyoBuffEnd: 0,
   raicesActive: false, raicesTimer: null, raicesBad: null, raicesDebuffEnd: 0,
+  // Daigo
+  coopersPct: 0, coopersEvent: null, coopersTimer: null,
+  coopersLootDone: 0, coopersLootNeed: 0, coopersLootDesc: '',
+  coopersJamonDone: 0, coopersJamonNeed: 0,
+  diarrea: 0, diarreaReady: false, diarreaTimer: null,
+  papaRabioso: false, papaClicks: 0, papaNeed: 0, papaTimer: null,
+  ultraActive: false, ultraEnd: 0,
+  cooperLootBuffEnd: 0, cooperJamonBuffEnd: 0, papaBuffEnd: 0, cagadaDebuffEnd: 0,
   // Extraperlo
   rocaActive: false, rocaTimer: null, rocaNeed: 0, rocaDone: 0,
   vasosActive: false, vasosTimer: null, vasosNeed: 0, vasosDone: 0, vasosFrase: '',
@@ -373,6 +426,9 @@ let S = {
     chicaTotal:0, chicaLiga:0, chicaFails:0, farmacia:0,
     policeEscapes:0, policeCaptures:0, rocaHits:0, timeSec:0,
     raicesEscapes:0, raicesCaptures:0,
+    cooperInteractions:0, cagadasEvitadas:0, cagadasRecogidas:0,
+    looteos:0, jamones:0, perfectHits:0, perfectPoints:0,
+    ultraActivations:0, papaRabiosoHits:0,
   },
   achievements: {},
 };
@@ -382,7 +438,7 @@ let S = {
 // ================================================================
 document.addEventListener('DOMContentLoaded', renderSelection);
 
-const UNLOCK_ORDER = ['muchaga', 'noah', 'fita', 'nanduko', 'extraperlo'];
+const UNLOCK_ORDER = ['muchaga', 'noah', 'daigo', 'fita', 'nanduko', 'extraperlo'];
 
 function isCharUnlocked(pid) {
   if (localStorage.getItem('penona_unlock_all') === '1') return true;
@@ -552,9 +608,16 @@ function startGame(pid) {
     banyoActive: false, banyoTimer: null, banyoBuffEnd: 0,
     ligaBuffEnd: 0,
     raicesActive: false, raicesTimer: null, raicesBad: null, raicesDebuffEnd: 0,
+    coopersPct: 0, coopersEvent: null, coopersTimer: null,
+    coopersLootDone: 0, coopersLootNeed: 0, coopersLootDesc: '',
+    coopersJamonDone: 0, coopersJamonNeed: 0,
+    diarrea: 0, diarreaReady: false, diarreaTimer: null,
+    papaRabioso: false, papaClicks: 0, papaNeed: 0, papaTimer: null,
+    ultraActive: false, ultraEnd: 0,
+    cooperLootBuffEnd: 0, cooperJamonBuffEnd: 0, papaBuffEnd: 0, cagadaDebuffEnd: 0,
     rocaActive: false, rocaTimer: null, rocaNeed: 0, rocaDone: 0,
     vasosActive: false, vasosTimer: null, vasosNeed: 0, vasosDone: 0, vasosFrase: '',
-    achData: useSave && save.achData ? { raicesEscapes:0, raicesCaptures:0, ...save.achData } : {
+    achData: useSave && save.achData ? { raicesEscapes:0, raicesCaptures:0, cooperInteractions:0, cagadasEvitadas:0, cagadasRecogidas:0, looteos:0, jamones:0, perfectHits:0, perfectPoints:0, ultraActivations:0, papaRabiosoHits:0, ...save.achData } : {
       wskActivations:0, wskWins:0, dobletazos:0,
       fightWins:0, fightLosses:0,
       yeyoWins:0, yeyoFails:0,
@@ -562,6 +625,9 @@ function startGame(pid) {
       policeEscapes:0, policeCaptures:0, banyoWins:0,
       rocaHits:0, vasosLimpiados:0, timeSec:0,
       raicesEscapes:0, raicesCaptures:0,
+      cooperInteractions:0, cagadasEvitadas:0, cagadasRecogidas:0,
+      looteos:0, jamones:0, perfectHits:0, perfectPoints:0,
+      ultraActivations:0, papaRabiosoHits:0,
     },
     achievements: useSave && save.achievements ? save.achievements : {},
   };
@@ -602,6 +668,21 @@ function startGame(pid) {
     if (S.pid) showMsg(CHARS[S.pid].msgs[Math.floor(Math.random() * CHARS[S.pid].msgs.length)]);
   }, 14000);
 
+  const coopersSlot = document.getElementById('coopers-slot');
+  if (pid === 'daigo') {
+    coopersSlot.style.display = 'flex';
+    coopersSlot.innerHTML = `<div class="coopers-widget" id="coopers-widget" onclick="clickCoopers()">
+      <div class="coopers-ring" id="coopers-ring">
+        <img src="assets/coopers.png" class="coopers-photo" alt="Coopers"
+             onerror="this.style.background='#d4720a';this.style.display='none'">
+      </div>
+      <span class="coopers-label">COOPERS</span>
+    </div>`;
+  } else {
+    coopersSlot.style.display = 'none';
+    coopersSlot.innerHTML = '';
+  }
+
   showMsg(`¡Bienvenido al Club Jubilados, ${ch.name}!`);
   if (pid === 'muchaga' && !localStorage.getItem('penona_muchaga_tut')) {
     setTimeout(showTutorial, 400);
@@ -616,7 +697,8 @@ function stopGame() {
 function goBack() {
   if (!confirm('¿Seguro que quieres salir? Se perderá la sesión actual.')) return;
   stopGame();
-  [S.chicaTimer, S.policeTimer, S.rocaTimer, S.fightTimer, S.banyoTimer, S.raicesTimer].forEach(t => clearTimeout(t));
+  [S.chicaTimer, S.policeTimer, S.rocaTimer, S.fightTimer, S.banyoTimer, S.raicesTimer, S.coopersTimer, S.diarreaTimer, S.papaTimer].forEach(t => clearTimeout(t));
+  document.getElementById('coopers-slot').style.display = 'none';
   clearInterval(holdInterval); holdInterval = null; holdProgress = 0; holdType = null;
   S.pid = null;
   document.getElementById('game-screen').classList.add('hidden');
@@ -655,6 +737,7 @@ function tick() {
   }
   if (S.pid === 'noah' && S.stdActive) ps *= 0.5;
   if (S.pid === 'nanduko' && S.banyoActive) ps *= 0; // reunión en el baño: todo parado
+  if (S.pid === 'daigo') tickDaigo();
 
   // Furia y whisky (Muchaga + Extraperlo)
   if (S.pid === 'muchaga' || S.pid === 'extraperlo') {
@@ -742,6 +825,13 @@ function calcPC() {
     v *= m[S.appLit] || 1;
   }
   if ((S.pid === 'nanduko' || S.pid === 'extraperlo') && S.banyoBuffEnd && Date.now() < S.banyoBuffEnd) v *= 4;
+  if (S.pid === 'daigo') {
+    if (S.ultraActive && Date.now() < S.ultraEnd) v *= 10;
+    if (S.cooperLootBuffEnd && Date.now() < S.cooperLootBuffEnd) v *= 2;
+    if (S.cooperJamonBuffEnd && Date.now() < S.cooperJamonBuffEnd) v *= 1.5;
+    if (S.papaBuffEnd && Date.now() < S.papaBuffEnd) v *= 3;
+    if (S.cagadaDebuffEnd && Date.now() < S.cagadaDebuffEnd) v *= 0.5;
+  }
   return v;
 }
 
@@ -761,6 +851,13 @@ function calcPS() {
   if (S.pid === 'nanduko' && S.raicesDebuffEnd && Date.now() < S.raicesDebuffEnd) v *= 0.5;
   if ((S.pid === 'nanduko' || S.pid === 'extraperlo') && S.banyoBuffEnd && Date.now() < S.banyoBuffEnd) v *= 4;
   if (S.pid === 'noah' && S.ligaBuffEnd && Date.now() < S.ligaBuffEnd) v *= 5;
+  if (S.pid === 'daigo') {
+    if (S.ultraActive && Date.now() < S.ultraEnd) v *= 10;
+    if (S.cooperLootBuffEnd && Date.now() < S.cooperLootBuffEnd) v *= 2;
+    if (S.cooperJamonBuffEnd && Date.now() < S.cooperJamonBuffEnd) v *= 1.5;
+    if (S.papaBuffEnd && Date.now() < S.papaBuffEnd) v *= 3;
+    if (S.cagadaDebuffEnd && Date.now() < S.cagadaDebuffEnd) v *= 0.5;
+  }
   return v;
 }
 
@@ -928,6 +1025,10 @@ function updateDisplays() {
   document.getElementById('stat-pc').textContent    = fmt(pc);
   document.getElementById('stat-ps').textContent    = fmt(ps.toFixed(1));
   document.getElementById('stat-total').textContent = fmt(Math.floor(S.totalCurrency));
+  if (S.pid === 'daigo') {
+    const ring = document.getElementById('coopers-ring');
+    if (ring) ring.style.background = `conic-gradient(var(--theme) ${(S.coopersPct||0) * 3.6}deg, rgba(255,255,255,.12) 0deg)`;
+  }
 }
 
 // ================================================================
@@ -939,9 +1040,14 @@ function checkSpecials() {
     case 'muchaga':    checkMucha();   break;
     case 'fita':       checkFita();    break;
     case 'noah':       checkNoah();    break;
+    case 'daigo':       checkDaigo();   break;
     case 'nanduko':    checkNandu();   break;
     case 'extraperlo': checkXP();      break;
   }
+}
+
+function checkDaigo() {
+  // placeholder — Daigo events are timer-driven, not polling-driven
 }
 
 // ——— MUCHAGA ———
@@ -1546,10 +1652,262 @@ function renderSpecial() {
     case 'muchaga':    content = buildWSK(ch);     break;
     case 'fita':       content = buildDobletazo(); break;
     case 'noah':       content = buildNoah(ch);    break;
+    case 'daigo':       content = buildDaigo(ch);    break;
     case 'nanduko':    content = buildNandu();      break;
     case 'extraperlo': content = buildXP(ch);       break;
   }
   area.innerHTML = content + buildCompletionBanner();
+}
+
+// ================================================================
+//  DAIGO
+// ================================================================
+const LUCIA_RANTS = [
+  'Lucia Martiño no entiende el arte visual.',
+  'La escena de surf asturiana necesita VISIÓN.',
+  '¡LUCIA MARTIÑO POR FAVOR, DÉJAME TRABAJAR!',
+  'El surf no es solo deporte, es ARTE.',
+  'He grabado mil bodas, puedo grabar un tubo.',
+];
+const COOPERS_LOOTS = ['🍕 Pizza de La Luna', '🍔 Hamburguesa del suelo', '🍳 La cocina del bar La Luna'];
+
+function tickDaigo() {
+  // Diarrea bar fills
+  if (!S.diarreaReady) {
+    S.diarrea = Math.min(100, (S.diarrea || 0) + 0.5);
+    if (S.diarrea >= 100) {
+      S.diarreaReady = true;
+      toast('💥 ¡DIARREA EXPLOSIVA! ¡PULSA AHORA!', '💥');
+      clearTimeout(S.diarreaTimer);
+      S.diarreaTimer = setTimeout(() => {
+        if (S.diarreaReady) {
+          S.diarreaReady = false;
+          S.diarrea = 0;
+          triggerPapaRabioso('Se escapó la diarrea. Crimen artístico imperdonable.');
+        }
+      }, 4000);
+    }
+  }
+  // Coopers progress
+  S.coopersPct = (S.coopersPct || 0) + 2;
+  if (S.coopersPct >= 100) {
+    S.coopersPct = 0;
+    if (!S.coopersEvent) triggerCoopersEvent();
+  }
+}
+
+function triggerCoopersEvent() {
+  const rand = Math.random();
+  if (rand < 0.33) {
+    S.coopersEvent = 'cagar';
+    renderSpecial();
+    toast('💩 ¡Coopers va a cagar! ¡NO lo recojas!', '💩');
+    clearTimeout(S.coopersTimer);
+    S.coopersTimer = setTimeout(() => {
+      if (S.coopersEvent === 'cagar') {
+        S.achData.cagadasEvitadas = (S.achData.cagadasEvitadas || 0) + 1;
+        S.coopersEvent = null;
+        earn(Math.floor(calcPC() * 5));
+        toast('💩 Coopers dejó su obra en la acera. Bien hecho.', '✅');
+        renderSpecial();
+      }
+    }, 5000);
+  } else if (rand < 0.66) {
+    S.coopersEvent = 'lootear';
+    S.coopersLootDone = 0;
+    S.coopersLootNeed = 8 + Math.floor(Math.random() * 5);
+    S.coopersLootDesc = COOPERS_LOOTS[Math.floor(Math.random() * COOPERS_LOOTS.length)];
+    renderSpecial();
+    toast(`🍕 ¡Coopers encontró comida! ¡Dale!`, '🍕');
+    clearTimeout(S.coopersTimer);
+    S.coopersTimer = setTimeout(() => {
+      if (S.coopersEvent === 'lootear') {
+        S.coopersEvent = null;
+        renderSpecial();
+        triggerPapaRabioso('Coopers tiró el botín. Lamentable pérdida gastronómica.');
+      }
+    }, 6000);
+  } else {
+    S.coopersEvent = 'jamon';
+    S.coopersJamonDone = 0;
+    S.coopersJamonNeed = 10 + Math.floor(Math.random() * 5);
+    renderSpecial();
+    toast('🐷 ¡Coopers apesta a jamón! ¡A bañarle!', '🐷');
+    clearTimeout(S.coopersTimer);
+    S.coopersTimer = setTimeout(() => {
+      if (S.coopersEvent === 'jamon') {
+        S.coopersEvent = null;
+        renderSpecial();
+        toast('Coopers sigue apestando. Que se note en el barrio.', '😮‍💨');
+      }
+    }, 7000);
+  }
+}
+
+function clickCoopers() {
+  if (S.pid !== 'daigo') return;
+  S.achData.cooperInteractions = (S.achData.cooperInteractions || 0) + 1;
+
+  if (S.coopersEvent === 'cagar') {
+    clearTimeout(S.coopersTimer);
+    S.coopersEvent = null;
+    S.achData.cagadasRecogidas = (S.achData.cagadasRecogidas || 0) + 1;
+    S.cagadaDebuffEnd = Date.now() + 10000;
+    toast('💩 Recogiste la mierda. Brillante movida, Daigo.', '💩');
+    renderSpecial(); updateDisplays();
+  } else if (S.coopersEvent === 'lootear') {
+    S.coopersLootDone++;
+    if (S.coopersLootDone >= S.coopersLootNeed) {
+      clearTimeout(S.coopersTimer);
+      S.coopersEvent = null;
+      S.achData.looteos = (S.achData.looteos || 0) + 1;
+      S.cooperLootBuffEnd = Date.now() + 8000;
+      toast('🍕 ¡LOOTEO COMPLETO! ×2 durante 8s', '🍕');
+      renderSpecial(); updateDisplays();
+    } else { renderSpecial(); }
+  } else if (S.coopersEvent === 'jamon') {
+    S.coopersJamonDone++;
+    if (S.coopersJamonDone >= S.coopersJamonNeed) {
+      clearTimeout(S.coopersTimer);
+      S.coopersEvent = null;
+      S.achData.jamones = (S.achData.jamones || 0) + 1;
+      S.cooperJamonBuffEnd = Date.now() + 12000;
+      toast('🐾 ¡Coopers limpio! ×1.5 durante 12s', '🐾');
+      renderSpecial(); updateDisplays();
+    } else { renderSpecial(); }
+  }
+}
+
+function clickPerfect() {
+  if (!S.diarreaReady) return;
+  clearTimeout(S.diarreaTimer);
+  S.diarreaReady = false;
+  S.diarrea = 0;
+  S.achData.perfectPoints = (S.achData.perfectPoints || 0) + 1;
+  S.achData.perfectHits   = (S.achData.perfectHits   || 0) + 1;
+
+  if (S.achData.perfectPoints >= 4) {
+    S.achData.perfectPoints = 0;
+    S.ultraActive = true;
+    S.ultraEnd = Date.now() + 12000;
+    S.achData.ultraActivations = (S.achData.ultraActivations || 0) + 1;
+    toast('⚡ ULTRAPERFECT ×10 — 12 segundos de gloria total', '⚡');
+    showMsg('ULTRAPERFECT. El universo te debe esto.');
+  } else {
+    const pts = S.achData.perfectPoints;
+    toast(`💥 PERFECT! ${pts}/4 puntos acumulados`, '💥');
+    showMsg(`Perfect ${pts}/4. ${4 - pts} más para ULTRAPERFECT.`);
+  }
+  renderSpecial(); updateDisplays();
+}
+
+function triggerPapaRabioso(motivo) {
+  if (S.papaRabioso) return;
+  S.papaRabioso = true;
+  S.papaClicks  = 0;
+  S.papaNeed    = 10;
+  renderSpecial();
+  toast(`😤 PAPÁ RABIOSO — ${LUCIA_RANTS[Math.floor(Math.random() * LUCIA_RANTS.length)]}`, '😤');
+  showMsg(motivo || 'El hate es energía. Hay que soltarlo.');
+  clearTimeout(S.papaTimer);
+  S.papaTimer = setTimeout(() => {
+    if (S.papaRabioso) {
+      S.papaRabioso = false;
+      toast('El papá rabioso se calmó. Sin buff.', '😮‍💨');
+      renderSpecial();
+    }
+  }, 5000);
+}
+
+function clickPapa() {
+  if (!S.papaRabioso) return;
+  S.papaClicks++;
+  if (S.papaClicks === 1) S.achData.papaRabiosoHits = (S.achData.papaRabiosoHits || 0) + 1;
+  if (S.papaClicks >= S.papaNeed) {
+    clearTimeout(S.papaTimer);
+    S.papaRabioso = false;
+    S.papaBuffEnd = Date.now() + 8000;
+    toast('😤✅ ¡HATE SOLTADO! ×3 durante 8s. Lucia lo notará.', '😤');
+    showMsg('El hate es energía. Daigo lo sabe mejor que nadie.');
+    renderSpecial(); updateDisplays();
+  } else { renderSpecial(); }
+}
+
+function buildDaigo(ch) {
+  let html = '';
+
+  // Diarrea bar
+  const dp = Math.min(100, S.diarrea || 0);
+  const dClass = dp >= 80 ? 'diarrea-fill-crit' : dp >= 50 ? 'diarrea-fill-high' : 'diarrea-fill';
+  const pts = S.achData.perfectPoints || 0;
+  html += `<div class="diarrea-section">
+    <div class="diarrea-header">
+      <span>💥 Diarrea Explosiva</span>
+      <span class="perfect-dots">${'●'.repeat(pts)}${'○'.repeat(4-pts)} <small>${pts}/4</small></span>
+    </div>
+    <div class="diarrea-track"><div class="${dClass}" style="width:${dp}%"></div></div>
+    ${S.diarreaReady ? `<button class="perfect-btn" onclick="clickPerfect()">💥 ¡PERFECT!</button>` : ''}
+  </div>`;
+
+  // Active Coopers event
+  if (S.coopersEvent === 'cagar') {
+    html += `<div class="coopers-event cagar-event">
+      <div class="cagar-emoji">💩</div>
+      <h4>¡COOPERS VA A CAGAR!</h4>
+      <p>No lo recojas. Deja la obra de arte en la acera.</p>
+      <button class="cagar-btn" onclick="clickCoopers()">💩 RECOGER (NO hagas esto)</button>
+    </div>`;
+  } else if (S.coopersEvent === 'lootear') {
+    const pL = Math.floor(((S.coopersLootDone||0) / (S.coopersLootNeed||1)) * 100);
+    html += `<div class="coopers-event loot-event">
+      <h4>🍕 ¡LOOTEO EN MARCHA!</h4>
+      <p>${S.coopersLootDesc} — ${S.coopersLootDone}/${S.coopersLootNeed}</p>
+      <div class="loot-track"><div class="loot-fill" style="width:${pL}%"></div></div>
+      <button class="loot-btn" onclick="clickCoopers()">🍕 ¡AYUDA A COOPERS!</button>
+    </div>`;
+  } else if (S.coopersEvent === 'jamon') {
+    const pJ = Math.floor(((S.coopersJamonDone||0) / (S.coopersJamonNeed||1)) * 100);
+    html += `<div class="coopers-event jamon-event">
+      <h4>🐷 ¡COOPERS APESTA A JAMÓN!</h4>
+      <p>Lávalo · ${S.coopersJamonDone}/${S.coopersJamonNeed}</p>
+      <div class="loot-track"><div class="loot-fill" style="width:${pJ}%"></div></div>
+      <button class="loot-btn" onclick="clickCoopers()">🚿 ¡A BAÑARLE!</button>
+    </div>`;
+  }
+
+  // Papá rabioso
+  if (S.papaRabioso) {
+    const pP = Math.floor(((S.papaClicks||0) / S.papaNeed) * 100);
+    html += `<div class="papa-event">
+      <h4>😤 PAPÁ RABIOSO</h4>
+      <p>${LUCIA_RANTS[(S.papaClicks||0) % LUCIA_RANTS.length]}</p>
+      <div class="papa-track"><div class="papa-fill" style="width:${pP}%"></div></div>
+      <button class="papa-btn" onclick="clickPapa()">😤 ¡SOLTAR EL HATE!</button>
+    </div>`;
+  }
+
+  // Active buff/debuff indicators
+  if (S.ultraActive && Date.now() < S.ultraEnd) {
+    html += `<div class="wsk-active">⚡ ULTRAPERFECT ×10 (${Math.ceil((S.ultraEnd-Date.now())/1000)}s)</div>`;
+  }
+  if (S.cooperLootBuffEnd && Date.now() < S.cooperLootBuffEnd) {
+    html += `<div class="wsk-active">🍕 LOOTEO ×2 (${Math.ceil((S.cooperLootBuffEnd-Date.now())/1000)}s)</div>`;
+  }
+  if (S.cooperJamonBuffEnd && Date.now() < S.cooperJamonBuffEnd) {
+    html += `<div class="wsk-active">🐾 OLORCILLO ×1.5 (${Math.ceil((S.cooperJamonBuffEnd-Date.now())/1000)}s)</div>`;
+  }
+  if (S.papaBuffEnd && Date.now() < S.papaBuffEnd) {
+    html += `<div class="wsk-active">😤 HATE SOLTADO ×3 (${Math.ceil((S.papaBuffEnd-Date.now())/1000)}s)</div>`;
+  }
+  if (S.cagadaDebuffEnd && Date.now() < S.cagadaDebuffEnd) {
+    html += `<div class="police-calm" style="color:#ff6644">💩 Mierda en la mano ×0.5 (${Math.ceil((S.cagadaDebuffEnd-Date.now())/1000)}s)</div>`;
+  }
+
+  if (!S.coopersEvent && !S.papaRabioso && !S.diarreaReady) {
+    html += `<div class="police-calm">🎬 En rodaje... Coopers espera su momento.</div>`;
+  }
+
+  return html;
 }
 
 function buildWSK(ch) {
