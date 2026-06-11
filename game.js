@@ -1906,7 +1906,7 @@ function buildDaigo(ch) {
   html += `<div class="diarrea-section">
     <div class="diarrea-header">
       <span>💥 Diarrea Explosiva</span>
-      <span class="perfect-dots">${'💩'.repeat(pts)}${'🫙'.repeat(4-pts)}</span>
+      <span class="perfect-dots">${'💩'.repeat(pts)}${'💨'.repeat(4-pts)}</span>
     </div>
     <div class="diarrea-track"><div class="${dClass}" style="width:${dp}%"></div></div>
     ${S.diarreaReady ? `<button class="perfect-btn" onclick="clickPerfect()">💥 ¡PERFECT!</button>` : ''}
