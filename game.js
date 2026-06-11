@@ -259,6 +259,11 @@ const CHARS = {
       'Lucia Martiño no entiende el arte visual. Nadie lo entiende.',
       'Coopers apesta a jamón otra vez.',
       'Cuatro perfects y la vida tiene sentido.',
+      'BRRRRRRRRRRRRRRRRRR',
+      'El código era LUCI. Siempre fue LUCI.',
+      '¡Que tengo 37 años! Un poco de respeto, coño.',
+      'Esto debería ser un SWELL EVENT. Lo debería.',
+      'Footage sickness. Se lo diagnosticaron en el Triskel.',
     ],
   },
 
@@ -358,6 +363,9 @@ const ACHIEVEMENTS = {
     { id:'molinillo_1',    icon:'🌀', name:'El Molinillo',          desc:'Primer molinillo completado. Arte en estado puro.',         cond: s => (s.achData.molinillos||0) >= 1 },
     { id:'en_la_zona',     icon:'⏱️', name:'En La Zona',           desc:'3 minutos grabando. El flow está activado.',                 cond: s => (s.achData.timeSec||0) >= 180 },
     { id:'daigo_films',    icon:'🏆', name:'Weeman4k Films',         desc:'50000 tomas. El mundo cinematográfico tiembla.',            cond: s => s.totalCurrency >= 50000 },
+    { id:'treinta_y_siete',icon:'🎂', name:'¡Que Tengo 37!',         desc:'37 segundos en el set. La edad del artista en su plenitud.',cond: s => (s.achData.timeSec||0) >= 37 },
+    { id:'swell_event',    icon:'🎉', name:'SWELL EVENT',             desc:'5 eventos de Coopers superados. Ha sido un SWELL EVENT.',  cond: s => (s.achData.cooperInteractions||0) >= 5 },
+    { id:'footage_sickness',icon:'🤢',name:'Footage Sickness',        desc:'Demasiado metraje. El disco duro llora solo.',              cond: s => s.totalCurrency >= 7500 },
   ],
   nanduko: [
     { id:'primer_trato',   icon:'🤝', name:'Primer Trato',          desc:'50 pasta. El negocio ha comenzado.',                         cond: s => s.totalCurrency >= 50 },
@@ -1869,7 +1877,7 @@ function triggerMolinillo() {
   S.molinilloDone   = 0;
   S.molinilloNeed   = 15 + Math.floor(Math.random() * 6);
   renderSpecial();
-  toast('🌀 ¡HACER EL MOLINILLO! ¡Dale caña o pierdes el ULTRAPERFECT!', '🌀');
+  toast('🌀 BRRRRRRRRRRRR — ¡MOLINILLO! ¡Dale o pierdes el ULTRAPERFECT!', '🌀');
   clearTimeout(S.molinilloTimer);
   S.molinilloTimer = setTimeout(() => {
     if (S.molinilloActive) {
