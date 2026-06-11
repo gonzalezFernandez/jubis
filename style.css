@@ -1121,12 +1121,13 @@ body {
   width: 74px; height: 74px; border-radius: 50%;
   background: conic-gradient(var(--theme) 0deg, rgba(255,255,255,.12) 0deg);
   display: flex; align-items: center; justify-content: center;
-  padding: 5px; box-sizing: border-box;
   box-shadow: 0 0 12px var(--theme-glow);
+  flex-shrink: 0;
 }
 .coopers-photo {
-  width: 100%; height: 100%;
+  width: 64px; height: 64px;
   border-radius: 50%; object-fit: cover; display: block;
+  flex-shrink: 0;
 }
 .coopers-label {
   display: block; font-size: 0.58rem; font-weight: 900;

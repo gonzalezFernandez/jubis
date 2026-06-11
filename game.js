@@ -234,16 +234,17 @@ const CHARS = {
     id: 'daigo', name: 'Daigo', role: '🎬 El Fotógrafo con Problemillas',
     desc: 'Talento sin límites. Agenda sin fondo. Coopers tampoco ayuda.',
     currency: 'Tomas', icon: '🎬', clickText: '¡DISPARA!', clickIcon: '📸', btnText: '¡A GRABAR!',
-    theme: '#0aabba', themeD: '#087a86', themeG: 'rgba(10,171,186,0.25)',
+    theme: '#e0007a', themeD: '#a8005a', themeG: 'rgba(224,0,122,0.25)',
     special: 'daigo',
     upgrades: [
-      { id:'camara_foto',  name:'Cámara Réflex',    icon:'📷', desc:'F2.8, bokeh garantizado. Arte al cuello.',            cost:10,    prod:0.1,  cbonus:0,   base:10    },
-      { id:'camara_video', name:'Cámara de Vídeo',  icon:'🎥', desc:'24fps. Si no está en RAW no existe.',                cost:80,    prod:0.5,  cbonus:1,   base:80    },
-      { id:'dron',         name:'Dron DJI',          icon:'🚁', desc:'Planos aéreos sin pedir permiso. Artistazo.',        cost:450,   prod:2,    cbonus:2,   base:450   },
-      { id:'camara_bodas', name:'Cámara de Bodas',  icon:'💍', desc:'La que paga el alquiler. Y el dron.',                cost:2200,  prod:10,   cbonus:5,   base:2200  },
-      { id:'gimbal',       name:'Gimbal Movi',       icon:'🎞️', desc:'Estabiliza el plano. Lo inestable es tu vida.',     cost:12000, prod:50,   cbonus:15,  base:12000 },
-      { id:'estudio',      name:'Estudio Propio',    icon:'💡', desc:'La guarida. Huele a cable quemado y ambición.',     cost:60000, prod:200,  cbonus:50,  base:60000 },
-      { id:'productora',   name:'Daigo Films',       icon:'🏆', desc:'Tu nombre en los créditos. Pequeñito, pero sale.',  cost:250000,prod:600,  cbonus:120, base:250000},
+      { id:'camara_foto',    name:'Cámara Réflex',      icon:'📷', desc:'F2.8, bokeh garantizado. Arte al cuello.',             cost:10,    prod:0.1,  cbonus:0,   base:10    },
+      { id:'camara_video',   name:'Cámara de Vídeo',   icon:'🎥', desc:'24fps. Si no está en RAW no existe.',                 cost:80,    prod:0.5,  cbonus:1,   base:80    },
+      { id:'dron',           name:'Dron DJI',           icon:'🚁', desc:'Planos aéreos sin pedir permiso. Artistazo.',          cost:450,   prod:2,    cbonus:2,   base:450   },
+      { id:'camara_bodas',   name:'Cámara de Bodas',   icon:'💍', desc:'La que paga el alquiler. Y el dron.',                  cost:2200,  prod:10,   cbonus:5,   base:2200  },
+      { id:'crowdfunding',   name:'Crowdfunding',       icon:'💸', desc:'Campaña de financiación. La gente cree en ti. Raro.', cost:6000,  prod:28,   cbonus:10,  base:6000  },
+      { id:'gimbal',         name:'Gimbal Movi',        icon:'🎞️', desc:'Estabiliza el plano. Lo inestable es tu vida.',       cost:12000, prod:50,   cbonus:15,  base:12000 },
+      { id:'estudio',        name:'Estudio Propio',     icon:'💡', desc:'La guarida. Huele a cable quemado y ambición.',       cost:60000, prod:200,  cbonus:50,  base:60000 },
+      { id:'productora',     name:'Weeman4k Films',     icon:'🏆', desc:'Weeman4k Films. El nombre ya lo dice todo.',           cost:250000,prod:600,  cbonus:120, base:250000},
     ],
     msgs:[
       '¿El contrato? Está en proceso.',
@@ -357,7 +358,7 @@ const ACHIEVEMENTS = {
     { id:'dron_rey',       icon:'🚁', name:'Rey del Aire',          desc:'Instala el dron. El barrio visto desde arriba.',             cond: s => (s.upgrades.dron||0) >= 1 },
     { id:'molinillo_1',    icon:'🌀', name:'El Molinillo',          desc:'Primer molinillo completado. Arte en estado puro.',         cond: s => (s.achData.molinillos||0) >= 1 },
     { id:'en_la_zona',     icon:'⏱️', name:'En La Zona',           desc:'3 minutos grabando. El flow está activado.',                 cond: s => (s.achData.timeSec||0) >= 180 },
-    { id:'daigo_films',    icon:'🏆', name:'Daigo Films',           desc:'50000 tomas. El mundo cinematográfico tiembla.',            cond: s => s.totalCurrency >= 50000 },
+    { id:'daigo_films',    icon:'🏆', name:'Weeman4k Films',         desc:'50000 tomas. El mundo cinematográfico tiembla.',            cond: s => s.totalCurrency >= 50000 },
   ],
   nanduko: [
     { id:'primer_trato',   icon:'🤝', name:'Primer Trato',          desc:'50 pasta. El negocio ha comenzado.',                         cond: s => s.totalCurrency >= 50 },
@@ -676,7 +677,7 @@ function startGame(pid) {
     coopersSlot.innerHTML = `<div class="coopers-widget" id="coopers-widget" onclick="clickCoopers()">
       <div class="coopers-ring" id="coopers-ring">
         <img src="assets/cupers.png" class="coopers-photo" alt="Coopers"
-             onerror="this.style.background='#0aabba';this.style.display='none'">
+             onerror="this.style.background='#e0007a';this.style.display='none'">
       </div>
       <span class="coopers-label">COOPERS</span>
     </div>`;
