@@ -351,6 +351,7 @@ const ACHIEVEMENTS = {
     { id:'barril_inf',     icon:'🛢️', name:'El Barril Sin Fondo',   desc:'5000 cañas. El médico ya dejó de advertirte.',                               cond: s => s.totalCurrency >= 5000 },
     { id:'dardos_king',    icon:'🎯', name:'Campeón de los Dardos', desc:'Tablero instalado. Rafa el Facha lleva aquí 4 horas y no pierde.',            cond: s => (s.upgrades.dardos||0) >= 1 },
     { id:'maquina',        icon:'🎰', name:'El Traga Tragado',      desc:'Tragaperras instalada. El jubilado de la esquina ya no come.',                cond: s => (s.upgrades.maquina||0) >= 1 },
+    { id:'madrugador',     icon:'🌅', name:'El Primero del Bar',    desc:'3 minutos seguidos detrás de la barra. Sin moverse ni para mear.',           cond: s => (s.achData.timeSec||0) >= 180 },
     { id:'verdugo_bar',    icon:'🧟', name:'El Verdugo del Bar',    desc:'10 peleas ganadas. El seguro ya no te cubre. Ni la familia.',                 cond: s => (s.achData.fightWins||0) >= 10 },
     { id:'institucion',    icon:'🏆', name:'Institución del Barrio',desc:'50000 cañas. El bar es tuyo. Y el olor también.',                             cond: s => s.totalCurrency >= 50000 },
   ],
