@@ -468,7 +468,7 @@ let S = {
   idealistaActive: false, idealistaTimer: null, idealistaPiso: null, idealistaBuffEnd: 0, idealistaBuffMult: 1,
   olaActive: false, olaDir: null, olaTimer: null, olaRevealed: false, olaBuffEnd: 0, olaDebuffEnd: 0,
   interrumpidorActive: false, interrumpidorTimer: null, callarBuffEnd: 0,
-  salinasConteo: 0,
+  salinasConteo: 0, avilesDebuffEnd: 0,
   // Nanduko
   policeActive: false, policeTimer: null, policeNeed: 0, policeDone: 0,
   banyoActive: false, banyoTimer: null, banyoBuffEnd: 0,
@@ -676,7 +676,7 @@ function startGame(pid) {
     idealistaActive: false, idealistaTimer: null, idealistaPiso: null, idealistaBuffEnd: 0, idealistaBuffMult: 1,
     olaActive: false, olaDir: null, olaTimer: null, olaRevealed: false, olaBuffEnd: 0, olaDebuffEnd: 0,
     interrumpidorActive: false, interrumpidorTimer: null, callarBuffEnd: 0,
-    salinasConteo: 0,
+    salinasConteo: 0, avilesDebuffEnd: 0,
     policeActive: false, policeTimer: null, policeNeed: 0, policeDone: 0,
     banyoActive: false, banyoTimer: null, banyoBuffEnd: 0,
     ligaBuffEnd: 0,
@@ -917,7 +917,8 @@ function calcPC() {
     if (S.olaBuffEnd && Date.now() < S.olaBuffEnd) v *= 2;
     if (S.olaDebuffEnd && Date.now() < S.olaDebuffEnd) v *= 0.5;
     if (S.callarBuffEnd && Date.now() < S.callarBuffEnd) v *= 4;
-    if (S.chapaSilencioActive) v *= 0;
+    if (S.avilesDebuffEnd && Date.now() < S.avilesDebuffEnd) v *= 0.3;
+    if (S.chapaSilencioActive || (!S.yappingActive && c < 20)) v *= 0;
   }
   if (S.pid === 'weeman4k') {
     if (S.ultraActive && Date.now() < S.ultraEnd) v *= 10;
@@ -957,7 +958,8 @@ function calcPS() {
     if (S.olaBuffEnd && Date.now() < S.olaBuffEnd) v *= 2;
     if (S.olaDebuffEnd && Date.now() < S.olaDebuffEnd) v *= 0.5;
     if (S.callarBuffEnd && Date.now() < S.callarBuffEnd) v *= 4;
-    if (S.chapaSilencioActive) v *= 0;
+    if (S.avilesDebuffEnd && Date.now() < S.avilesDebuffEnd) v *= 0.3;
+    if (S.chapaSilencioActive || (!S.yappingActive && c < 20)) v *= 0;
   }
   if (S.pid === 'weeman4k') {
     if (S.ultraActive && Date.now() < S.ultraEnd) v *= 10;
@@ -1711,14 +1713,21 @@ function clickIdealista() {
   S.idealistaActive = false; S.idealistaPiso = null;
   S.achData.pisosVisitados = (S.achData.pisosVisitados || 0) + 1;
   if (piso.zona === 'Salinas') S.achData.salinasVisitados = (S.achData.salinasVisitados || 0) + 1;
-  S.idealistaBuffEnd = Date.now() + piso.sec * 1000;
-  S.idealistaBuffMult = piso.mult;
-  S.chapa = Math.min(100, (S.chapa || 0) + 30);
-  renderSpecial();
-  const msg = piso.zona === 'Salinas'
-    ? `⭐ ¡¡SALINAS LEGENDARIO!! ×${piso.mult} durante ${piso.sec}s — Diego tiene MUCHO que contar`
-    : `🏠 Visitado ${piso.zona} · ×${piso.mult} durante ${piso.sec}s`;
-  toast(msg, piso.zona === 'Salinas' ? '⭐' : '🏠', piso.zona === 'Salinas' ? 'toast-achievement' : '');
+  if (piso.zona === 'Avilés') {
+    S.avilesDebuffEnd = Date.now() + 20000;
+    S.chapa = Math.max(0, (S.chapa || 0) - 20);
+    renderSpecial();
+    toast('🤢 ¡¡VILLA CLOACA!! Has ido a ver un piso en Avilés. ×0.3 durante 20s de vergüenza ajena', '🤢');
+  } else {
+    S.idealistaBuffEnd = Date.now() + piso.sec * 1000;
+    S.idealistaBuffMult = piso.mult;
+    S.chapa = Math.min(100, (S.chapa || 0) + 30);
+    renderSpecial();
+    const msg = piso.zona === 'Salinas'
+      ? `⭐ ¡¡SALINAS LEGENDARIO!! ×${piso.mult} durante ${piso.sec}s — Diego tiene MUCHO que contar`
+      : `🏠 Visitado ${piso.zona} · ×${piso.mult} durante ${piso.sec}s`;
+    toast(msg, piso.zona === 'Salinas' ? '⭐' : '🏠', piso.zona === 'Salinas' ? 'toast-achievement' : '');
+  }
   updateDisplays();
 }
 
@@ -1804,6 +1813,7 @@ function buildDiego(ch) {
   else if (yapping) { chapaClass += ' chapa-yapping'; chapaLabel = `🎙️ YAPPING SUPREMO ×5 (${yappingSec}s)`; }
   else if (chapa >= 80) { chapaClass += ' chapa-max'; chapaLabel = `🎙️ MODO YAPPING ×3`; }
   else if (chapa >= 40) { chapaClass += ' chapa-caliente'; chapaLabel = `🔥 Soltando chapa ×1.5`; }
+  else if (chapa < 20 && chapa > 0) { chapaClass += ' chapa-muerto'; chapaLabel = `💀 Sin fuelle — 0 puntos`; }
 
   let html = `<div class="chapa-box">
     <div class="chapa-lbl"><span>${chapaLabel}</span><span>${Math.floor(chapa)}%</span></div>
@@ -1871,6 +1881,10 @@ function buildDiego(ch) {
   if (S.callarBuffEnd && Date.now() < S.callarBuffEnd) {
     const sec = Math.ceil((S.callarBuffEnd - Date.now()) / 1000);
     html += `<div class="wsk-active">🤫 CALLADO CON CLASE — ×4 (${sec}s)</div>`;
+  }
+  if (S.avilesDebuffEnd && Date.now() < S.avilesDebuffEnd) {
+    const sec = Math.ceil((S.avilesDebuffEnd - Date.now()) / 1000);
+    html += `<div class="police-calm raices-debuff">🤢 VILLA CLOACA — ×0.3 (${sec}s)</div>`;
   }
 
   return html;
