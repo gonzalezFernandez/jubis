@@ -231,7 +231,7 @@ const CHARS = {
   },
 
   diego: {
-    id: 'diego', name: 'Diego', role: '🏠 El Cabezapisos',
+    id: 'diego', name: 'Diego', role: '🏠 El Cabezapisos', photo: 'vilachu',
     desc: 'Habla sin parar. Sabe el precio del metro cuadrado en Salinas de memoria. Cerdo trufero de primera.',
     currency: 'Palabras', icon: '💬', clickText: '¡YAPEAR!', clickIcon: '🗣️', btnText: '¡A SOLTAR CHAPA!',
     theme: '#e76f51', themeD: '#b5451e', themeG: 'rgba(231,111,81,0.25)',
@@ -466,7 +466,8 @@ let S = {
   // Diego
   chapa: 0, chapaSilencioActive: false, chapaSilencioEnd: 0, yappingActive: false, yappingEnd: 0,
   idealistaActive: false, idealistaTimer: null, idealistaPiso: null, idealistaBuffEnd: 0, idealistaBuffMult: 1,
-  olaActive: false, olaDir: null, olaTimer: null, olaBuffEnd: 0, olaDebuffEnd: 0,
+  olaActive: false, olaDir: null, olaTimer: null, olaRevealed: false, olaBuffEnd: 0, olaDebuffEnd: 0,
+  interrumpidorActive: false, interrumpidorTimer: null,
   // Nanduko
   policeActive: false, policeTimer: null, policeNeed: 0, policeDone: 0,
   banyoActive: false, banyoTimer: null, banyoBuffEnd: 0,
@@ -554,7 +555,7 @@ function renderSelection() {
 
     const photoBlock = ch.id === 'extraperlo'
       ? `<div class="char-avatar-wrap">${AVATARS.extraperlo}</div>`
-      : `<img src="assets/${ch.id}.png"
+      : `<img src="assets/${ch.photo || ch.id}.png"
               class="char-photo photo-${ch.id}"
               alt="${ch.name}"
               onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
@@ -672,7 +673,8 @@ function startGame(pid) {
     ahogadoActive: false, ahogadoTimer: null, ahogadoDone: 0, ahogadoNeed: 0, ahogadoTimerEnd: 0, ahogadoBuffEnd: 0, ahogadoDebuffEnd: 0,
     chapa: 0, chapaSilencioActive: false, chapaSilencioEnd: 0, yappingActive: false, yappingEnd: 0,
     idealistaActive: false, idealistaTimer: null, idealistaPiso: null, idealistaBuffEnd: 0, idealistaBuffMult: 1,
-    olaActive: false, olaDir: null, olaTimer: null, olaBuffEnd: 0, olaDebuffEnd: 0,
+    olaActive: false, olaDir: null, olaTimer: null, olaRevealed: false, olaBuffEnd: 0, olaDebuffEnd: 0,
+    interrumpidorActive: false, interrumpidorTimer: null,
     policeActive: false, policeTimer: null, policeNeed: 0, policeDone: 0,
     banyoActive: false, banyoTimer: null, banyoBuffEnd: 0,
     ligaBuffEnd: 0,
@@ -713,7 +715,7 @@ function startGame(pid) {
     avatarEl.innerHTML = AVATARS.extraperlo;
   } else {
     avatarEl.innerHTML = `
-      <img src="assets/${pid}.png"
+      <img src="assets/${ch.photo || pid}.png"
            class="game-photo photo-${pid}"
            alt="${ch.name}"
            onerror="this.style.display='none';document.getElementById('game-svg-fb').style.display='flex'">
@@ -773,7 +775,7 @@ function stopGame() {
 function goBack() {
   if (!confirm('¿Seguro que quieres salir? Se perderá la sesión actual.')) return;
   stopGame();
-  [S.chicaTimer, S.ahogadoTimer, S.idealistaTimer, S.olaTimer, S.policeTimer, S.rocaTimer, S.fightTimer, S.banyoTimer, S.raicesTimer, S.coopersTimer, S.diarreaTimer, S.papaTimer, S.molinilloTimer].forEach(t => clearTimeout(t));
+  [S.chicaTimer, S.ahogadoTimer, S.idealistaTimer, S.olaTimer, S.interrumpidorTimer, S.policeTimer, S.rocaTimer, S.fightTimer, S.banyoTimer, S.raicesTimer, S.coopersTimer, S.diarreaTimer, S.papaTimer, S.molinilloTimer].forEach(t => clearTimeout(t));
   document.getElementById('coopers-slot').style.display = 'none';
   clearInterval(holdInterval); holdInterval = null; holdProgress = 0; holdType = null;
   S.pid = null;
@@ -1330,9 +1332,19 @@ function startHold(type) {
   document.addEventListener('touchcancel',_onHoldRelease);
   holdInterval = setInterval(() => {
     holdProgress = Math.min(100, holdProgress + 3.5); // ~2.9s to fill
-    // Update only the fill bar — do NOT call renderSpecial() here
     const fill = document.querySelector('.hold-fill');
     if (fill) fill.style.width = holdProgress + '%';
+    // Ola: reveal direction at 75%
+    if (holdType === 'ola' && holdProgress >= 75 && !S.olaRevealed) {
+      S.olaRevealed = true;
+      const txt = document.querySelector('.ola-reveal-txt');
+      if (txt) {
+        txt.textContent = S.olaDir === 'derecha' ? '→ ¡ES UNA DERECHA! ¡Aguanta!' : '← ¡ES UNA IZQUIERDA!';
+        txt.style.color = S.olaDir === 'derecha' ? '#7dd3fc' : '#ff7744';
+        txt.style.fontWeight = '900';
+        txt.style.fontSize = '1rem';
+      }
+    }
     if (holdProgress >= 100) stopHold(true);
   }, 100);
 }
@@ -1351,10 +1363,16 @@ function stopHold(success) {
     holdProgress = 0; holdType = null;
     if (t === 'yeyo')  resolveYeyo();
     if (t === 'banyo') resolveBanyo();
+    if (t === 'ola')   resolveOla();
   } else {
-    if (holdProgress > 5) showMsg('Has soltado. Casi... inténtalo otra vez.');
-    holdProgress = 0;
-    holdType = null;
+    const t = holdType;
+    holdProgress = 0; holdType = null;
+    if (t === 'ola') {
+      S.olaRevealed = false;
+      toast('🌊 Ola perdida. No aguantaste hasta el final.', '🌊');
+    } else if (holdProgress > 5) {
+      showMsg('Has soltado. Casi... inténtalo otra vez.');
+    }
     renderSpecial();
   }
 }
@@ -1605,7 +1623,8 @@ function pickPiso() {
 
 function checkDiego() {
   if (!S.idealistaActive && Math.random() < 0.06) triggerIdealista();
-  if (!S.olaActive && Math.random() < 0.05) triggerOla();
+  if (!S.olaActive && !holdType && Math.random() < 0.05) triggerOla();
+  if (S.yappingActive && !S.interrumpidorActive && (S.yappingEnd - Date.now()) > 3000 && Math.random() < 0.30) triggerInterruptor();
 }
 
 function tickDiego() {
@@ -1682,24 +1701,24 @@ function clickIdealista() {
 
 function triggerOla() {
   S.olaActive = true;
+  S.olaRevealed = false;
   S.olaDir = Math.random() < 0.55 ? 'derecha' : 'izquierda';
   clearTimeout(S.olaTimer);
   S.olaTimer = setTimeout(() => {
-    if (S.olaActive) {
-      S.olaActive = false; S.olaDir = null;
+    if (S.olaActive && holdType !== 'ola') {
+      S.olaActive = false; S.olaDir = null; S.olaRevealed = false;
       renderSpecial();
-      toast('🌊 La ola pasó. Había que estar atento.', '🌊');
+      toast('🌊 La ola pasó sin que la cogieras.', '🌊');
     }
-  }, 5000);
+  }, 9000);
   renderSpecial();
-  toast(`🌊 ¡OLA ${S.olaDir.toUpperCase()}! — ${S.olaDir === 'derecha' ? '¡Cógela!' : '¡No la cojas!'}`, '🌊');
+  toast('🌊 ¡OLA LLEGANDO! Mantén pulsado para surfear...', '🌊');
 }
 
-function clickOla() {
-  if (!S.olaActive) return;
+function resolveOla() {
   clearTimeout(S.olaTimer);
   const dir = S.olaDir;
-  S.olaActive = false; S.olaDir = null;
+  S.olaActive = false; S.olaDir = null; S.olaRevealed = false;
   renderSpecial();
   if (dir === 'derecha') {
     S.achData.olasDerechas = (S.achData.olasDerechas || 0) + 1;
@@ -1708,9 +1727,45 @@ function clickOla() {
   } else {
     S.achData.olasIzquierdas = (S.achData.olasIzquierdas || 0) + 1;
     S.olaDebuffEnd = Date.now() + 20000;
-    toast('😤 ¡¡IZQUIERDA!! Diego está de mal humor. ×0.5 durante 20s', '😤');
+    toast('😤 ¡¡ERA UNA IZQUIERDA!! Diego de mal humor. ×0.5 durante 20s', '😤');
   }
   updateDisplays();
+}
+
+function triggerInterruptor() {
+  S.interrumpidorActive = true;
+  renderSpecial();
+  toast('💬 ¡ALGUIEN TE INTERRUMPE! ¡Manda callar o discute!', '💬');
+  clearTimeout(S.interrumpidorTimer);
+  S.interrumpidorTimer = setTimeout(() => {
+    if (S.interrumpidorActive) {
+      S.interrumpidorActive = false;
+      S.yappingActive = false;
+      S.chapa = 0;
+      S.chapaSilencioActive = true;
+      S.chapaSilencioEnd = Date.now() + 5000;
+      renderSpecial();
+      toast('😶 Te cortaron el rollo. Yapping perdido.', '💀');
+    }
+  }, 4000);
+}
+
+function clickCallar() {
+  if (!S.interrumpidorActive) return;
+  clearTimeout(S.interrumpidorTimer);
+  S.interrumpidorActive = false;
+  renderSpecial();
+  toast('🤫 Callado. El Yapping continúa.', '🤫');
+}
+
+function clickDiscutir() {
+  if (!S.interrumpidorActive) return;
+  clearTimeout(S.interrumpidorTimer);
+  S.interrumpidorActive = false;
+  S.yappingEnd = (S.yappingEnd || Date.now()) + 3000;
+  S.chapa = Math.min(100, (S.chapa || 0) + 10);
+  renderSpecial();
+  toast('💢 ¡DISCUTIDO! Yapping extendido +3s', '💢');
 }
 
 function buildDiego(ch) {
@@ -1744,14 +1799,30 @@ function buildDiego(ch) {
     </div>`;
   }
 
+  if (S.interrumpidorActive) {
+    html += `<div class="interruptor-event">
+      <div class="interruptor-title">💬 ¡ALGUIEN TE INTERRUMPE!</div>
+      <p class="interruptor-hint">Si no reaccionas, el Yapping se va a 0</p>
+      <div class="interruptor-btns">
+        <button class="callar-btn" onclick="clickCallar()">🤫 CALLAR</button>
+        <button class="discutir-btn" onclick="clickDiscutir()">💢 DISCUTIR +3s</button>
+      </div>
+    </div>`;
+  }
   if (S.olaActive) {
-    const esDerecha = S.olaDir === 'derecha';
-    html += `<div class="ola-event${esDerecha ? ' ola-derecha' : ' ola-izquierda'}">
-      <div class="ola-dir">${esDerecha ? '→ OLA DERECHA ←' : '← OLA IZQUIERDA →'}</div>
-      <div class="ola-hint">${esDerecha ? '¡Cógela! ×2 durante 15s' : '¡No la cojas! (mal humor si la coges)'}</div>
-      <button class="ola-btn${esDerecha ? '' : ' ola-peligro'}" onclick="clickOla()">
-        ${esDerecha ? '🏄 ¡COGER!' : '💀 ¡COGER! (izquierda)'}
-      </button>
+    const isHolding = holdType === 'ola';
+    const revealed  = S.olaRevealed;
+    html += `<div class="ola-event${revealed ? (S.olaDir === 'derecha' ? ' ola-derecha' : ' ola-izquierda') : ' ola-misterio'}">
+      <div class="ola-dir ola-reveal-txt">${revealed
+        ? (S.olaDir === 'derecha' ? '→ ¡ES UNA DERECHA! ¡Aguanta!' : '← ¡ES UNA IZQUIERDA!')
+        : '🌊 ¿Derecha o izquierda? Aguanta para ver...'}</div>
+      <div class="hold-track"><div class="hold-fill" style="width:${isHolding ? holdProgress : 0}%"></div></div>
+      <div class="nose-wrap"
+        onmousedown="startHold('ola')"
+        ontouchstart="event.preventDefault();startHold('ola')">
+        <span class="nose-btn${isHolding ? ' nose-active' : ''}">🏄</span>
+        <span class="hold-hint">${isHolding ? '¡Aguanta!' : 'Mantén pulsado para surfear'}</span>
+      </div>
     </div>`;
   }
 
