@@ -1641,7 +1641,7 @@ function pickPiso() {
 function checkDiego() {
   if (!S.idealistaActive && Math.random() < 0.06) triggerIdealista();
   if (!S.olaActive && !holdType && Math.random() < 0.05) triggerOla();
-  if (S.yappingActive && !S.interrumpidorActive && (S.yappingEnd - Date.now()) > 3000 && Math.random() < 0.10) triggerInterruptor();
+  if (S.yappingActive && !S.interrumpidorActive && (S.yappingEnd - Date.now()) > 3000 && Math.random() < 0.35) triggerInterruptor();
 }
 
 function patchChapaBar() {
