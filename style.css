@@ -1149,7 +1149,7 @@ body {
   gap: 6px;
   align-items: flex-start;
   pointer-events: none;
-  width: min(72vw, 280px);
+  width: min(78vw, 300px);
 }
 .toast-item {
   width: 100%;
