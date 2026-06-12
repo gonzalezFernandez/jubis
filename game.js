@@ -1336,18 +1336,29 @@ function startHold(type) {
   document.addEventListener('touchcancel',_onHoldRelease);
   holdInterval = setInterval(() => {
     holdProgress = Math.min(100, holdProgress + 3.5); // ~2.9s to fill
-    const fill = document.querySelector('.hold-fill');
-    if (fill) fill.style.width = holdProgress + '%';
-    // Ola: reveal direction at 75%
-    if (holdType === 'ola' && holdProgress >= 75 && !S.olaRevealed) {
-      S.olaRevealed = true;
-      const txt = document.querySelector('.ola-reveal-txt');
-      if (txt) {
-        txt.textContent = S.olaDir === 'derecha' ? '→ ¡ES UNA DERECHA! ¡Aguanta!' : '← ¡ES UNA IZQUIERDA!';
-        txt.style.color = S.olaDir === 'derecha' ? '#7dd3fc' : '#ff7744';
-        txt.style.fontWeight = '900';
-        txt.style.fontSize = '1rem';
+    if (holdType === 'ola') {
+      const surfFill = document.querySelector('.surf-fill');
+      if (surfFill) surfFill.style.width = holdProgress + '%';
+      // Reveal direction at 75%
+      if (holdProgress >= 75 && !S.olaRevealed) {
+        S.olaRevealed = true;
+        const txt = document.querySelector('.ola-reveal-txt');
+        if (txt) {
+          txt.textContent = S.olaDir === 'derecha' ? '→ ¡ES UNA DERECHA! ¡Aguanta!' : '← ¡ES UNA IZQUIERDA!';
+          txt.style.color = S.olaDir === 'derecha' ? '#7dd3fc' : '#ff3300';
+          txt.style.fontWeight = '900';
+          txt.style.fontSize = '1rem';
+        }
+        if (S.olaDir === 'izquierda' && surfFill) {
+          surfFill.style.background = 'linear-gradient(90deg,#990000,#cc2200,#ff4400)';
+          surfFill.style.boxShadow = '0 0 12px rgba(255,50,0,0.9)';
+          const surfTrack = document.querySelector('.surf-track');
+          if (surfTrack) surfTrack.style.borderColor = 'rgba(255,50,0,0.7)';
+        }
       }
+    } else {
+      const fill = document.querySelector('.hold-fill');
+      if (fill) fill.style.width = holdProgress + '%';
     }
     if (holdProgress >= 100) stopHold(true);
   }, 100);
@@ -1656,7 +1667,7 @@ function tickDiego() {
 
 function clickDiegoChapa() {
   if (S.chapaSilencioActive || S.yappingActive) return;
-  S.chapa = Math.min(100, (S.chapa || 0) + 3);
+  S.chapa = Math.min(100, (S.chapa || 0) + 6);
   if (S.chapa > (S.achData.chapaMax || 0)) S.achData.chapaMax = S.chapa;
   if (S.chapa >= 100 && !S.yappingActive) {
     S.yappingActive = true;
