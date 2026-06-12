@@ -392,7 +392,7 @@ const ACHIEVEMENTS = {
     { id:'salinas_premium',  icon:'⭐', name:'¡Salinas!',             desc:'Visitas un piso en Salinas. Eso no se ve todos los días.',    cond: s => (s.achData.salinasVisitados||0) >= 1 },
     { id:'cerdo_trufero',    icon:'🐷', name:'Cerdo Trufero',         desc:'Surfeas 3 olas derechas. Solo derechas, como Dios manda.',    cond: s => (s.achData.olasDerechas||0) >= 3 },
     { id:'mal_humor',        icon:'😤', name:'Mal Humor',             desc:'Cogiste una izquierda. Error imperdonable.',                  cond: s => (s.achData.olasIzquierdas||0) >= 1 },
-    { id:'silencio',         icon:'😶', name:'Silencio Incómodo',     desc:'Diego pierde el hilo. Pasa pocas veces pero pasa.',           cond: s => (s.achData.silenciosIncomodos||0) >= 1 },
+    { id:'silencio',         icon:'😶', name:'Silencio Incómodo',     desc:'Diego pierde el hilo. Pasa pocas veces pero pasa.',           cond: s => (s.achData.silenciosIncomodos||0) >= 1 && (s.achData.yappingSupremos||0) >= 1 },
     { id:'hipotecado',       icon:'🏦', name:'Hipotecado',            desc:'Firma la hipoteca. 30 años de compromiso.',                   cond: s => (s.upgrades.hipoteca||0) >= 1 },
     { id:'idealista_pro',    icon:'📲', name:'Idealista Pro',         desc:'5 pisos visitados. El agente te llama antes de publicar.',    cond: s => (s.achData.pisosVisitados||0) >= 5 },
     { id:'en_la_zona_diego', icon:'⏱️', name:'En La Zona',           desc:'3 minutos yapando. La chapa no tiene límite.',               cond: s => (s.achData.timeSec||0) >= 180 },
