@@ -1657,8 +1657,8 @@ function patchChapaBar() {
       (silencio         ? ' chapa-silencio' :
        yapping          ? ' chapa-yapping'  :
        chapa >= 80      ? ' chapa-max'      :
-       chapa >= 40      ? ' chapa-caliente' :
-       chapa < 20 && chapa > 0 ? ' chapa-muerto' : '');
+       chapa >= 20      ? ' chapa-caliente' :
+       chapa > 0        ? ' chapa-muerto'   : '');
   }
   const lbl = box.querySelector('.chapa-lbl');
   if (lbl) {
@@ -1842,8 +1842,8 @@ function buildDiego(ch) {
   if (silencio) { chapaClass += ' chapa-silencio'; chapaLabel = '😶 Silencio incómodo...'; }
   else if (yapping) { chapaClass += ' chapa-yapping'; chapaLabel = `🎙️ YAPPING SUPREMO ×5 (${yappingSec}s)`; }
   else if (chapa >= 80) { chapaClass += ' chapa-max'; chapaLabel = `🎙️ MODO YAPPING ×3`; }
-  else if (chapa >= 40) { chapaClass += ' chapa-caliente'; chapaLabel = `🔥 Soltando chapa ×1.5`; }
-  else if (chapa < 20 && chapa > 0) { chapaClass += ' chapa-muerto'; chapaLabel = `💀 Sin fuelle — 0 puntos`; }
+  else if (chapa >= 20) { chapaClass += ' chapa-caliente'; chapaLabel = `🔥 Soltando chapa ×1.5`; }
+  else if (chapa > 0)   { chapaClass += ' chapa-muerto'; chapaLabel = `💀 Sin fuelle — 0 puntos`; }
 
   let html = `<div class="chapa-box">
     <div class="chapa-lbl"><span>${chapaLabel}</span><span>${Math.floor(chapa)}%</span></div>
