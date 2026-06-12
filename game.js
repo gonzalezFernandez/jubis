@@ -2448,6 +2448,20 @@ function renderAchievements() {
   const total   = achs.length;
   const done    = achs.filter(a => S.achievements[a.id]).length;
   document.querySelector('.ach-header span').textContent = `🏆 Logros (${done}/${total})`;
+  if (done === total && total > 0) {
+    const footer = document.createElement('div');
+    footer.className = 'ach-complete-footer';
+    footer.innerHTML = `
+      <div class="ach-complete-banner">🎉 ¡TODOS LOS LOGROS COMPLETADOS!</div>
+      <button class="ach-finish-btn" onclick="finishAndExit()">🏠 Volver al menú principal</button>
+    `;
+    list.appendChild(footer);
+  }
+}
+
+function finishAndExit() {
+  toggleAchievements();
+  goBack();
 }
 
 // ================================================================

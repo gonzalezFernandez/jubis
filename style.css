@@ -1113,6 +1113,29 @@ body {
 .ach-desc { font-size: 0.74rem; color: var(--dim); line-height: 1.3; }
 .ach-check { font-size: 1rem; flex-shrink: 0; }
 
+.ach-complete-footer {
+  margin-top: 0.5rem;
+  padding: 1rem 0.8rem 0.5rem;
+  text-align: center;
+  display: flex; flex-direction: column; gap: 0.7rem;
+  border-top: 1px solid var(--gold);
+}
+.ach-complete-banner {
+  font-size: 0.88rem; font-weight: 900;
+  color: var(--gold);
+  animation: ach-pulse 1.8s ease-in-out infinite;
+}
+.ach-finish-btn {
+  width: 100%; padding: 0.75rem;
+  background: linear-gradient(135deg, #2a1a00, #3d2800);
+  border: 2px solid var(--gold);
+  color: var(--gold); font-weight: 800; font-size: 0.9rem;
+  border-radius: 10px; cursor: pointer; font-family: inherit;
+  transition: filter .12s, transform .1s;
+}
+.ach-finish-btn:hover  { filter: brightness(1.3); }
+.ach-finish-btn:active { transform: scale(.96); }
+
 /* ============================================================
    TOAST NOTIFICATION
    ============================================================ */
