@@ -449,7 +449,7 @@ const ACHIEVEMENTS = {
     { id:'el_xtraperlo',   icon:'👑', name:'El Extraperlo Total',   desc:'Consigues la mejora final. Eres el festival.',               cond: s => (s.upgrades.xtraperlo||0) >= 1 },
     { id:'combo_infierno', icon:'🌀', name:'El Combo del Infierno', desc:'5 Rocas + 5 vasos + 3 rescates. Suficiente sufrimiento.',    cond: s => (s.achData.rocaHits||0) >= 5 && (s.achData.vasosLimpiados||0) >= 5 && (s.achData.rescates||0) >= 3 },
     { id:'sin_respiro',    icon:'⚡', name:'Sin un Respiro',         desc:'10000 caos en menos de 5 minutos. El caos tiene prisa.',     cond: s => s.totalCurrency >= 10000 && (s.achData.timeSec||0) <= 300 },
-    { id:'noche_loca',     icon:'🌙', name:'Noche Loca',            desc:'2 millones de caos. El festival no tiene fondo.',            cond: s => s.totalCurrency >= 2000000 },
+    { id:'noche_loca',     icon:'🌙', name:'Noche Loca',            desc:'10 millones de caos. El festival no tiene fondo.',           cond: s => s.totalCurrency >= 10000000 },
     { id:'caos_250k',      icon:'💥', name:'Explosión de Caos',      desc:'250000 caos. Esto ya no es un festival, es una religión.',  cond: s => s.totalCurrency >= 250000 },
     { id:'primer_invasor', icon:'🎭', name:'Guarda de Seguridad',    desc:'Primero invasor del escenario parado. El festival te lo agradece.', cond: s => (s.achData.invasoresParados||0) >= 1 },
     { id:'nadie_pasa',     icon:'🛡️', name:'Nadie Pasa',            desc:'5 invasores parados. Eres el muro del Extraperlo.',          cond: s => (s.achData.invasoresParados||0) >= 5 },
