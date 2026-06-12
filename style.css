@@ -642,9 +642,9 @@ body {
 .chupa-event h4 { color: #c97fff; font-size: 1rem; margin-bottom: 0.25rem; }
 .chupa-event p  { font-size: 0.74rem; color: #9060c0; margin-bottom: 0.65rem; }
 .chupa-bolsa {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 8px;
+  position: relative;
+  height: 90px;
+  overflow: visible;
   aspect-ratio: 1;
   max-width: 160px;
   margin: 0 auto;
@@ -654,8 +654,10 @@ body {
   border-radius: 10px;
 }
 .chupa-corner {
-  position: relative; overflow: hidden;
+  position: absolute;
+  overflow: hidden;
   display: flex; align-items: center; justify-content: center;
+  width: 48px; height: 48px;
   background: rgba(155,66,240,.12);
   border: 1.5px solid rgba(155,66,240,.4);
   border-radius: 8px; cursor: pointer;
@@ -669,6 +671,10 @@ body {
   background: rgba(155,66,240,.35);
   box-shadow: 0 0 10px rgba(155,66,240,.6);
 }
+.chupa-corner:nth-child(1) { top: 0;    left: 0;   border-radius: 10px 4px 4px 4px; }
+.chupa-corner:nth-child(2) { top: 0;    right: 0;  border-radius: 4px 10px 4px 4px; }
+.chupa-corner:nth-child(3) { bottom: 0; left: 0;   border-radius: 4px 4px 4px 10px; }
+.chupa-corner:nth-child(4) { bottom: 0; right: 0;  border-radius: 4px 4px 10px 4px; }
 .corner-fill-bg {
   position: absolute; inset: 0;
   display: flex; align-items: flex-end;
