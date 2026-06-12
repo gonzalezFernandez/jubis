@@ -947,6 +947,11 @@ body {
   font-size:0.95rem !important;
 }
 .idealista-btn:active { transform:scale(.94); }
+.salinas-contra-lbl { font-size:0.78rem; color:#ffd700; font-weight:700; margin-bottom:0.2rem; }
+.salinas-contra-track { height:10px; background:rgba(255,215,0,0.15); border-radius:6px; overflow:hidden; margin-bottom:0.4rem; border:1px solid rgba(255,215,0,0.4); }
+.salinas-contra-fill { height:100%; border-radius:6px; background:linear-gradient(90deg,#ffaa00,#ffd700); transition:width .06s linear; }
+.salinas-contra-btn { animation: salinas-urgencia .4s ease-in-out infinite alternate !important; }
+@keyframes salinas-urgencia { from { filter:brightness(1); } to { filter:brightness(1.3) saturate(1.5); } }
 
 /* Ola event */
 .ola-event {
@@ -985,6 +990,8 @@ body {
 .ola-misterio .ola-dir { color: #aaaadd !important; }
 .ola-peligro { background:#cc2200 !important; }
 .ola-btn:active { transform:scale(.94); }
+.surf-track { height: 18px; background: rgba(0,30,60,0.8); border-radius: 8px; overflow: hidden; margin: 0.4rem 0 0.6rem; border: 1.5px solid rgba(26,155,232,0.5); }
+.surf-fill  { height: 100%; border-radius: 8px; transition: width .08s linear; background: linear-gradient(90deg, #0077b6, #1a9be8, #7dd3fc); box-shadow: 0 0 8px rgba(26,155,232,0.6); }
 
 /* Interruptor */
 .interruptor-event {

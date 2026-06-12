@@ -467,7 +467,8 @@ let S = {
   chapa: 0, chapaSilencioActive: false, chapaSilencioEnd: 0, yappingActive: false, yappingEnd: 0,
   idealistaActive: false, idealistaTimer: null, idealistaPiso: null, idealistaBuffEnd: 0, idealistaBuffMult: 1,
   olaActive: false, olaDir: null, olaTimer: null, olaRevealed: false, olaBuffEnd: 0, olaDebuffEnd: 0,
-  interrumpidorActive: false, interrumpidorTimer: null,
+  interrumpidorActive: false, interrumpidorTimer: null, callarBuffEnd: 0,
+  salinasConteo: 0,
   // Nanduko
   policeActive: false, policeTimer: null, policeNeed: 0, policeDone: 0,
   banyoActive: false, banyoTimer: null, banyoBuffEnd: 0,
@@ -674,7 +675,8 @@ function startGame(pid) {
     chapa: 0, chapaSilencioActive: false, chapaSilencioEnd: 0, yappingActive: false, yappingEnd: 0,
     idealistaActive: false, idealistaTimer: null, idealistaPiso: null, idealistaBuffEnd: 0, idealistaBuffMult: 1,
     olaActive: false, olaDir: null, olaTimer: null, olaRevealed: false, olaBuffEnd: 0, olaDebuffEnd: 0,
-    interrumpidorActive: false, interrumpidorTimer: null,
+    interrumpidorActive: false, interrumpidorTimer: null, callarBuffEnd: 0,
+    salinasConteo: 0,
     policeActive: false, policeTimer: null, policeNeed: 0, policeDone: 0,
     banyoActive: false, banyoTimer: null, banyoBuffEnd: 0,
     ligaBuffEnd: 0,
@@ -914,6 +916,7 @@ function calcPC() {
     if (S.idealistaBuffEnd && Date.now() < S.idealistaBuffEnd) v *= (S.idealistaBuffMult || 1);
     if (S.olaBuffEnd && Date.now() < S.olaBuffEnd) v *= 2;
     if (S.olaDebuffEnd && Date.now() < S.olaDebuffEnd) v *= 0.5;
+    if (S.callarBuffEnd && Date.now() < S.callarBuffEnd) v *= 4;
     if (S.chapaSilencioActive) v *= 0;
   }
   if (S.pid === 'weeman4k') {
@@ -953,6 +956,7 @@ function calcPS() {
     if (S.idealistaBuffEnd && Date.now() < S.idealistaBuffEnd) v *= (S.idealistaBuffMult || 1);
     if (S.olaBuffEnd && Date.now() < S.olaBuffEnd) v *= 2;
     if (S.olaDebuffEnd && Date.now() < S.olaDebuffEnd) v *= 0.5;
+    if (S.callarBuffEnd && Date.now() < S.callarBuffEnd) v *= 4;
     if (S.chapaSilencioActive) v *= 0;
   }
   if (S.pid === 'weeman4k') {
@@ -1624,7 +1628,7 @@ function pickPiso() {
 function checkDiego() {
   if (!S.idealistaActive && Math.random() < 0.06) triggerIdealista();
   if (!S.olaActive && !holdType && Math.random() < 0.05) triggerOla();
-  if (S.yappingActive && !S.interrumpidorActive && (S.yappingEnd - Date.now()) > 3000 && Math.random() < 0.30) triggerInterruptor();
+  if (S.yappingActive && !S.interrumpidorActive && (S.yappingEnd - Date.now()) > 3000 && Math.random() < 0.10) triggerInterruptor();
 }
 
 function tickDiego() {
@@ -1652,7 +1656,7 @@ function tickDiego() {
 
 function clickDiegoChapa() {
   if (S.chapaSilencioActive || S.yappingActive) return;
-  S.chapa = Math.min(100, (S.chapa || 0) + 8);
+  S.chapa = Math.min(100, (S.chapa || 0) + 3);
   if (S.chapa > (S.achData.chapaMax || 0)) S.achData.chapaMax = S.chapa;
   if (S.chapa >= 100 && !S.yappingActive) {
     S.yappingActive = true;
@@ -1668,10 +1672,11 @@ function triggerIdealista() {
   S.idealistaActive = true;
   S.idealistaPiso = piso;
   S.idealistaBuffMult = piso.mult;
+  if (piso.zona === 'Salinas') S.salinasConteo = 0;
   clearTimeout(S.idealistaTimer);
   S.idealistaTimer = setTimeout(() => {
     if (S.idealistaActive) {
-      S.idealistaActive = false; S.idealistaPiso = null;
+      S.idealistaActive = false; S.idealistaPiso = null; S.salinasConteo = 0;
       renderSpecial();
       toast('🏠 Se fue el piso. Lo pillaron antes.', '😤');
     }
@@ -1679,6 +1684,13 @@ function triggerIdealista() {
   renderSpecial();
   const urgencia = piso.tier === 'LEGENDARIO' ? '⭐⭐⭐ ¡¡SALINAS!!' : `📍 ${piso.zona}`;
   toast(`🏠 IDEALISTA: ${urgencia} — ${piso.hab} hab · ${piso.price}`, '🏠');
+}
+
+function clickSalinasContra() {
+  if (!S.idealistaActive || !S.idealistaPiso || S.idealistaPiso.zona !== 'Salinas') return;
+  S.salinasConteo = (S.salinasConteo || 0) + 1;
+  if (S.salinasConteo >= 20) clickIdealista();
+  else renderSpecial();
 }
 
 function clickIdealista() {
@@ -1723,7 +1735,7 @@ function resolveOla() {
   if (dir === 'derecha') {
     S.achData.olasDerechas = (S.achData.olasDerechas || 0) + 1;
     S.olaBuffEnd = Date.now() + 15000;
-    toast('🏄 ¡DERECHA PERFECTA! ×2 durante 15s — cerdo trufero puro', '🏄');
+    toast('🌊 ¡DERECHA PERFECTA! ×2 durante 15s — cerdo trufero puro', '🌊');
   } else {
     S.achData.olasIzquierdas = (S.achData.olasIzquierdas || 0) + 1;
     S.olaDebuffEnd = Date.now() + 20000;
@@ -1754,18 +1766,19 @@ function clickCallar() {
   if (!S.interrumpidorActive) return;
   clearTimeout(S.interrumpidorTimer);
   S.interrumpidorActive = false;
+  S.callarBuffEnd = Date.now() + 10000;
   renderSpecial();
-  toast('🤫 Callado. El Yapping continúa.', '🤫');
+  toast('🤫 Callado con clase. ×4 durante 10s', '🤫');
 }
 
 function clickDiscutir() {
   if (!S.interrumpidorActive) return;
   clearTimeout(S.interrumpidorTimer);
   S.interrumpidorActive = false;
-  S.yappingEnd = (S.yappingEnd || Date.now()) + 3000;
+  S.yappingEnd = (S.yappingEnd || Date.now()) + 10000;
   S.chapa = Math.min(100, (S.chapa || 0) + 10);
   renderSpecial();
-  toast('💢 ¡DISCUTIDO! Yapping extendido +3s', '💢');
+  toast('💢 ¡DISCUTIDO! Yapping extendido +10s', '💢');
 }
 
 function buildDiego(ch) {
@@ -1789,13 +1802,19 @@ function buildDiego(ch) {
   if (S.idealistaActive && S.idealistaPiso) {
     const p = S.idealistaPiso;
     const esSalinas = p.zona === 'Salinas';
+    const conteo = S.salinasConteo || 0;
     html += `<div class="idealista-event${esSalinas ? ' salinas-legendario' : ''}">
       <div class="idealista-header">${esSalinas ? '⭐⭐⭐ SALINAS — LEGENDARIO' : `🏠 NUEVO PISO EN IDEALISTA`}</div>
       <div class="idealista-info">${p.icon} ${p.zona} · ${p.hab} hab · ${p.price}</div>
       <div class="idealista-buff">Buff: ×${p.mult} durante ${p.sec}s</div>
-      <button class="idealista-btn${esSalinas ? ' salinas-btn' : ''}" onclick="clickIdealista()">
-        ${esSalinas ? '⭐ ¡¡VISITAR SALINAS!!' : '🏠 Visitar piso'}
-      </button>
+      ${esSalinas
+        ? `<div class="salinas-contra-lbl">⚡ CONTRAOFERTA: ${conteo}/20 clicks</div>
+           <div class="salinas-contra-track"><div class="salinas-contra-fill" style="width:${Math.min(100,conteo/20*100)}%"></div></div>
+           <button class="idealista-btn salinas-btn salinas-contra-btn" onclick="clickSalinasContra()">
+             ⭐ ¡¡CONTRAOFERTA!! (${conteo}/20)
+           </button>`
+        : `<button class="idealista-btn" onclick="clickIdealista()">🏠 Visitar piso</button>`
+      }
     </div>`;
   }
 
@@ -1804,8 +1823,8 @@ function buildDiego(ch) {
       <div class="interruptor-title">💬 ¡ALGUIEN TE INTERRUMPE!</div>
       <p class="interruptor-hint">Si no reaccionas, el Yapping se va a 0</p>
       <div class="interruptor-btns">
-        <button class="callar-btn" onclick="clickCallar()">🤫 CALLAR</button>
-        <button class="discutir-btn" onclick="clickDiscutir()">💢 DISCUTIR +3s</button>
+        <button class="callar-btn" onclick="clickCallar()">🤫 CALLAR ×4</button>
+        <button class="discutir-btn" onclick="clickDiscutir()">💢 DISCUTIR +10s</button>
       </div>
     </div>`;
   }
@@ -1816,11 +1835,11 @@ function buildDiego(ch) {
       <div class="ola-dir ola-reveal-txt">${revealed
         ? (S.olaDir === 'derecha' ? '→ ¡ES UNA DERECHA! ¡Aguanta!' : '← ¡ES UNA IZQUIERDA!')
         : '🌊 ¿Derecha o izquierda? Aguanta para ver...'}</div>
-      <div class="hold-track"><div class="hold-fill" style="width:${isHolding ? holdProgress : 0}%"></div></div>
+      <div class="surf-track"><div class="surf-fill" style="width:${isHolding ? holdProgress : 0}%"></div></div>
       <div class="nose-wrap"
         onmousedown="startHold('ola')"
         ontouchstart="event.preventDefault();startHold('ola')">
-        <span class="nose-btn${isHolding ? ' nose-active' : ''}">🏄</span>
+        <span class="nose-btn${isHolding ? ' nose-active' : ''}">🌊</span>
         <span class="hold-hint">${isHolding ? '¡Aguanta!' : 'Mantén pulsado para surfear'}</span>
       </div>
     </div>`;
@@ -1832,11 +1851,15 @@ function buildDiego(ch) {
   }
   if (S.olaBuffEnd && Date.now() < S.olaBuffEnd) {
     const sec = Math.ceil((S.olaBuffEnd - Date.now()) / 1000);
-    html += `<div class="wsk-active">🏄 DERECHA PERFECTA — ×2 (${sec}s)</div>`;
+    html += `<div class="wsk-active">🌊 DERECHA PERFECTA — ×2 (${sec}s)</div>`;
   }
   if (S.olaDebuffEnd && Date.now() < S.olaDebuffEnd) {
     const sec = Math.ceil((S.olaDebuffEnd - Date.now()) / 1000);
     html += `<div class="police-calm raices-debuff">😤 Mal humor por izquierda — ×0.5 (${sec}s)</div>`;
+  }
+  if (S.callarBuffEnd && Date.now() < S.callarBuffEnd) {
+    const sec = Math.ceil((S.callarBuffEnd - Date.now()) / 1000);
+    html += `<div class="wsk-active">🤫 CALLADO CON CLASE — ×4 (${sec}s)</div>`;
   }
 
   return html;
