@@ -947,6 +947,7 @@ function calcPC() {
   if ((S.pid === 'muchaga' || S.pid === 'extraperlo') && S.wskActive && Date.now() < S.wskEnd) v *= 5;
   if ((S.pid === 'muchaga' || S.pid === 'extraperlo') && S.furiaLevel >= 100) v *= 5;
   if ((S.pid === 'fita' || S.pid === 'extraperlo') && S.tripleActive && Date.now() < S.tripleEnd) v *= 10;
+  if (S.pid === 'fita' && (S.energy || 0) > 75) v *= 3;
   if (S.pid === 'noah' && S.app === S.appLit) {
     const m = { instagram:2, tiktok:3.5, whatsapp:1.5 };
     v *= m[S.appLit] || 1;
@@ -987,6 +988,7 @@ function calcPS() {
   if ((S.pid === 'muchaga' || S.pid === 'extraperlo') && S.wskActive && Date.now() < S.wskEnd) v *= 5;
   if ((S.pid === 'muchaga' || S.pid === 'extraperlo') && S.furiaLevel >= 100) v *= 5;
   if ((S.pid === 'fita' || S.pid === 'extraperlo') && S.tripleActive && Date.now() < S.tripleEnd) v *= 10;
+  if (S.pid === 'fita' && (S.energy || 0) > 75) v *= 3;
   if (S.pid === 'noah') {
     if (S.app === S.appLit) {
       const m = { instagram:2, tiktok:3.5, whatsapp:1.5 };
@@ -1869,10 +1871,9 @@ function _failInterruptor() {
   S.yappingActive = false; S.chapa = 0;
   S.olaBuffEnd = 0; S.olaDebuffEnd = 0;
   S.callarBuffEnd = 0; S.idealistaBuffEnd = 0; S.avilesDebuffEnd = 0;
-  S.currency = 0;
   S.chapaSilencioActive = true; S.chapaSilencioEnd = Date.now() + 5000;
   renderSpecial(); updateDisplays();
-  toast('💀 ¡TE HAN CALLADO! Bufos, Yapping y Palabras perdidas.', '💀');
+  toast('💀 ¡TE HAN CALLADO! Bufos y Yapping perdidos.', '💀');
 }
 
 function triggerInterruptor() {
