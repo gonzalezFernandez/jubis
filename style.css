@@ -1118,12 +1118,12 @@ body {
    ============================================================ */
 .toast-container {
   position: fixed;
-  top: 12px;
+  bottom: 16px;
   left: 50%;
   transform: translateX(-50%);
   z-index: 9999;
   display: flex;
-  flex-direction: column;
+  flex-direction: column-reverse;
   gap: 6px;
   align-items: center;
   pointer-events: none;
@@ -1152,12 +1152,12 @@ body {
   animation: toast-out .2s ease forwards;
 }
 @keyframes toast-in {
-  from { transform: translateY(-120%); opacity: 0; }
-  to   { transform: translateY(0);     opacity: 1; }
+  from { transform: translateY(120%); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
 }
 @keyframes toast-out {
-  from { transform: translateY(0);     opacity: 1; }
-  to   { transform: translateY(-120%); opacity: 0; }
+  from { transform: translateY(0);    opacity: 1; }
+  to   { transform: translateY(120%); opacity: 0; }
 }
 .toast-icon { font-size: 1rem; flex-shrink: 0; }
 .toast-text { flex: 1; text-align: center; }
