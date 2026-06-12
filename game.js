@@ -1686,7 +1686,7 @@ function tickDiego() {
   }
   if (!S.chapaSilencioActive) {
     const c = S.chapa || 0;
-    const decay = 0.08 + (c / 100) * 0.42; // 0.08/tick at 0%, 0.5/tick at 100%
+    const decay = 0.3 + (c / 100) * 0.4; // 0.3/tick at 0%, 0.7/tick at 100%
     S.chapa = Math.max(0, c - decay);
     patchChapaBar();
     if (S.chapa === 0) {
