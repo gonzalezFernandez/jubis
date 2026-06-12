@@ -1702,7 +1702,9 @@ function tickDiego() {
 
 function clickDiegoChapa() {
   if (S.chapaSilencioActive) return;
-  S.chapa = Math.min(100, (S.chapa || 0) + 1.7);
+  const prev = S.chapa || 0;
+  S.chapa = Math.min(100, prev + 1.7);
+  if (prev === 0) S.chapa = Math.max(1, S.chapa);
   if (S.chapa > (S.achData.chapaMax || 0)) S.achData.chapaMax = S.chapa;
   patchChapaBar();
   if (S.chapa >= 100 && !S.yappingActive && Date.now() >= (S.yappingCooldownEnd || 0)) {

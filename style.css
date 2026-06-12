@@ -908,7 +908,7 @@ body {
 .chapa-max      { background: linear-gradient(90deg, #e76f51, #ff4500); box-shadow: 0 0 8px rgba(255,69,0,.6); }
 .chapa-yapping  { background: linear-gradient(90deg, #ffd700, #ff8c00); box-shadow: 0 0 12px rgba(255,215,0,.8); animation: chapa-pulse .4s ease-in-out infinite alternate; }
 .chapa-silencio { background: #333; }
-.chapa-muerto   { background: linear-gradient(90deg, #c45a30, #e76f51); opacity: 0.45; }
+.chapa-muerto   { background: linear-gradient(90deg, #7a2800, #a83a10); }
 @keyframes chapa-pulse {
   from { box-shadow: 0 0 6px rgba(255,215,0,.5); }
   to   { box-shadow: 0 0 22px rgba(255,215,0,1); }
