@@ -1756,9 +1756,12 @@ function clickIdealista() {
   if (piso.zona === 'Salinas') S.achData.salinasVisitados = (S.achData.salinasVisitados || 0) + 1;
   if (piso.zona === 'Avilés') {
     S.avilesDebuffEnd = Date.now() + 20000;
-    S.chapa = Math.max(0, (S.chapa || 0) - 20);
+    S.chapa = 0;
+    S.yappingActive = false;
+    S.chapaSilencioActive = true;
+    S.chapaSilencioEnd = Date.now() + 4000;
     renderSpecial();
-    toast('🤢 ¡¡VILLA CLOACA!! Has ido a ver un piso en Avilés. ×0.3 durante 20s de vergüenza ajena', '🤢');
+    toast('🤢 ¡¡VILLA CLOACA!! Yapping a 0. ×0.3 durante 20s de vergüenza ajena', '🤢');
   } else {
     S.idealistaBuffEnd = Date.now() + piso.sec * 1000;
     S.idealistaBuffMult = piso.mult;
