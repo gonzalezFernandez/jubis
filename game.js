@@ -1654,11 +1654,10 @@ function patchChapaBar() {
   if (fill) {
     fill.style.width = Math.min(100, chapa) + '%';
     fill.className = 'chapa-fill' +
-      (silencio         ? ' chapa-silencio' :
-       yapping          ? ' chapa-yapping'  :
-       chapa >= 80      ? ' chapa-max'      :
-       chapa >= 20      ? ' chapa-caliente' :
-       chapa > 0        ? ' chapa-muerto'   : '');
+      (silencio    ? ' chapa-silencio' :
+       yapping     ? ' chapa-yapping'  :
+       chapa >= 80 ? ' chapa-max'      :
+       chapa > 0 && chapa < 20 ? ' chapa-muerto' : '');
   }
   const lbl = box.querySelector('.chapa-lbl');
   if (lbl) {
@@ -1686,7 +1685,9 @@ function tickDiego() {
     return;
   }
   if (!S.chapaSilencioActive) {
-    S.chapa = Math.max(0, (S.chapa || 0) - 0.8);
+    const c = S.chapa || 0;
+    const decay = 0.2 + (c / 100) * 1.4; // 0.2/tick at 0%, 1.6/tick at 100%
+    S.chapa = Math.max(0, c - decay);
     patchChapaBar();
     if (S.chapa === 0) {
       S.yappingActive = false;
@@ -1858,7 +1859,7 @@ function buildDiego(ch) {
   else if (yapping)  { chapaClass += ' chapa-yapping'; chapaLabel = `🎙️ YAPPING SUPREMO ×5 (${yappingSec}s)`; }
   else if (cooldown) { chapaClass += ' chapa-silencio'; chapaLabel = `⏳ Cooldown (${cooldownSec}s)`; }
   else if (chapa >= 80) { chapaClass += ' chapa-max'; chapaLabel = `🎙️ MODO YAPPING ×3`; }
-  else if (chapa >= 20) { chapaClass += ' chapa-caliente'; chapaLabel = `🔥 Soltando chapa ×1.5`; }
+  else if (chapa >= 20) { chapaLabel = `🔥 Soltando chapa ×1.5`; }
   else if (chapa > 0)   { chapaClass += ' chapa-muerto'; chapaLabel = `💀 Sin fuelle — 0 puntos`; }
 
   let html = `<div class="chapa-box">
