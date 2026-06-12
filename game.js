@@ -1675,7 +1675,6 @@ function patchChapaBar() {
 function tickDiego() {
   if (S.yappingActive && Date.now() >= S.yappingEnd) {
     S.yappingActive = false;
-    S.chapa = 55;
     renderSpecial();
   }
   if (S.chapaSilencioActive && Date.now() >= S.chapaSilencioEnd) {
@@ -1683,10 +1682,11 @@ function tickDiego() {
     renderSpecial();
     return;
   }
-  if (!S.chapaSilencioActive && !S.yappingActive) {
+  if (!S.chapaSilencioActive) {
     S.chapa = Math.max(0, (S.chapa || 0) - 0.8);
     patchChapaBar();
-    if (S.chapa === 0 && !S.chapaSilencioActive) {
+    if (S.chapa === 0) {
+      S.yappingActive = false;
       S.chapaSilencioActive = true;
       S.chapaSilencioEnd = Date.now() + 4000;
       S.achData.silenciosIncomodos = (S.achData.silenciosIncomodos || 0) + 1;
@@ -1697,7 +1697,7 @@ function tickDiego() {
 }
 
 function clickDiegoChapa() {
-  if (S.chapaSilencioActive || S.yappingActive) return;
+  if (S.chapaSilencioActive) return;
   S.chapa = Math.min(100, (S.chapa || 0) + 6);
   if (S.chapa > (S.achData.chapaMax || 0)) S.achData.chapaMax = S.chapa;
   patchChapaBar();
