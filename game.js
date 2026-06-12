@@ -1686,10 +1686,10 @@ function tickDiego() {
   }
   if (!S.chapaSilencioActive) {
     const c = S.chapa || 0;
-    const decay = 0.3 + (c / 100) * 0.4; // 0.3/tick at 0%, 0.7/tick at 100%
+    const decay = 0.2 + (c / 100) * 0.2; // 0.2/tick at 0%, 0.4/tick at 100%
     S.chapa = Math.max(0, c - decay);
     patchChapaBar();
-    if (S.chapa === 0) {
+    if (S.chapa === 0 && c > 0) {
       S.yappingActive = false;
       S.chapaSilencioActive = true;
       S.chapaSilencioEnd = Date.now() + 4000;
