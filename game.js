@@ -207,7 +207,7 @@ const CHARS = {
       { id:'cbd',    name:'CBD Premium',           icon:'💚', desc:'Legal y potente. Para los nervios del alma.',        cost:2200,  prod:10,   cbonus:4,   base:2200  },
       { id:'polvo',  name:'Polvo de Limpieza ✨', icon:'🤧', desc:'Mantiene el local muy limpio... toda la noche.',     cost:12000, prod:50,   cbonus:12,  base:12000 },
       { id:'after',  name:'Afterparty VIP',        icon:'🏠', desc:'La after siempre acaba en el tuyo.',                cost:50000, prod:200,  cbonus:40,  base:50000 },
-      { id:'talco',  name:'Talco Colombiano ☃️',  icon:'❄️', desc:'El importado de calidad superior. Uso personal.',   cost:200000,prod:500,  cbonus:90,  base:200000},
+      { id:'talco',  name:'Escamón Crocanti 🦐',   icon:'❄️', desc:'El importado de calidad superior. Uso personal.',   cost:200000,prod:500,  cbonus:90,  base:200000},
     ],
     msgs:['Las 4AM son las 4PM del fuerte.','Dormir es de muertos, tío.','El sol sale para todos... yo no lo veo.','¿Cansado? No he oído esa palabra.','Una más y me voy. Llevo 3 horas diciendo esto.','El CBD es medicinal. Te lo juro con la mano en el corazón.','Esta noche sí que sí. DOBLETAZO activado.','La resaca es para los débiles.','El hígado es un órgano resiliente. Lo he leído en algún sitio.'],
   },
@@ -364,7 +364,7 @@ const ACHIEVEMENTS = {
     { id:'rascadura',      icon:'🧱', name:'Rascadura de Pared',     desc:'Era la pared. La cara tiene la forma del rodapié.',                           cond: s => (s.achData.yeyoFails||0) >= 1 },
     { id:'yeyo_pro',       icon:'👅', name:'Lamebolsas',              desc:'Chupa la bolsa 3 veces. Sin vergüenza, sin filtro, sin remedio.',             cond: s => (s.achData.chupaWins||0) >= 3 },
     { id:'inmortal',       icon:'💪', name:'El Inmortal',            desc:'5000 vicios. El médico ha dejado de intentarlo.',                             cond: s => s.totalCurrency >= 5000 },
-    { id:'polvo_total',    icon:'❄️', name:'Polvo Total',            desc:'Talco Colombiano comprado. Medicinal y de calidad.',                          cond: s => (s.upgrades.talco||0) >= 1 },
+    { id:'polvo_total',    icon:'🦐', name:'Polvo Total',            desc:'Escamón Crocanti comprado. Medicinal y de calidad.',                         cond: s => (s.upgrades.talco||0) >= 1 },
     { id:'caido_tres',     icon:'💀', name:'No Era la Pared',        desc:'Te golpeas 3 veces con la yeyo. El arquitecto no tiene la culpa.',             cond: s => (s.achData.yeyoFails||0) >= 3 },
     { id:'leyenda_noche',  icon:'🦉', name:'Leyenda de La Noche',    desc:'50000 vicios. El sol ya está saliendo y Fita sigue en pie, milagrosamente.',  cond: s => s.totalCurrency >= 50000 },
   ],
@@ -1539,7 +1539,7 @@ function clickDobletazo() {
   const lines = [
     `DOBLETAZO +${boost}. El "polvo de limpieza" es increíblemente eficaz.`,
     `+${boost} energía. El olfato ha mejorado notablemente.`,
-    `¡DOBLETAZO! Talco colombiano, uso medicinal. +${boost}.`,
+    `¡DOBLETAZO! Escamón crocanti, uso medicinal. +${boost}.`,
     `Quizás CBD, quizás otra cosa. +${boost}. SEGUIMOS.`,
   ];
   showMsg(lines[Math.floor(Math.random() * lines.length)]);
