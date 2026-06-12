@@ -227,7 +227,7 @@ const CHARS = {
       { id:'influencer',name:'Influencer Local',      icon:'⭐', desc:'Famoso en un radio de 3 km.',                        cost:50000, prod:200,  cbonus:40,  base:50000 },
       { id:'premium',   name:'Suscripción Premium 🔞',icon:'🔥', desc:'Inversión necesaria. Para la investigación, claro.', cost:200000,prod:500,  cbonus:90,  base:200000},
     ],
-    msgs:['Scrolleando que es gerundio.','Esta foto tiene buena luz, ¿me pongo aquí?','Le he dado like sin querer. Me muero.','El algoritmo me conoce mejor que mi madre.','Ha abierto el chat y no contesta. ¿QUÉ SIGNIFICA ESO?','Esta canción de TikTok llevo 3 días en la cabeza.','Otro story. ¿Le doy al ❤️ o parece demasiado?','Mis pulgares son atletas de élite.'],
+    msgs:['Scrolleando que es gerundio.','Esta foto tiene buena luz, ¿me pongo aquí?','Le he dado like sin querer. Me muero.','El algoritmo me conoce mejor que mi madre.','Ha abierto el chat y no contesta. ¿QUÉ SIGNIFICA ESO?','Esta canción de TikTok llevo 3 días en la cabeza.','Otro story. ¿Le doy al ❤️ o parece demasiado?','Mis pulgares son atletas de élite.','¡SOCORRO! ...Era una gaviota.','La Voz me llama el Héroe de Salinas. Solo hice mi trabajo.','Hoy el agua está traicionera. Tengo TikTok abierto por si acaso.','El bañista sobrevivió. El artículo en La Voz, también.'],
   },
 
   daigo: {
@@ -349,6 +349,8 @@ const ACHIEVEMENTS = {
     { id:'viral',          icon:'🚀', name:'¡VIRAL!',               desc:'5000 likes. El influencer que todos quieren ser.',            cond: s => s.totalCurrency >= 5000 },
     { id:'influencer_loc', icon:'⭐', name:'Influencer Local',      desc:'Famoso en 3 km² de radio.',                                  cond: s => (s.upgrades.influencer||0) >= 1 },
     { id:'rey_scroll',     icon:'👑', name:'Rey del Scroll',        desc:'50000 likes. Fenómeno digital, Noah.',                       cond: s => s.totalCurrency >= 50000 },
+    { id:'socorrista',     icon:'🏊', name:'Socorrista de Salinas',  desc:'Primer rescate. La Voz de Asturias te pone en portada.',      cond: s => (s.achData.rescates||0) >= 1 },
+    { id:'primera_plana',  icon:'📰', name:'Primera Plana',          desc:'3 rescates. Mamá ha recortado el artículo y lo tiene en la nevera.', cond: s => (s.achData.rescates||0) >= 3 },
   ],
   daigo: [
     { id:'primera_toma',   icon:'🎬', name:'Primera Toma',         desc:'50 tomas acumuladas. El rodaje ha comenzado.',               cond: s => s.totalCurrency >= 50 },
@@ -414,6 +416,7 @@ let S = {
   fightActive: false, fightTimer: null, fightPunch: null, fightReacted: false,
   // Noah
   app: 'instagram', appLit: 'instagram', chicaActive: false, chicaTimer: null, stdActive: false,
+  ahogadoActive: false, ahogadoTimer: null, ahogadoDone: 0, ahogadoNeed: 0, ahogadoTimerEnd: 0, ahogadoBuffEnd: 0, ahogadoDebuffEnd: 0,
   // Nanduko
   policeActive: false, policeTimer: null, policeNeed: 0, policeDone: 0,
   banyoActive: false, banyoTimer: null, banyoBuffEnd: 0,
@@ -439,6 +442,7 @@ let S = {
     cooperInteractions:0, cagadasEvitadas:0, cagadasRecogidas:0,
     looteos:0, jamones:0, perfectHits:0, perfectPoints:0,
     ultraActivations:0, papaRabiosoHits:0, molinillos:0,
+    rescates:0,
   },
   achievements: {},
 };
@@ -614,6 +618,7 @@ function startGame(pid) {
     app:       useSave ? (save.app || 'instagram') : 'instagram',
     appLit: 'instagram',
     chicaActive: false, chicaTimer: null, stdActive: false,
+    ahogadoActive: false, ahogadoTimer: null, ahogadoDone: 0, ahogadoNeed: 0, ahogadoTimerEnd: 0, ahogadoBuffEnd: 0, ahogadoDebuffEnd: 0,
     policeActive: false, policeTimer: null, policeNeed: 0, policeDone: 0,
     banyoActive: false, banyoTimer: null, banyoBuffEnd: 0,
     ligaBuffEnd: 0,
@@ -638,6 +643,7 @@ function startGame(pid) {
       cooperInteractions:0, cagadasEvitadas:0, cagadasRecogidas:0,
       looteos:0, jamones:0, perfectHits:0, perfectPoints:0,
       ultraActivations:0, papaRabiosoHits:0,
+      rescates:0,
     },
     achievements: useSave && save.achievements ? save.achievements : {},
   };
@@ -712,7 +718,7 @@ function stopGame() {
 function goBack() {
   if (!confirm('¿Seguro que quieres salir? Se perderá la sesión actual.')) return;
   stopGame();
-  [S.chicaTimer, S.policeTimer, S.rocaTimer, S.fightTimer, S.banyoTimer, S.raicesTimer, S.coopersTimer, S.diarreaTimer, S.papaTimer, S.molinilloTimer].forEach(t => clearTimeout(t));
+  [S.chicaTimer, S.ahogadoTimer, S.policeTimer, S.rocaTimer, S.fightTimer, S.banyoTimer, S.raicesTimer, S.coopersTimer, S.diarreaTimer, S.papaTimer, S.molinilloTimer].forEach(t => clearTimeout(t));
   document.getElementById('coopers-slot').style.display = 'none';
   clearInterval(holdInterval); holdInterval = null; holdProgress = 0; holdType = null;
   S.pid = null;
@@ -840,6 +846,7 @@ function calcPC() {
     v *= m[S.appLit] || 1;
   }
   if ((S.pid === 'nanduko' || S.pid === 'extraperlo') && S.banyoBuffEnd && Date.now() < S.banyoBuffEnd) v *= 4;
+  if (S.pid === 'noah' && S.ahogadoBuffEnd && Date.now() < S.ahogadoBuffEnd) v *= 3;
   if (S.pid === 'daigo') {
     if (S.ultraActive && Date.now() < S.ultraEnd) v *= 10;
     if (S.molinilloBuffEnd && Date.now() < S.molinilloBuffEnd) v *= 5;
@@ -867,6 +874,8 @@ function calcPS() {
   if (S.pid === 'nanduko' && S.raicesDebuffEnd && Date.now() < S.raicesDebuffEnd) v *= 0.5;
   if ((S.pid === 'nanduko' || S.pid === 'extraperlo') && S.banyoBuffEnd && Date.now() < S.banyoBuffEnd) v *= 4;
   if (S.pid === 'noah' && S.ligaBuffEnd && Date.now() < S.ligaBuffEnd) v *= 5;
+  if (S.pid === 'noah' && S.ahogadoBuffEnd && Date.now() < S.ahogadoBuffEnd) v *= 3;
+  if (S.pid === 'noah' && S.ahogadoDebuffEnd && Date.now() < S.ahogadoDebuffEnd) v *= 0.4;
   if (S.pid === 'daigo') {
     if (S.ultraActive && Date.now() < S.ultraEnd) v *= 10;
     if (S.molinilloBuffEnd && Date.now() < S.molinilloBuffEnd) v *= 5;
@@ -1369,6 +1378,7 @@ function clickDobletazo() {
 function checkNoah() {
   if (!S.chicaActive && Math.random() < 0.09) triggerChica();
   if (!S.stdActive && S.totalCurrency > 800 && Math.random() < 0.04) triggerSTD();
+  if (!S.ahogadoActive && Math.random() < 0.05) triggerAhogado();
   if (Math.random() < 0.18) {
     const apps = ['instagram', 'tiktok', 'whatsapp'];
     const others = apps.filter(a => a !== S.appLit);
@@ -1426,6 +1436,59 @@ function clickFarmacia() {
   toast('¡Curado! El farmacéutico no ha dicho nada... con la boca.', '💊');
   showMsg('El farmacéutico te ha mirado raro. Normal. Ya estás bien.');
   updateDisplays();
+}
+
+const VOZ_HERO = [
+  '📰 LA VOZ: "El socorrista de Salinas salva a un bañista en intervención heroica"',
+  '📰 LA VOZ: "Noah, guardián de Salinas: rápido, valiente y sin mirar el móvil"',
+  '📰 LA VOZ: "Rescate en playa de Salinas: el socorrista que sí estaba en su puesto"',
+  '📰 LA VOZ: "El héroe del verano asturiano: Noah al rescate en Salinas"',
+];
+const VOZ_FAIL = [
+  '📰 LA VOZ: "El socorrista de Salinas miraba TikTok mientras un bañista pedía socorro"',
+  '📰 LA VOZ: "Polémica en Salinas: ¿dónde estaba el socorrista cuando lo necesitaban?"',
+  '📰 LA VOZ: "El Ayuntamiento pide explicaciones al socorrista de Salinas tras el incidente"',
+  '📰 LA VOZ: "Bañista sobrevive pese a la ausencia del socorrista: \'Estaba con el móvil\'"',
+];
+
+function triggerAhogado() {
+  S.ahogadoActive = true;
+  S.ahogadoDone = 0;
+  S.ahogadoNeed = 12 + Math.floor(Math.random() * 7);
+  S.ahogadoTimerEnd = Date.now() + 6000;
+  clearTimeout(S.ahogadoTimer);
+  S.ahogadoTimer = setTimeout(() => {
+    if (S.ahogadoActive) {
+      S.ahogadoActive = false;
+      S.ahogadoDebuffEnd = Date.now() + 20000;
+      renderSpecial();
+      const titular = VOZ_FAIL[Math.floor(Math.random() * VOZ_FAIL.length)];
+      toast(titular, '📰', 'toast-voz-fail');
+      showMsg('El bañista se las apañó solo. La Voz de Asturias ya tiene redactor en camino.');
+      updateDisplays();
+    }
+  }, 6000);
+  renderSpecial();
+  toast('🌊 ¡¡SE ESTÁ AHOGANDO!! ¡¡AL AGUA AHORA!!', '🌊');
+  showMsg('¡Alguien pide socorro en el agua! ¡Mueve los brazos, Noah!');
+}
+
+function clickSocorro() {
+  if (!S.ahogadoActive) return;
+  S.ahogadoDone++;
+  if (S.ahogadoDone >= S.ahogadoNeed) {
+    clearTimeout(S.ahogadoTimer);
+    S.ahogadoActive = false;
+    S.achData.rescates = (S.achData.rescates || 0) + 1;
+    S.ahogadoBuffEnd = Date.now() + 15000;
+    renderSpecial();
+    const titular = VOZ_HERO[Math.floor(Math.random() * VOZ_HERO.length)];
+    toast(titular, '📰', 'toast-voz-hero');
+    showMsg('¡Rescate completado! La Voz de Asturias ya tiene titular para mañana.');
+    updateDisplays();
+  } else {
+    renderSpecial();
+  }
 }
 
 function switchApp(id) {
@@ -2119,10 +2182,29 @@ function buildNoah(ch) {
   html += `<div class="app-status ${onCorrect ? 'app-status-ok' : 'app-status-warn'}">
     ${onCorrect ? `✅ ${litApp.icon} activo — ${litApp.m}` : `⚡ Cambia a ${litApp.icon} ${litApp.name} para el bonus`}
   </div>`;
+  if (S.ahogadoActive) {
+    const pct = Math.floor((S.ahogadoDone / S.ahogadoNeed) * 100);
+    const secsLeft = Math.max(0, Math.ceil((S.ahogadoTimerEnd - Date.now()) / 1000));
+    html += `<div class="ahogado-event">
+      <div style="font-size:2.2rem">🌊🏊</div>
+      <h4>¡¡SE ESTÁ AHOGANDO!!</h4>
+      <p>${S.ahogadoDone}/${S.ahogadoNeed} — ${secsLeft}s</p>
+      <div class="ahogado-track"><div class="ahogado-fill" style="width:${pct}%"></div></div>
+      <button class="socorro-btn" onclick="clickSocorro()">🏊 ¡AL AGUA!</button>
+    </div>`;
+  }
   if (S.chicaActive) html += `<div class="chica-event"><div style="font-size:2rem">👩‍🦰</div><h4>¡CHICA A LA VISTA!</h4><p>Te está mirando. ¡Habla ahora o nunca!</p><button class="chica-btn" onclick="clickChica()">💬 ¡LIGAR AHORA!</button></div>`;
+  if (S.ahogadoBuffEnd && Date.now() < S.ahogadoBuffEnd) {
+    const sec = Math.ceil((S.ahogadoBuffEnd - Date.now()) / 1000);
+    html += `<div class="wsk-active">📰 HÉROE DE SALINAS — ×3 (${sec}s)</div>`;
+  }
   if (S.ligaBuffEnd && Date.now() < S.ligaBuffEnd) {
     const sec = Math.ceil((S.ligaBuffEnd - Date.now()) / 1000);
     html += `<div class="wsk-active">💕 EN MODO LIGUE — ×5 (${sec}s)</div>`;
+  }
+  if (S.ahogadoDebuffEnd && Date.now() < S.ahogadoDebuffEnd) {
+    const sec = Math.ceil((S.ahogadoDebuffEnd - Date.now()) / 1000);
+    html += `<div class="police-calm raices-debuff">📰 Mala prensa en La Voz — producción ×0.4 (${sec}s)</div>`;
   }
   if (S.stdActive) {
     const cost = Math.max(200, Math.floor(S.totalCurrency * 0.1));
