@@ -1008,11 +1008,10 @@ body {
   to   { box-shadow: 0 0 28px rgba(200,68,255,1); }
 }
 .interruptor-title { font-size:0.9rem; font-weight:900; color:#dd88ff; margin-bottom:0.5rem; }
-.iz-legend { display:flex; justify-content:space-between; margin-bottom:0.3rem; }
-.iz-leg { font-size:0.62rem; font-weight:700; flex:1; text-align:center; }
-.iz-leg-red    { color:#ff5555; }
-.iz-leg-orange { color:#ffaa44; }
-.iz-leg-green  { color:#44ff88; }
+.iz-key { display:flex; justify-content:space-around; margin-top:0.3rem; gap:4px; }
+.iz-leg-red    { font-size:0.6rem; font-weight:700; color:#ff5555; }
+.iz-leg-orange { font-size:0.6rem; font-weight:700; color:#ffaa44; }
+.iz-leg-green  { font-size:0.6rem; font-weight:700; color:#44ff88; }
 .iz-bar {
   position:relative; height:22px; border-radius:8px; overflow:hidden; margin-bottom:0.4rem;
   background: linear-gradient(90deg,

@@ -467,7 +467,7 @@ let S = {
   chapa: 0, chapaSilencioActive: false, chapaSilencioEnd: 0, yappingActive: false, yappingEnd: 0, yappingCooldownEnd: 0,
   idealistaActive: false, idealistaTimer: null, idealistaPiso: null, idealistaBuffEnd: 0, idealistaBuffMult: 1,
   olaActive: false, olaDir: null, olaTimer: null, olaRevealed: false, olaBuffEnd: 0, olaDebuffEnd: 0,
-  interrumpidorActive: false, interrumpidorTimer: null, interrumpidorStartMs: 0, callarBuffEnd: 0, lastChapaClickMs: 0,
+  interrumpidorActive: false, interrumpidorTimer: null, interrumpidorStartMs: 0, interrumpidorLayout: null, callarBuffEnd: 0, lastChapaClickMs: 0,
   salinasConteo: 0, avilesDebuffEnd: 0,
   // Nanduko
   policeActive: false, policeTimer: null, policeNeed: 0, policeDone: 0,
@@ -675,7 +675,7 @@ function startGame(pid) {
     chapa: 0, chapaSilencioActive: false, chapaSilencioEnd: 0, yappingActive: false, yappingEnd: 0, yappingCooldownEnd: 0,
     idealistaActive: false, idealistaTimer: null, idealistaPiso: null, idealistaBuffEnd: 0, idealistaBuffMult: 1,
     olaActive: false, olaDir: null, olaTimer: null, olaRevealed: false, olaBuffEnd: 0, olaDebuffEnd: 0,
-    interrumpidorActive: false, interrumpidorTimer: null, interrumpidorStartMs: 0, callarBuffEnd: 0, lastChapaClickMs: 0,
+    interrumpidorActive: false, interrumpidorTimer: null, interrumpidorStartMs: 0, interrumpidorLayout: null, callarBuffEnd: 0, lastChapaClickMs: 0,
     salinasConteo: 0, avilesDebuffEnd: 0,
     policeActive: false, policeTimer: null, policeNeed: 0, policeDone: 0,
     banyoActive: false, banyoTimer: null, banyoBuffEnd: 0,
@@ -1819,6 +1819,13 @@ function _failInterruptor() {
 function triggerInterruptor() {
   S.interrumpidorActive = true;
   S.interrumpidorStartMs = Date.now();
+  const gW = 18 + Math.random() * 12;          // green width 18–30%
+  const gPos = 4 + Math.random() * (88 - gW);  // green start 4–88%
+  const oW = 10 + Math.random() * 10;          // orange flank 10–20%
+  S.interrumpidorLayout = {
+    gs: gPos, ge: gPos + gW,
+    os: Math.max(0, gPos - oW), oe: Math.min(100, gPos + gW + oW),
+  };
   renderSpecial();
   toast('💬 ¡ALGUIEN TE INTERRUMPE! Para el cursor en la zona correcta', '💬');
   clearTimeout(S.interrumpidorTimer);
@@ -1836,12 +1843,13 @@ function clickInterruptor() {
   const cycle = elapsed % (speed * 2);
   const pos = cycle <= speed ? (cycle / speed) * 100 : ((speed * 2 - cycle) / speed) * 100;
 
-  if (pos >= 38 && pos <= 62) {
+  const L = S.interrumpidorLayout || { gs:38, ge:62, os:20, oe:80 };
+  if (pos >= L.gs && pos <= L.ge) {
     S.interrumpidorActive = false;
     S.callarBuffEnd = Date.now() + 10000;
     renderSpecial();
     toast('🤫 ¡ZONA PERFECTA! Callado con clase. ×4 durante 10s', '🤫');
-  } else if ((pos >= 20 && pos < 38) || (pos > 62 && pos <= 80)) {
+  } else if (pos >= L.os && pos <= L.oe) {
     S.interrumpidorActive = false;
     S.yappingEnd = (S.yappingEnd || Date.now()) + 10000;
     S.chapa = Math.min(100, (S.chapa || 0) + 10);
@@ -1894,17 +1902,24 @@ function buildDiego(ch) {
   }
 
   if (S.interrumpidorActive) {
+    const L = S.interrumpidorLayout || { gs:38, ge:62, os:20, oe:80 };
+    const grad = `linear-gradient(90deg,
+      #770000 0%,#770000 ${L.os}%,
+      #aa5500 ${L.os}%,#aa5500 ${L.gs}%,
+      #005c1a ${L.gs}%,#005c1a ${L.ge}%,
+      #aa5500 ${L.ge}%,#aa5500 ${L.oe}%,
+      #770000 ${L.oe}%,#770000 100%)`;
     html += `<div class="interruptor-event" onclick="clickInterruptor()">
       <div class="interruptor-title">💬 ¡ALGUIEN TE INTERRUMPE!</div>
-      <div class="iz-legend">
-        <span class="iz-leg iz-leg-red">💀 TODO A 0</span>
-        <span class="iz-leg iz-leg-orange">💢 +10s</span>
-        <span class="iz-leg iz-leg-green">🤫 ×4</span>
-        <span class="iz-leg iz-leg-orange">💢 +10s</span>
-        <span class="iz-leg iz-leg-red">💀 TODO A 0</span>
-      </div>
-      <div class="iz-bar">
+      <div class="iz-bar" style="background:${grad}">
         <div class="iz-cursor"></div>
+      </div>
+      <div class="iz-key">
+        <span class="iz-leg-red">💀 todo a 0</span>
+        <span class="iz-leg-orange">💢 +10s</span>
+        <span class="iz-leg-green">🤫 ×4</span>
+        <span class="iz-leg-orange">💢 +10s</span>
+        <span class="iz-leg-red">💀 todo a 0</span>
       </div>
       <div class="iz-hint">¡Pulsa para parar!</div>
     </div>`;
