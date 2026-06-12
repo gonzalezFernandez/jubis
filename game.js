@@ -362,7 +362,7 @@ const ACHIEVEMENTS = {
     { id:'quies_una',      icon:'👃', name:'¿Quiés una?',            desc:'Primera vez que aceptas. Con toda la confianza del mundo.',                   cond: s => (s.achData.yeyoWins||0) + (s.achData.yeyoFails||0) >= 1 },
     { id:'triplete',       icon:'🚀', name:'LA TRIPLE CORONA',        desc:'3 TRIPLETES. La realeza del vicio. Fita merece una medalla y un médico.',    cond: s => (s.achData.yeyoWins||0) >= 3 },
     { id:'rascadura',      icon:'🧱', name:'Rascadura de Pared',     desc:'Era la pared. La cara tiene la forma del rodapié.',                           cond: s => (s.achData.yeyoFails||0) >= 1 },
-    { id:'yeyo_pro',       icon:'👅', name:'Lamebolsas',              desc:'Chupa la bolsa 3 veces. Sin vergüenza, sin filtro, sin remedio.',             cond: s => (s.achData.yeyoWins||0) >= 10 },
+    { id:'yeyo_pro',       icon:'👅', name:'Lamebolsas',              desc:'Chupa la bolsa 3 veces. Sin vergüenza, sin filtro, sin remedio.',             cond: s => (s.achData.chupaWins||0) >= 3 },
     { id:'inmortal',       icon:'💪', name:'El Inmortal',            desc:'5000 vicios. El médico ha dejado de intentarlo.',                             cond: s => s.totalCurrency >= 5000 },
     { id:'polvo_total',    icon:'❄️', name:'Polvo Total',            desc:'Talco Colombiano comprado. Medicinal y de calidad.',                          cond: s => (s.upgrades.talco||0) >= 1 },
     { id:'caido_tres',     icon:'💀', name:'No Era la Pared',        desc:'Te golpeas 3 veces con la yeyo. El arquitecto no tiene la culpa.',             cond: s => (s.achData.yeyoFails||0) >= 3 },
@@ -526,7 +526,7 @@ let S = {
   corteLuzActive: false, corteLuzTimer: null, corteLuzBuffEnd: 0, corteLuzDebuffEnd: 0,
   // Shared tracking for achievements
   achData: {
-    wskActivations:0, wskWins:0, dobletazos:0,
+    wskActivations:0, wskWins:0, dobletazos:0, chupaWins:0,
     chicaTotal:0, chicaLiga:0, chicaFails:0, farmacia:0,
     policeEscapes:0, policeCaptures:0, rocaHits:0, timeSec:0,
     raicesEscapes:0, raicesCaptures:0,
@@ -734,7 +734,7 @@ function startGame(pid) {
     invasorActive: false, invasorTimer: null, invasorNeed: 0, invasorDone: 0, invasorDebuffEnd: 0,
     corteLuzActive: false, corteLuzTimer: null, corteLuzBuffEnd: 0, corteLuzDebuffEnd: 0,
     achData: useSave && save.achData ? { raicesEscapes:0, raicesCaptures:0, cooperInteractions:0, cagadasEvitadas:0, cagadasRecogidas:0, looteos:0, jamones:0, perfectHits:0, perfectPoints:0, ultraActivations:0, papaRabiosoHits:0, ...save.achData } : {
-      wskActivations:0, wskWins:0, dobletazos:0,
+      wskActivations:0, wskWins:0, dobletazos:0, chupaWins:0,
       fightWins:0, fightLosses:0,
       yeyoWins:0, yeyoFails:0,
       chicaTotal:0, chicaLiga:0, chicaFails:0, farmacia:0,
@@ -1485,6 +1485,7 @@ function clickChupaCorner(idx) {
     S.tripleActive = true;
     S.tripleEnd    = Date.now() + 3000;
     S.energy       = 100;
+    S.achData.chupaWins = (S.achData.chupaWins || 0) + 1;
     S.achData.dobletazos++;
     renderSpecial();
     toast('🛍️✅ ¡TRIPLETE! ×10 durante 3 segundos. ¡Chupa más!', '⚡');
