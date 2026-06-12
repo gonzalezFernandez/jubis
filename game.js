@@ -2714,8 +2714,8 @@ function buildDobletazo() {
   }
   if (crit && !triple) html += `<div class="energy-warn">⚠️ ¡Fita se desploma! ¡Haz algo YA!</div>`;
   if (pct <= 0)        html += `<div class="energy-warn" style="color:#ff2222">💤 K.O. Producción = 0.</div>`;
-  if (pct > 75 && !triple) html += `<div class="energy-warn" style="color:#c97fff;font-weight:700">🌙 NOCHE ALTA ×1.5 — energía por encima del 75%</div>`;
   html += `</div>`;
+  if (S.pid === 'fita' && pct > 75 && !triple) html += `<div class="wsk-active" style="background:rgba(155,66,240,.25);border-color:rgba(155,66,240,.6);color:#c97fff">🌙 NOCHE ALTA ×1.5 — energía por encima del 75%</div>`;
 
   if (S.chupaActive) {
     const c = S.chupaCorners;
