@@ -1878,9 +1878,9 @@ function _failInterruptor() {
 function triggerInterruptor() {
   S.interrumpidorActive = true;
   S.interrumpidorStartMs = Date.now();
-  const gW = 18 + Math.random() * 12;          // green width 18–30%
-  const gPos = 4 + Math.random() * (88 - gW);  // green start 4–88%
-  const oW = 10 + Math.random() * 10;          // orange flank 10–20%
+  const gW = 5 + Math.random() * 5;            // green width 5–10%
+  const gPos = 4 + Math.random() * (92 - gW);  // green start 4–92%
+  const oW = 8 + Math.random() * 8;            // orange flank 8–16%
   S.interrumpidorLayout = {
     gs: gPos, ge: gPos + gW,
     os: Math.max(0, gPos - oW), oe: Math.min(100, gPos + gW + oW),
