@@ -947,7 +947,7 @@ function calcPC() {
   if ((S.pid === 'muchaga' || S.pid === 'extraperlo') && S.wskActive && Date.now() < S.wskEnd) v *= 5;
   if ((S.pid === 'muchaga' || S.pid === 'extraperlo') && S.furiaLevel >= 100) v *= 5;
   if ((S.pid === 'fita' || S.pid === 'extraperlo') && S.tripleActive && Date.now() < S.tripleEnd) v *= 10;
-  if (S.pid === 'fita' && (S.energy || 0) > 75) v *= 3;
+  if (S.pid === 'fita' && (S.energy || 0) > 75) v *= 1.5;
   if (S.pid === 'noah' && S.app === S.appLit) {
     const m = { instagram:2, tiktok:3.5, whatsapp:1.5 };
     v *= m[S.appLit] || 1;
@@ -988,7 +988,7 @@ function calcPS() {
   if ((S.pid === 'muchaga' || S.pid === 'extraperlo') && S.wskActive && Date.now() < S.wskEnd) v *= 5;
   if ((S.pid === 'muchaga' || S.pid === 'extraperlo') && S.furiaLevel >= 100) v *= 5;
   if ((S.pid === 'fita' || S.pid === 'extraperlo') && S.tripleActive && Date.now() < S.tripleEnd) v *= 10;
-  if (S.pid === 'fita' && (S.energy || 0) > 75) v *= 3;
+  if (S.pid === 'fita' && (S.energy || 0) > 75) v *= 1.5;
   if (S.pid === 'noah') {
     if (S.app === S.appLit) {
       const m = { instagram:2, tiktok:3.5, whatsapp:1.5 };
@@ -2714,7 +2714,7 @@ function buildDobletazo() {
   }
   if (crit && !triple) html += `<div class="energy-warn">⚠️ ¡Fita se desploma! ¡Haz algo YA!</div>`;
   if (pct <= 0)        html += `<div class="energy-warn" style="color:#ff2222">💤 K.O. Producción = 0.</div>`;
-  if (pct > 75 && !triple) html += `<div class="energy-warn" style="color:#c97fff;font-weight:700">🌙 NOCHE ALTA ×3 — energía por encima del 75%</div>`;
+  if (pct > 75 && !triple) html += `<div class="energy-warn" style="color:#c97fff;font-weight:700">🌙 NOCHE ALTA ×1.5 — energía por encima del 75%</div>`;
   html += `</div>`;
 
   if (S.chupaActive) {
