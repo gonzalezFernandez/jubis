@@ -1644,6 +1644,34 @@ function checkDiego() {
   if (S.yappingActive && !S.interrumpidorActive && (S.yappingEnd - Date.now()) > 3000 && Math.random() < 0.10) triggerInterruptor();
 }
 
+function patchChapaBar() {
+  const box = document.querySelector('.chapa-box');
+  if (!box) return;
+  const chapa = S.chapa || 0;
+  const yapping = S.yappingActive && Date.now() < S.yappingEnd;
+  const silencio = S.chapaSilencioActive;
+  const fill = box.querySelector('.chapa-fill');
+  if (fill) {
+    fill.style.width = Math.min(100, chapa) + '%';
+    fill.className = 'chapa-fill' +
+      (silencio         ? ' chapa-silencio' :
+       yapping          ? ' chapa-yapping'  :
+       chapa >= 80      ? ' chapa-max'      :
+       chapa >= 40      ? ' chapa-caliente' :
+       chapa < 20 && chapa > 0 ? ' chapa-muerto' : '');
+  }
+  const lbl = box.querySelector('.chapa-lbl');
+  if (lbl) {
+    let text = '💬 Calentando el rollo...';
+    if (silencio)       text = '😶 Silencio incómodo...';
+    else if (yapping)   text = `🎙️ YAPPING SUPREMO ×5 (${Math.ceil((S.yappingEnd - Date.now()) / 1000)}s)`;
+    else if (chapa >= 80) text = `🎙️ MODO YAPPING ×3`;
+    else if (chapa >= 40) text = `🔥 Soltando chapa ×1.5`;
+    else if (chapa < 20 && chapa > 0) text = `💀 Sin fuelle — 0 puntos`;
+    lbl.innerHTML = `<span>${text}</span><span>${Math.floor(chapa)}%</span>`;
+  }
+}
+
 function tickDiego() {
   if (S.yappingActive && Date.now() >= S.yappingEnd) {
     S.yappingActive = false;
@@ -1657,6 +1685,7 @@ function tickDiego() {
   }
   if (!S.chapaSilencioActive && !S.yappingActive) {
     S.chapa = Math.max(0, (S.chapa || 0) - 0.8);
+    patchChapaBar();
     if (S.chapa === 0 && !S.chapaSilencioActive) {
       S.chapaSilencioActive = true;
       S.chapaSilencioEnd = Date.now() + 4000;
@@ -1671,6 +1700,7 @@ function clickDiegoChapa() {
   if (S.chapaSilencioActive || S.yappingActive) return;
   S.chapa = Math.min(100, (S.chapa || 0) + 6);
   if (S.chapa > (S.achData.chapaMax || 0)) S.achData.chapaMax = S.chapa;
+  patchChapaBar();
   if (S.chapa >= 100 && !S.yappingActive) {
     S.yappingActive = true;
     S.yappingEnd = Date.now() + 8000;

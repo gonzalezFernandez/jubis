@@ -903,7 +903,7 @@ body {
 }
 .chapa-lbl { display:flex; justify-content:space-between; font-size:0.78rem; font-weight:700; margin-bottom:0.4rem; color:var(--theme); }
 .chapa-track { height: 12px; background: rgba(255,255,255,.1); border-radius: 6px; overflow:hidden; }
-.chapa-fill { height:100%; border-radius:6px; transition: width .12s linear; background: rgba(255,255,255,.3); }
+.chapa-fill { height:100%; border-radius:6px; transition: width .1s ease-out; background: rgba(255,255,255,.3); }
 .chapa-caliente { background: linear-gradient(90deg, #e76f51, #f4a261); }
 .chapa-max      { background: linear-gradient(90deg, #e76f51, #ff4500); box-shadow: 0 0 8px rgba(255,69,0,.6); }
 .chapa-yapping  { background: linear-gradient(90deg, #ffd700, #ff8c00); box-shadow: 0 0 12px rgba(255,215,0,.8); animation: chapa-pulse .4s ease-in-out infinite alternate; }
