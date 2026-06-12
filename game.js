@@ -1471,7 +1471,7 @@ function triggerChupa() {
       renderSpecial();
       toast('Se acabó la bolsa. Sin triplete.', '😩');
     }
-  }, 6000);
+  }, 10000);
 }
 
 function clickChupaCorner(idx) {
