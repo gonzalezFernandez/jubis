@@ -467,7 +467,7 @@ let S = {
   chapa: 0, chapaSilencioActive: false, chapaSilencioEnd: 0, yappingActive: false, yappingEnd: 0, yappingCooldownEnd: 0,
   idealistaActive: false, idealistaTimer: null, idealistaPiso: null, idealistaBuffEnd: 0, idealistaBuffMult: 1,
   olaActive: false, olaDir: null, olaTimer: null, olaRevealed: false, olaBuffEnd: 0, olaDebuffEnd: 0,
-  interrumpidorActive: false, interrumpidorTimer: null, interrumpidorStartMs: 0, callarBuffEnd: 0,
+  interrumpidorActive: false, interrumpidorTimer: null, interrumpidorStartMs: 0, callarBuffEnd: 0, lastChapaClickMs: 0,
   salinasConteo: 0, avilesDebuffEnd: 0,
   // Nanduko
   policeActive: false, policeTimer: null, policeNeed: 0, policeDone: 0,
@@ -675,7 +675,7 @@ function startGame(pid) {
     chapa: 0, chapaSilencioActive: false, chapaSilencioEnd: 0, yappingActive: false, yappingEnd: 0, yappingCooldownEnd: 0,
     idealistaActive: false, idealistaTimer: null, idealistaPiso: null, idealistaBuffEnd: 0, idealistaBuffMult: 1,
     olaActive: false, olaDir: null, olaTimer: null, olaRevealed: false, olaBuffEnd: 0, olaDebuffEnd: 0,
-    interrumpidorActive: false, interrumpidorTimer: null, interrumpidorStartMs: 0, callarBuffEnd: 0,
+    interrumpidorActive: false, interrumpidorTimer: null, interrumpidorStartMs: 0, callarBuffEnd: 0, lastChapaClickMs: 0,
     salinasConteo: 0, avilesDebuffEnd: 0,
     policeActive: false, policeTimer: null, policeNeed: 0, policeDone: 0,
     banyoActive: false, banyoTimer: null, banyoBuffEnd: 0,
@@ -1641,7 +1641,9 @@ function pickPiso() {
 function checkDiego() {
   if (!S.idealistaActive && Math.random() < 0.06) triggerIdealista();
   if (!S.olaActive && !holdType && Math.random() < 0.05) triggerOla();
-  if (S.yappingActive && !S.interrumpidorActive && (S.yappingEnd - Date.now()) > 3000 && Math.random() < 0.35) triggerInterruptor();
+  const inYapping = S.yappingActive && Date.now() < S.yappingEnd;
+  const inModoYapping = !inYapping && (S.chapa || 0) >= 80;
+  if ((inYapping || inModoYapping) && !S.interrumpidorActive && (!inYapping || (S.yappingEnd - Date.now()) > 3000) && Math.random() < 0.35) triggerInterruptor();
 }
 
 function patchChapaBar() {
@@ -1686,7 +1688,9 @@ function tickDiego() {
   }
   if (!S.chapaSilencioActive) {
     const c = S.chapa || 0;
-    const decay = 0.2 + (c / 100) * 0.2; // 0.2/tick at 0%, 0.4/tick at 100%
+    const secSinceClick = S.lastChapaClickMs ? (Date.now() - S.lastChapaClickMs) / 1000 : 99;
+    const decayMult = 1 + Math.min(secSinceClick / 1.5, 5); // 1x now, up to 6x after ~7.5s
+    const decay = (0.2 + (c / 100) * 0.2) * decayMult;
     S.chapa = Math.max(0, c - decay);
     patchChapaBar();
     if (S.chapa === 0 && c > 0) {
@@ -1705,6 +1709,7 @@ function clickDiegoChapa() {
   const prev = S.chapa || 0;
   S.chapa = Math.min(100, prev + 1.7);
   if (prev === 0) S.chapa = Math.max(1, S.chapa);
+  S.lastChapaClickMs = Date.now();
   if (S.chapa > (S.achData.chapaMax || 0)) S.achData.chapaMax = S.chapa;
   patchChapaBar();
   if (S.chapa >= 100 && !S.yappingActive && Date.now() >= (S.yappingCooldownEnd || 0)) {
