@@ -643,38 +643,36 @@ body {
 .chupa-event p  { font-size: 0.74rem; color: #9060c0; margin-bottom: 0.65rem; }
 .chupa-bolsa {
   position: relative;
-  height: 90px;
+  width: 100%;
+  height: 110px;
   overflow: visible;
-  aspect-ratio: 1;
-  max-width: 160px;
-  margin: 0 auto;
-  padding: 6px;
-  background: rgba(155,66,240,.08);
-  border: 1.5px dashed rgba(155,66,240,.35);
-  border-radius: 10px;
+  background: rgba(155,66,240,.06);
+  border: 2px dashed rgba(155,66,240,.4);
+  border-radius: 14px;
+  margin: 0.3rem 0 0.8rem;
+  box-sizing: border-box;
 }
 .chupa-corner {
   position: absolute;
   overflow: hidden;
   display: flex; align-items: center; justify-content: center;
-  width: 48px; height: 48px;
-  background: rgba(155,66,240,.12);
-  border: 1.5px solid rgba(155,66,240,.4);
-  border-radius: 8px; cursor: pointer;
-  font-size: 1.55rem; padding: 0;
+  width: 52px; height: 52px;
+  background: rgba(155,66,240,.15);
+  border: 2px solid rgba(155,66,240,.5);
+  cursor: pointer; font-size: 1.6rem; padding: 0;
   transition: border-color .1s, transform .08s;
   user-select: none; -webkit-user-select: none;
 }
 .chupa-corner:active { transform: scale(.88); }
 .chupa-corner.licked {
   border-color: #c97fff;
-  background: rgba(155,66,240,.35);
-  box-shadow: 0 0 10px rgba(155,66,240,.6);
+  background: rgba(155,66,240,.4);
+  box-shadow: 0 0 12px rgba(155,66,240,.7);
 }
-.chupa-corner:nth-child(1) { top: 0;    left: 0;   border-radius: 10px 4px 4px 4px; }
-.chupa-corner:nth-child(2) { top: 0;    right: 0;  border-radius: 4px 10px 4px 4px; }
-.chupa-corner:nth-child(3) { bottom: 0; left: 0;   border-radius: 4px 4px 4px 10px; }
-.chupa-corner:nth-child(4) { bottom: 0; right: 0;  border-radius: 4px 4px 10px 4px; }
+.chupa-corner:nth-child(1) { top: -2px;    left: -2px;   border-radius: 12px 4px 4px 4px; }
+.chupa-corner:nth-child(2) { top: -2px;    right: -2px;  border-radius: 4px 12px 4px 4px; }
+.chupa-corner:nth-child(3) { bottom: -2px; left: -2px;   border-radius: 4px 4px 4px 12px; }
+.chupa-corner:nth-child(4) { bottom: -2px; right: -2px;  border-radius: 4px 4px 12px 4px; }
 .corner-fill-bg {
   position: absolute; inset: 0;
   display: flex; align-items: flex-end;
