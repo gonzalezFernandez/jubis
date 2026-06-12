@@ -999,25 +999,39 @@ body {
   width:100%; padding:0.8rem;
   background: linear-gradient(135deg, #1a0020, #2a003a);
   border: 2.5px solid #cc44ff; border-radius:12px;
-  text-align:center; margin-bottom:0.5rem;
+  text-align:center; margin-bottom:0.5rem; cursor:pointer;
   animation: interruptor-flash .35s ease-in-out infinite alternate;
+  user-select:none;
 }
 @keyframes interruptor-flash {
   from { box-shadow: 0 0 8px rgba(200,68,255,.4); }
   to   { box-shadow: 0 0 28px rgba(200,68,255,1); }
 }
-.interruptor-title { font-size:0.9rem; font-weight:900; color:#dd88ff; margin-bottom:0.2rem; }
-.interruptor-hint  { font-size:0.72rem; color:#aa66cc; margin-bottom:0.6rem; }
-.interruptor-btns  { display:flex; gap:8px; }
-.callar-btn, .discutir-btn {
-  flex:1; padding:0.6rem 0.3rem;
-  font-weight:900; font-size:0.82rem; border:none;
-  border-radius:8px; cursor:pointer; font-family:inherit;
-  transition:filter .1s, transform .08s;
+.interruptor-title { font-size:0.9rem; font-weight:900; color:#dd88ff; margin-bottom:0.5rem; }
+.iz-legend { display:flex; justify-content:space-between; margin-bottom:0.3rem; }
+.iz-leg { font-size:0.62rem; font-weight:700; flex:1; text-align:center; }
+.iz-leg-red    { color:#ff5555; }
+.iz-leg-orange { color:#ffaa44; }
+.iz-leg-green  { color:#44ff88; }
+.iz-bar {
+  position:relative; height:22px; border-radius:8px; overflow:hidden; margin-bottom:0.4rem;
+  background: linear-gradient(90deg,
+    #880000 0%, #880000 20%,
+    #aa5500 20%, #aa5500 38%,
+    #006622 38%, #006622 62%,
+    #aa5500 62%, #aa5500 80%,
+    #880000 80%, #880000 100%
+  );
+  border: 1px solid rgba(204,68,255,0.4);
 }
-.callar-btn   { background:#4488ff; color:#fff; }
-.discutir-btn { background:#cc44ff; color:#fff; }
-.callar-btn:active, .discutir-btn:active { transform:scale(.93); }
+.iz-cursor {
+  position:absolute; top:0; height:100%; width:5px;
+  background:#fff; border-radius:2px; opacity:0.95;
+  box-shadow: 0 0 6px #fff;
+  animation: iz-sweep 2s linear infinite alternate;
+}
+@keyframes iz-sweep { from { left:0% } to { left:calc(100% - 5px) } }
+.iz-hint { font-size:0.72rem; color:#cc88ff; font-weight:700; }
 
 /* Ahogado event */
 .ahogado-event {

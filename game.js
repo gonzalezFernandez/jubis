@@ -467,7 +467,7 @@ let S = {
   chapa: 0, chapaSilencioActive: false, chapaSilencioEnd: 0, yappingActive: false, yappingEnd: 0, yappingCooldownEnd: 0,
   idealistaActive: false, idealistaTimer: null, idealistaPiso: null, idealistaBuffEnd: 0, idealistaBuffMult: 1,
   olaActive: false, olaDir: null, olaTimer: null, olaRevealed: false, olaBuffEnd: 0, olaDebuffEnd: 0,
-  interrumpidorActive: false, interrumpidorTimer: null, callarBuffEnd: 0,
+  interrumpidorActive: false, interrumpidorTimer: null, interrumpidorStartMs: 0, callarBuffEnd: 0,
   salinasConteo: 0, avilesDebuffEnd: 0,
   // Nanduko
   policeActive: false, policeTimer: null, policeNeed: 0, policeDone: 0,
@@ -675,7 +675,7 @@ function startGame(pid) {
     chapa: 0, chapaSilencioActive: false, chapaSilencioEnd: 0, yappingActive: false, yappingEnd: 0, yappingCooldownEnd: 0,
     idealistaActive: false, idealistaTimer: null, idealistaPiso: null, idealistaBuffEnd: 0, idealistaBuffMult: 1,
     olaActive: false, olaDir: null, olaTimer: null, olaRevealed: false, olaBuffEnd: 0, olaDebuffEnd: 0,
-    interrumpidorActive: false, interrumpidorTimer: null, callarBuffEnd: 0,
+    interrumpidorActive: false, interrumpidorTimer: null, interrumpidorStartMs: 0, callarBuffEnd: 0,
     salinasConteo: 0, avilesDebuffEnd: 0,
     policeActive: false, policeTimer: null, policeNeed: 0, policeDone: 0,
     banyoActive: false, banyoTimer: null, banyoBuffEnd: 0,
@@ -843,7 +843,7 @@ function tick() {
   }
 
   updateDisplays();
-  if (tickN % 5 === 0 && !holdInterval) renderSpecial();
+  if (tickN % 5 === 0 && !holdInterval && !S.interrumpidorActive) renderSpecial();
   if (tickN % 2 === 0)  refreshUpgradeStates();
 }
 
@@ -1797,41 +1797,51 @@ function resolveOla() {
   updateDisplays();
 }
 
+function _failInterruptor() {
+  S.interrumpidorActive = false;
+  S.yappingActive = false; S.chapa = 0;
+  S.olaBuffEnd = 0; S.olaDebuffEnd = 0;
+  S.callarBuffEnd = 0; S.idealistaBuffEnd = 0; S.avilesDebuffEnd = 0;
+  S.currency = 0;
+  S.chapaSilencioActive = true; S.chapaSilencioEnd = Date.now() + 5000;
+  renderSpecial(); updateDisplays();
+  toast('💀 ¡TE HAN CALLADO! Bufos, Yapping y Palabras perdidas.', '💀');
+}
+
 function triggerInterruptor() {
   S.interrumpidorActive = true;
+  S.interrumpidorStartMs = Date.now();
   renderSpecial();
-  toast('💬 ¡ALGUIEN TE INTERRUMPE! ¡Manda callar o discute!', '💬');
+  toast('💬 ¡ALGUIEN TE INTERRUMPE! Para el cursor en la zona correcta', '💬');
   clearTimeout(S.interrumpidorTimer);
   S.interrumpidorTimer = setTimeout(() => {
-    if (S.interrumpidorActive) {
-      S.interrumpidorActive = false;
-      S.yappingActive = false;
-      S.chapa = 0;
-      S.chapaSilencioActive = true;
-      S.chapaSilencioEnd = Date.now() + 5000;
-      renderSpecial();
-      toast('😶 Te cortaron el rollo. Yapping perdido.', '💀');
-    }
-  }, 4000);
+    if (S.interrumpidorActive) _failInterruptor();
+  }, 5000);
 }
 
-function clickCallar() {
+function clickInterruptor() {
   if (!S.interrumpidorActive) return;
   clearTimeout(S.interrumpidorTimer);
-  S.interrumpidorActive = false;
-  S.callarBuffEnd = Date.now() + 10000;
-  renderSpecial();
-  toast('🤫 Callado con clase. ×4 durante 10s', '🤫');
-}
+  // Calculate cursor position from elapsed time (2s per sweep, bounce)
+  const speed = 2000;
+  const elapsed = Date.now() - S.interrumpidorStartMs;
+  const cycle = elapsed % (speed * 2);
+  const pos = cycle <= speed ? (cycle / speed) * 100 : ((speed * 2 - cycle) / speed) * 100;
 
-function clickDiscutir() {
-  if (!S.interrumpidorActive) return;
-  clearTimeout(S.interrumpidorTimer);
-  S.interrumpidorActive = false;
-  S.yappingEnd = (S.yappingEnd || Date.now()) + 10000;
-  S.chapa = Math.min(100, (S.chapa || 0) + 10);
-  renderSpecial();
-  toast('💢 ¡DISCUTIDO! Yapping extendido +10s', '💢');
+  if (pos >= 38 && pos <= 62) {
+    S.interrumpidorActive = false;
+    S.callarBuffEnd = Date.now() + 10000;
+    renderSpecial();
+    toast('🤫 ¡ZONA PERFECTA! Callado con clase. ×4 durante 10s', '🤫');
+  } else if ((pos >= 20 && pos < 38) || (pos > 62 && pos <= 80)) {
+    S.interrumpidorActive = false;
+    S.yappingEnd = (S.yappingEnd || Date.now()) + 10000;
+    S.chapa = Math.min(100, (S.chapa || 0) + 10);
+    renderSpecial();
+    toast('💢 ¡DISCUTIDO! Yapping extendido +10s', '💢');
+  } else {
+    _failInterruptor();
+  }
 }
 
 function buildDiego(ch) {
@@ -1876,13 +1886,19 @@ function buildDiego(ch) {
   }
 
   if (S.interrumpidorActive) {
-    html += `<div class="interruptor-event">
+    html += `<div class="interruptor-event" onclick="clickInterruptor()">
       <div class="interruptor-title">💬 ¡ALGUIEN TE INTERRUMPE!</div>
-      <p class="interruptor-hint">Si no reaccionas, el Yapping se va a 0</p>
-      <div class="interruptor-btns">
-        <button class="callar-btn" onclick="clickCallar()">🤫 CALLAR ×4</button>
-        <button class="discutir-btn" onclick="clickDiscutir()">💢 DISCUTIR +10s</button>
+      <div class="iz-legend">
+        <span class="iz-leg iz-leg-red">💀 TODO A 0</span>
+        <span class="iz-leg iz-leg-orange">💢 +10s</span>
+        <span class="iz-leg iz-leg-green">🤫 ×4</span>
+        <span class="iz-leg iz-leg-orange">💢 +10s</span>
+        <span class="iz-leg iz-leg-red">💀 TODO A 0</span>
       </div>
+      <div class="iz-bar">
+        <div class="iz-cursor"></div>
+      </div>
+      <div class="iz-hint">¡Pulsa para parar!</div>
     </div>`;
   }
   if (S.olaActive) {
