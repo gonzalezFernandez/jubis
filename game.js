@@ -1686,7 +1686,7 @@ function tickDiego() {
   }
   if (!S.chapaSilencioActive) {
     const c = S.chapa || 0;
-    const decay = 0.2 + (c / 100) * 1.4; // 0.2/tick at 0%, 1.6/tick at 100%
+    const decay = 0.08 + (c / 100) * 0.42; // 0.08/tick at 0%, 0.5/tick at 100%
     S.chapa = Math.max(0, c - decay);
     patchChapaBar();
     if (S.chapa === 0) {
@@ -1702,7 +1702,7 @@ function tickDiego() {
 
 function clickDiegoChapa() {
   if (S.chapaSilencioActive) return;
-  S.chapa = Math.min(100, (S.chapa || 0) + 6);
+  S.chapa = Math.min(100, (S.chapa || 0) + 1.7);
   if (S.chapa > (S.achData.chapaMax || 0)) S.achData.chapaMax = S.chapa;
   patchChapaBar();
   if (S.chapa >= 100 && !S.yappingActive && Date.now() >= (S.yappingCooldownEnd || 0)) {
