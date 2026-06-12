@@ -1204,6 +1204,52 @@ body {
 }
 .vasos-btn:hover { background: linear-gradient(135deg, #3e3800, #2e2c00); }
 
+/* INVASOR DEL ESCENARIO event */
+.invasor-event {
+  width: 100%; padding: 1rem;
+  background: linear-gradient(135deg, #1a0a00, #301500);
+  border: 2.5px solid #ff6600;
+  border-radius: 14px; text-align: center;
+  animation: invasor-glow 0.5s ease-in-out infinite alternate;
+}
+@keyframes invasor-glow {
+  from { box-shadow: 0 0 12px rgba(255,100,0,.3); }
+  to   { box-shadow: 0 0 36px rgba(255,100,0,.7); border-color: #ffcc00; }
+}
+.invasor-event h4 { color: #ff9900; font-size: 1.05rem; margin-bottom: 0.2rem; }
+.invasor-event p  { font-size: 0.75rem; color: #ccc; margin-bottom: 0.6rem; }
+.invasor-btn {
+  width: 100%; padding: 0.75rem;
+  background: linear-gradient(135deg, #cc4400, #ff8800);
+  border: none; color: #fff; font-weight: 900;
+  border-radius: 10px; cursor: pointer; font-family: inherit;
+  font-size: 0.92rem; letter-spacing: 0.02em;
+}
+.invasor-btn:hover { background: linear-gradient(135deg, #ee5500, #ffaa00); }
+
+/* CORTE DE LUZ event */
+.corte-luz-event {
+  width: 100%; padding: 1rem;
+  background: linear-gradient(135deg, #0a0a0a, #1a1a00);
+  border: 2.5px solid #ffee00;
+  border-radius: 14px; text-align: center;
+  animation: corteluz-glow 0.3s ease-in-out infinite alternate;
+}
+@keyframes corteluz-glow {
+  from { box-shadow: 0 0 10px rgba(255,230,0,.2); background: linear-gradient(135deg,#0a0a0a,#1a1a00); }
+  to   { box-shadow: 0 0 40px rgba(255,230,0,.6); background: linear-gradient(135deg,#080800,#2a2200); }
+}
+.corte-luz-event h4 { color: #ffee00; font-size: 1.1rem; margin-bottom: 0.2rem; }
+.corte-luz-event p  { font-size: 0.75rem; color: #aaa; margin-bottom: 0.6rem; }
+.corteluz-btn {
+  width: 100%; padding: 0.75rem;
+  background: linear-gradient(135deg, #555500, #aaaa00);
+  border: none; color: #fff; font-weight: 900;
+  border-radius: 10px; cursor: pointer; font-family: inherit;
+  font-size: 0.92rem;
+}
+.corteluz-btn:hover { background: linear-gradient(135deg, #777700, #dddd00); color: #000; }
+
 /* ============================================================
    ACHIEVEMENTS
    ============================================================ */

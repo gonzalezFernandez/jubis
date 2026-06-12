@@ -442,6 +442,20 @@ const ACHIEVEMENTS = {
     { id:'caos_5k',        icon:'🌀', name:'¡Otra Ronda!',          desc:'5000 caos acumulados. El festival no para.',                 cond: s => s.totalCurrency >= 5000 },
     { id:'pase_vip',       icon:'🏷️', name:'Pase VIP Conseguido',  desc:'Hazte con el pase VIP. Acceso a casi todo.',                 cond: s => (s.upgrades.pase||0) >= 1 },
     { id:'leyenda_xp',     icon:'🏆', name:'Leyenda del Extraperlo',desc:'50000 caos. Técnicas y Procedimientos te piden una foto.',  cond: s => s.totalCurrency >= 50000 },
+    { id:'primer_rescate', icon:'🏊', name:'Primer Rescate',        desc:'Salvas a alguien en el agua. Héroe de festivales.',          cond: s => (s.achData.rescates||0) >= 1 },
+    { id:'derechazo_xp',   icon:'🌊', name:'Derechazo en el Caos',  desc:'Surfeas una ola derecha en pleno Extraperlo.',               cond: s => (s.achData.olasDerechas||0) >= 1 },
+    { id:'dos_orillas',    icon:'🏄', name:'Las Dos Orillas',       desc:'Una derecha y una izquierda. Eres democrático.',             cond: s => (s.achData.olasDerechas||0) >= 1 && (s.achData.olasIzquierdas||0) >= 1 },
+    { id:'socorrista_pro', icon:'🚑', name:'Socorrista de Festival', desc:'3 rescates. La playa te pertenece.',                        cond: s => (s.achData.rescates||0) >= 3 },
+    { id:'el_xtraperlo',   icon:'👑', name:'El Extraperlo Total',   desc:'Consigues la mejora final. Eres el festival.',               cond: s => (s.upgrades.xtraperlo||0) >= 1 },
+    { id:'combo_infierno', icon:'🌀', name:'El Combo del Infierno', desc:'5 Rocas + 5 vasos + 3 rescates. Suficiente sufrimiento.',    cond: s => (s.achData.rocaHits||0) >= 5 && (s.achData.vasosLimpiados||0) >= 5 && (s.achData.rescates||0) >= 3 },
+    { id:'sin_respiro',    icon:'⚡', name:'Sin un Respiro',         desc:'10000 caos en menos de 5 minutos. El caos tiene prisa.',     cond: s => s.totalCurrency >= 10000 && (s.achData.timeSec||0) <= 300 },
+    { id:'noche_loca',     icon:'🌙', name:'Noche Loca',            desc:'2 millones de caos. El festival no tiene fondo.',            cond: s => s.totalCurrency >= 2000000 },
+    { id:'caos_250k',      icon:'💥', name:'Explosión de Caos',      desc:'250000 caos. Esto ya no es un festival, es una religión.',  cond: s => s.totalCurrency >= 250000 },
+    { id:'primer_invasor', icon:'🎭', name:'Guarda de Seguridad',    desc:'Primero invasor del escenario parado. El festival te lo agradece.', cond: s => (s.achData.invasoresParados||0) >= 1 },
+    { id:'nadie_pasa',     icon:'🛡️', name:'Nadie Pasa',            desc:'5 invasores parados. Eres el muro del Extraperlo.',          cond: s => (s.achData.invasoresParados||0) >= 5 },
+    { id:'electricista',   icon:'🔌', name:'Electricista de Festival',desc:'Primera vez que restauras la luz. La banda te lleva en brazos.', cond: s => (s.achData.cortesRestaurados||0) >= 1 },
+    { id:'sin_apagones',   icon:'💡', name:'Sin Apagones',           desc:'3 cortes de luz restaurados. Eres el héroe de los técnicos.',  cond: s => (s.achData.cortesRestaurados||0) >= 3 },
+    { id:'caos_1m',        icon:'🌋', name:'El Festival Eterno',     desc:'1 millón de caos. Salinas ya te quiere como mascota oficial.', cond: s => s.totalCurrency >= 1000000 },
   ],
 };
 
@@ -485,6 +499,8 @@ let S = {
   // Extraperlo
   rocaActive: false, rocaTimer: null, rocaNeed: 0, rocaDone: 0,
   vasosActive: false, vasosTimer: null, vasosNeed: 0, vasosDone: 0, vasosFrase: '',
+  invasorActive: false, invasorTimer: null, invasorNeed: 0, invasorDone: 0, invasorDebuffEnd: 0,
+  corteLuzActive: false, corteLuzTimer: null, corteLuzBuffEnd: 0, corteLuzDebuffEnd: 0,
   // Shared tracking for achievements
   achData: {
     wskActivations:0, wskWins:0, dobletazos:0,
@@ -496,6 +512,7 @@ let S = {
     ultraActivations:0, papaRabiosoHits:0, molinillos:0,
     rescates:0,
     chapaMax:0, yappingSupremos:0, silenciosIncomodos:0, pisosVisitados:0, salinasVisitados:0, olasDerechas:0, olasIzquierdas:0,
+    invasoresParados:0, cortesRestaurados:0,
   },
   achievements: {},
 };
@@ -690,6 +707,8 @@ function startGame(pid) {
     cooperLootBuffEnd: 0, cooperJamonBuffEnd: 0, papaBuffEnd: 0, cagadaDebuffEnd: 0,
     rocaActive: false, rocaTimer: null, rocaNeed: 0, rocaDone: 0,
     vasosActive: false, vasosTimer: null, vasosNeed: 0, vasosDone: 0, vasosFrase: '',
+    invasorActive: false, invasorTimer: null, invasorNeed: 0, invasorDone: 0, invasorDebuffEnd: 0,
+    corteLuzActive: false, corteLuzTimer: null, corteLuzBuffEnd: 0, corteLuzDebuffEnd: 0,
     achData: useSave && save.achData ? { raicesEscapes:0, raicesCaptures:0, cooperInteractions:0, cagadasEvitadas:0, cagadasRecogidas:0, looteos:0, jamones:0, perfectHits:0, perfectPoints:0, ultraActivations:0, papaRabiosoHits:0, ...save.achData } : {
       wskActivations:0, wskWins:0, dobletazos:0,
       fightWins:0, fightLosses:0,
@@ -703,6 +722,7 @@ function startGame(pid) {
       ultraActivations:0, papaRabiosoHits:0,
       rescates:0,
       chapaMax:0, yappingSupremos:0, silenciosIncomodos:0, pisosVisitados:0, salinasVisitados:0, olasDerechas:0, olasIzquierdas:0,
+      invasoresParados:0, cortesRestaurados:0,
     },
     achievements: useSave && save.achievements ? save.achievements : {},
   };
@@ -907,7 +927,12 @@ function calcPC() {
     v *= m[S.appLit] || 1;
   }
   if ((S.pid === 'nanduko' || S.pid === 'extraperlo') && S.banyoBuffEnd && Date.now() < S.banyoBuffEnd) v *= 4;
-  if (S.pid === 'noah' && S.ahogadoBuffEnd && Date.now() < S.ahogadoBuffEnd) v *= 3;
+  if ((S.pid === 'noah' || S.pid === 'extraperlo') && S.ahogadoBuffEnd && Date.now() < S.ahogadoBuffEnd) v *= 3;
+  if (S.pid === 'extraperlo' && S.olaBuffEnd && Date.now() < S.olaBuffEnd) v *= 2;
+  if (S.pid === 'extraperlo' && S.olaDebuffEnd && Date.now() < S.olaDebuffEnd) v *= 0.5;
+  if (S.pid === 'extraperlo' && S.corteLuzBuffEnd && Date.now() < S.corteLuzBuffEnd) v *= 2;
+  if (S.pid === 'extraperlo' && S.corteLuzDebuffEnd && Date.now() < S.corteLuzDebuffEnd) v *= 0;
+  if (S.pid === 'extraperlo' && S.invasorDebuffEnd && Date.now() < S.invasorDebuffEnd) v *= 0.3;
   if (S.pid === 'diego') {
     const c = S.chapa || 0;
     if (S.yappingActive && Date.now() < S.yappingEnd) v *= 5;
@@ -946,9 +971,14 @@ function calcPS() {
   }
   if (S.pid === 'nanduko' && S.raicesDebuffEnd && Date.now() < S.raicesDebuffEnd) v *= 0.5;
   if ((S.pid === 'nanduko' || S.pid === 'extraperlo') && S.banyoBuffEnd && Date.now() < S.banyoBuffEnd) v *= 4;
+  if (S.pid === 'extraperlo' && S.olaBuffEnd && Date.now() < S.olaBuffEnd) v *= 2;
+  if (S.pid === 'extraperlo' && S.olaDebuffEnd && Date.now() < S.olaDebuffEnd) v *= 0.5;
+  if (S.pid === 'extraperlo' && S.corteLuzBuffEnd && Date.now() < S.corteLuzBuffEnd) v *= 2;
+  if (S.pid === 'extraperlo' && S.corteLuzDebuffEnd && Date.now() < S.corteLuzDebuffEnd) v *= 0;
+  if (S.pid === 'extraperlo' && S.invasorDebuffEnd && Date.now() < S.invasorDebuffEnd) v *= 0.3;
   if (S.pid === 'noah' && S.ligaBuffEnd && Date.now() < S.ligaBuffEnd) v *= 5;
-  if (S.pid === 'noah' && S.ahogadoBuffEnd && Date.now() < S.ahogadoBuffEnd) v *= 3;
-  if (S.pid === 'noah' && S.ahogadoDebuffEnd && Date.now() < S.ahogadoDebuffEnd) v *= 0.4;
+  if ((S.pid === 'noah' || S.pid === 'extraperlo') && S.ahogadoBuffEnd && Date.now() < S.ahogadoBuffEnd) v *= 3;
+  if ((S.pid === 'noah' || S.pid === 'extraperlo') && S.ahogadoDebuffEnd && Date.now() < S.ahogadoDebuffEnd) v *= 0.4;
   if (S.pid === 'diego') {
     const c = S.chapa || 0;
     if (S.yappingActive && Date.now() < S.yappingEnd) v *= 5;
@@ -2119,6 +2149,12 @@ function checkXP() {
   // Extraperlo-specific
   if (!S.rocaActive && Math.random() < 0.10) triggerRoca();
   if (!S.vasosActive && Math.random() < 0.12) triggerLimpiarVasos();
+  if (!S.invasorActive && !S.corteLuzActive && tc > 100 && Math.random() < 0.07) triggerInvasor();
+  if (!S.corteLuzActive && !S.invasorActive && tc > 300 && Math.random() < 0.05) triggerCorteLuz();
+  // Noah — ahogado
+  if (!S.ahogadoActive && Math.random() < 0.05) triggerAhogado();
+  // Diego — ola
+  if (!S.olaActive && !holdType && Math.random() < 0.04) triggerOla();
 }
 
 function triggerLimpiarVasos() {
@@ -2183,6 +2219,65 @@ function clickRoca() {
     showMsg('El festival aplaude. Roca Pintada promete no volver. Por ahora.');
     updateDisplays();
   } else { renderSpecial(); }
+}
+
+function triggerInvasor() {
+  S.invasorActive = true;
+  S.invasorNeed = 8 + Math.floor(Math.random() * 7);
+  S.invasorDone = 0;
+  renderSpecial();
+  toast('🎭 ¡¡INVASOR EN EL ESCENARIO!! ¡Sácalo de ahí!', '🎭');
+  clearTimeout(S.invasorTimer);
+  S.invasorTimer = setTimeout(() => {
+    if (S.invasorActive) {
+      S.invasorActive = false;
+      S.invasorDebuffEnd = Date.now() + 8000;
+      renderSpecial();
+      toast('El invasor ha hecho el numerito completo. ×0.3 durante 8s', '😤');
+    }
+  }, 7000);
+}
+
+function clickInvasor() {
+  if (!S.invasorActive) return;
+  S.invasorDone++;
+  if (S.invasorDone >= S.invasorNeed) {
+    clearTimeout(S.invasorTimer);
+    S.invasorActive = false;
+    S.achData.invasoresParados = (S.achData.invasoresParados || 0) + 1;
+    const reward = Math.max(150, Math.floor(S.currency * 0.2));
+    earn(reward);
+    renderSpecial();
+    updateDisplays();
+    toast(`🎭 ¡INVASOR EXPULSADO! +${fmt(reward)} Caos`, '💪');
+  } else {
+    renderSpecial();
+  }
+}
+
+function triggerCorteLuz() {
+  S.corteLuzActive = true;
+  renderSpecial();
+  toast('🔌 ¡¡CORTE DE LUZ!! ¡Restaura el cuadro eléctrico ya!', '🔌');
+  clearTimeout(S.corteLuzTimer);
+  S.corteLuzTimer = setTimeout(() => {
+    if (S.corteLuzActive) {
+      S.corteLuzActive = false;
+      S.corteLuzDebuffEnd = Date.now() + 8000;
+      renderSpecial();
+      toast('💀 Sin luz. Producción a 0 durante 8s. Roca Pintada aplaude.', '🌑');
+    }
+  }, 5000);
+}
+
+function clickRestaurarLuz() {
+  if (!S.corteLuzActive) return;
+  clearTimeout(S.corteLuzTimer);
+  S.corteLuzActive = false;
+  S.achData.cortesRestaurados = (S.achData.cortesRestaurados || 0) + 1;
+  S.corteLuzBuffEnd = Date.now() + 12000;
+  renderSpecial();
+  toast('💡 ¡LUZ RESTAURADA! ×2 durante 12s — el técnico llora de alegría', '💡');
 }
 
 // ================================================================
@@ -2839,8 +2934,90 @@ function buildXP(ch) {
     </div>`;
   }
 
+  // Ahogado (Noah)
+  if (S.ahogadoActive) {
+    const pct = Math.floor((S.ahogadoDone / S.ahogadoNeed) * 100);
+    const secsLeft = Math.max(0, Math.ceil((S.ahogadoTimerEnd - Date.now()) / 1000));
+    html += `<div class="ahogado-event">
+      <div style="font-size:2rem">🌊🏊</div>
+      <h4>¡¡SE ESTÁ AHOGANDO!!</h4>
+      <p>${S.ahogadoDone}/${S.ahogadoNeed} — ${secsLeft}s</p>
+      <div class="ahogado-track"><div class="ahogado-fill" style="width:${pct}%"></div></div>
+      <button class="socorro-btn" onclick="clickSocorro()">🏊 ¡AL AGUA!</button>
+    </div>`;
+  }
+  if (S.ahogadoBuffEnd && Date.now() < S.ahogadoBuffEnd) {
+    const sec = Math.ceil((S.ahogadoBuffEnd - Date.now()) / 1000);
+    html += `<div class="wsk-active">📰 HÉROE DE SALINAS — ×3 (${sec}s)</div>`;
+  }
+  if (S.ahogadoDebuffEnd && Date.now() < S.ahogadoDebuffEnd) {
+    const sec = Math.ceil((S.ahogadoDebuffEnd - Date.now()) / 1000);
+    html += `<div class="police-calm raices-debuff">📰 Mala prensa — ×0.4 (${sec}s)</div>`;
+  }
+  // Ola (Diego)
+  if (S.olaActive) {
+    const isHolding = holdType === 'ola';
+    const revealed  = S.olaRevealed;
+    html += `<div class="ola-event${revealed ? (S.olaDir === 'derecha' ? ' ola-derecha' : ' ola-izquierda') : ' ola-misterio'}">
+      <div class="ola-dir ola-reveal-txt">${revealed
+        ? (S.olaDir === 'derecha' ? '→ ¡ES UNA DERECHA! ¡Aguanta!' : '← ¡ES UNA IZQUIERDA!')
+        : '🌊 ¿Derecha o izquierda? Aguanta para ver...'}</div>
+      <div class="surf-track"><div class="surf-fill" style="width:${isHolding ? holdProgress : 0}%"></div></div>
+      <div class="nose-wrap"
+        onmousedown="startHold('ola')"
+        ontouchstart="event.preventDefault();startHold('ola')">
+        <span class="nose-btn${isHolding ? ' nose-active' : ''}">🌊</span>
+        <span class="hold-hint">${isHolding ? '¡Aguanta!' : 'Mantén pulsado para surfear'}</span>
+      </div>
+    </div>`;
+  }
+  if (S.olaBuffEnd && Date.now() < S.olaBuffEnd) {
+    const sec = Math.ceil((S.olaBuffEnd - Date.now()) / 1000);
+    html += `<div class="wsk-active">🌊 DERECHA PERFECTA — ×2 (${sec}s)</div>`;
+  }
+  if (S.olaDebuffEnd && Date.now() < S.olaDebuffEnd) {
+    const sec = Math.ceil((S.olaDebuffEnd - Date.now()) / 1000);
+    html += `<div class="police-calm raices-debuff">😤 Mal humor por izquierda — ×0.5 (${sec}s)</div>`;
+  }
+
+  // Invasor del escenario (Extraperlo)
+  if (S.invasorActive) {
+    const pct = Math.floor((S.invasorDone / S.invasorNeed) * 100);
+    html += `<div class="invasor-event">
+      <div style="font-size:1.8rem">🎭</div>
+      <h4>¡¡INVASOR EN EL ESCENARIO!!</h4>
+      <p>${S.invasorDone}/${S.invasorNeed} — ¡sácalo de ahí!</p>
+      <div class="police-track"><div class="police-fill" style="width:${pct}%;background:linear-gradient(90deg,#ff6600,#ffcc00)"></div></div>
+      <button class="invasor-btn" onclick="clickInvasor()">💪 ¡FUERA DEL ESCENARIO!</button>
+    </div>`;
+  }
+  if (S.invasorDebuffEnd && Date.now() < S.invasorDebuffEnd) {
+    const sec = Math.ceil((S.invasorDebuffEnd - Date.now()) / 1000);
+    html += `<div class="police-calm raices-debuff">🎭 Bochorno en el escenario — ×0.3 (${sec}s)</div>`;
+  }
+
+  // Corte de luz (Extraperlo)
+  if (S.corteLuzActive) {
+    const secsLeft = Math.max(0, Math.ceil((S.corteLuzTimer ? 5 : 0)));
+    html += `<div class="corte-luz-event">
+      <div style="font-size:2rem">🔌💡</div>
+      <h4>¡¡CORTE DE LUZ!!</h4>
+      <p>Restaura el cuadro eléctrico antes de que sea tarde</p>
+      <button class="corteluz-btn" onclick="clickRestaurarLuz()">🔌 ¡RESTAURAR LUZ!</button>
+    </div>`;
+  }
+  if (S.corteLuzBuffEnd && Date.now() < S.corteLuzBuffEnd) {
+    const sec = Math.ceil((S.corteLuzBuffEnd - Date.now()) / 1000);
+    html += `<div class="wsk-active">💡 LUZ RESTAURADA — ×2 (${sec}s)</div>`;
+  }
+  if (S.corteLuzDebuffEnd && Date.now() < S.corteLuzDebuffEnd) {
+    const sec = Math.ceil((S.corteLuzDebuffEnd - Date.now()) / 1000);
+    html += `<div class="police-calm raices-debuff">🌑 Sin luz — ×0 (${sec}s)</div>`;
+  }
+
   const anyActive = S.pizzaActive || S.wskActive || S.grescaActive || S.fightActive || S.chicaActive || S.stdActive ||
-                    S.policeActive || S.banyoActive || S.rocaActive || S.vasosActive;
+                    S.policeActive || S.banyoActive || S.rocaActive || S.vasosActive || S.ahogadoActive || S.olaActive ||
+                    S.invasorActive || S.corteLuzActive;
   if (!anyActive) html += `<div class="police-calm">🎪 El caos se toma un descanso... brevemente.</div>`;
 
   return html;
