@@ -230,6 +230,38 @@ const CHARS = {
     msgs:['Scrolleando que es gerundio.','Esta foto tiene buena luz, ¿me pongo aquí?','Le he dado like sin querer. Me muero.','El algoritmo me conoce mejor que mi madre.','Ha abierto el chat y no contesta. ¿QUÉ SIGNIFICA ESO?','Esta canción de TikTok llevo 3 días en la cabeza.','Otro story. ¿Le doy al ❤️ o parece demasiado?','Mis pulgares son atletas de élite.','¡SOCORRO! ...Era una gaviota.','La Voz me llama el Héroe de Salinas. Solo hice mi trabajo.','Hoy el agua está traicionera. Tengo TikTok abierto por si acaso.','El bañista sobrevivió. El artículo en La Voz, también.'],
   },
 
+  diego: {
+    id: 'diego', name: 'Diego', role: '🏠 El Cabezapisos',
+    desc: 'Habla sin parar. Sabe el precio del metro cuadrado en Salinas de memoria. Cerdo trufero de primera.',
+    currency: 'Palabras', icon: '💬', clickText: '¡YAPEAR!', clickIcon: '🗣️', btnText: '¡A SOLTAR CHAPA!',
+    theme: '#e76f51', themeD: '#b5451e', themeG: 'rgba(231,111,81,0.25)',
+    special: 'diego',
+    upgrades: [
+      { id:'movil_agente', name:'Móvil del Agente',    icon:'📱', desc:'Para llamar a la promotora a las 9 de la mañana.',         cost:10,     prod:0.1,  cbonus:0,   base:10     },
+      { id:'idealista',    name:'Idealista Premium',   icon:'🏠', desc:'Alertas al instante. Llegas el primero... casi.',          cost:80,     prod:0.5,  cbonus:1,   base:80     },
+      { id:'hipoteca',     name:'Hipoteca 30 años',    icon:'🏦', desc:'30 años pagando. El piso es tuyo. Más o menos.',           cost:450,    prod:2,    cbonus:2,   base:450    },
+      { id:'arras',        name:'Contrato de Arras',   icon:'📝', desc:'Firmado. Ya no hay vuelta atrás para nadie.',              cost:2200,   prod:10,   cbonus:5,   base:2200   },
+      { id:'agente',       name:'Agente Inmobiliario', icon:'🤝', desc:'Contacto en todas las promotoras de Castrillón.',          cost:6000,   prod:28,   cbonus:10,  base:6000   },
+      { id:'piso_playa',   name:'Piso Primera Línea',  icon:'🌊', desc:'Vista al mar. Diego yapar con vistas al agua.',            cost:12000,  prod:50,   cbonus:15,  base:12000  },
+      { id:'promotora',    name:'Promotora Propia',    icon:'🏗️', desc:'Ya no compra pisos. Los construye y los vende.',          cost:60000,  prod:200,  cbonus:50,  base:60000  },
+      { id:'monopolio',    name:'Monopolio Castrillón',icon:'🏆', desc:'Todo el municipio. Cada piso, cada garaje. Tuyo.',         cost:250000, prod:600,  cbonus:120, base:250000 },
+    ],
+    msgs: [
+      '¿Has visto lo que vale el metro cuadrado en Salinas ahora mismo?',
+      'Yo es que el alquiler lo veo tirado de precio. Cómprate algo.',
+      'Mi hipoteca me sale más barata que un alquiler. Que conste.',
+      'El mercado inmobiliario está loco pero hay oportunidades si sabes buscar.',
+      'En Castrillón todavía hay suelo disponible. Por ahora.',
+      'Idealista me mandó tres alertas esta mañana. Las tres volaron.',
+      'Las arras ya están firmadas. Ahora a esperar la notaría.',
+      'La playa de Salinas en agosto vale el doble. Inversión pura.',
+      'Yo no hablo mucho, hablo lo necesario. Que son muchas cosas.',
+      '¿Primera o segunda línea de playa? Primera. Siempre primera.',
+      'Una derecha perfecta. El cerdo trufero sabe lo que hace.',
+      'Solo cojo derechas. Las izquierdas no existen en mi tabla.',
+    ],
+  },
+
   weeman4k: {
     id: 'weeman4k', name: 'Weeman4k', role: '🎬 El Fotógrafo con Problemillas',
     desc: 'Talento sin límites. Agenda sin fondo. Coopers tampoco ayuda.',
@@ -352,6 +384,20 @@ const ACHIEVEMENTS = {
     { id:'socorrista',     icon:'🏊', name:'Socorrista de Salinas',  desc:'Primer rescate. La Voz de Asturias te pone en portada.',      cond: s => (s.achData.rescates||0) >= 1 },
     { id:'primera_plana',  icon:'📰', name:'Primera Plana',          desc:'3 rescates. Mamá ha recortado el artículo y lo tiene en la nevera.', cond: s => (s.achData.rescates||0) >= 3 },
   ],
+  diego: [
+    { id:'primera_palabra',  icon:'💬', name:'Primera Chapa',        desc:'50 palabras. El rollo ha empezado y no va a parar.',          cond: s => s.totalCurrency >= 50 },
+    { id:'modo_yapping',     icon:'🔥', name:'Modo Yapping',          desc:'Barra de chapa al 80%. Diego en modo cháchara total.',        cond: s => (s.achData.chapaMax||0) >= 80 },
+    { id:'yapping_supremo',  icon:'🎙️', name:'Yapping Supremo',      desc:'Activa el Yapping Supremo. ×5. Diego imparable.',             cond: s => (s.achData.yappingSupremos||0) >= 1 },
+    { id:'primer_piso',      icon:'🏠', name:'Primer Piso Visitado',  desc:'Primera alerta de Idealista atendida. Llegas el primero.',    cond: s => (s.achData.pisosVisitados||0) >= 1 },
+    { id:'salinas_premium',  icon:'⭐', name:'¡Salinas!',             desc:'Visitas un piso en Salinas. Eso no se ve todos los días.',    cond: s => (s.achData.salinasVisitados||0) >= 1 },
+    { id:'cerdo_trufero',    icon:'🐷', name:'Cerdo Trufero',         desc:'Surfeas 3 olas derechas. Solo derechas, como Dios manda.',    cond: s => (s.achData.olasDerechas||0) >= 3 },
+    { id:'mal_humor',        icon:'😤', name:'Mal Humor',             desc:'Cogiste una izquierda. Error imperdonable.',                  cond: s => (s.achData.olasIzquierdas||0) >= 1 },
+    { id:'silencio',         icon:'😶', name:'Silencio Incómodo',     desc:'Diego pierde el hilo. Pasa pocas veces pero pasa.',           cond: s => (s.achData.silenciosIncomodos||0) >= 1 },
+    { id:'hipotecado',       icon:'🏦', name:'Hipotecado',            desc:'Firma la hipoteca. 30 años de compromiso.',                   cond: s => (s.upgrades.hipoteca||0) >= 1 },
+    { id:'idealista_pro',    icon:'📲', name:'Idealista Pro',         desc:'5 pisos visitados. El agente te llama antes de publicar.',    cond: s => (s.achData.pisosVisitados||0) >= 5 },
+    { id:'en_la_zona_diego', icon:'⏱️', name:'En La Zona',           desc:'3 minutos yapando. La chapa no tiene límite.',               cond: s => (s.achData.timeSec||0) >= 180 },
+    { id:'monopolio_castri', icon:'🏆', name:'Monopolio Castrillón',  desc:'250000 palabras. Todo el municipio te conoce.',               cond: s => s.totalCurrency >= 250000 },
+  ],
   weeman4k: [
     { id:'primera_toma',   icon:'🎬', name:'Primera Toma',         desc:'50 tomas acumuladas. El rodaje ha comenzado.',               cond: s => s.totalCurrency >= 50 },
     { id:'reflex',         icon:'📷', name:'Ojo Artístico',         desc:'Compra la réflex. Ahora sí que eres fotógrafo.',             cond: s => (s.upgrades.camara_foto||0) >= 1 },
@@ -417,6 +463,10 @@ let S = {
   // Noah
   app: 'instagram', appLit: 'instagram', chicaActive: false, chicaTimer: null, stdActive: false,
   ahogadoActive: false, ahogadoTimer: null, ahogadoDone: 0, ahogadoNeed: 0, ahogadoTimerEnd: 0, ahogadoBuffEnd: 0, ahogadoDebuffEnd: 0,
+  // Diego
+  chapa: 0, chapaSilencioActive: false, chapaSilencioEnd: 0, yappingActive: false, yappingEnd: 0,
+  idealistaActive: false, idealistaTimer: null, idealistaPiso: null, idealistaBuffEnd: 0, idealistaBuffMult: 1,
+  olaActive: false, olaDir: null, olaTimer: null, olaBuffEnd: 0, olaDebuffEnd: 0,
   // Nanduko
   policeActive: false, policeTimer: null, policeNeed: 0, policeDone: 0,
   banyoActive: false, banyoTimer: null, banyoBuffEnd: 0,
@@ -443,6 +493,7 @@ let S = {
     looteos:0, jamones:0, perfectHits:0, perfectPoints:0,
     ultraActivations:0, papaRabiosoHits:0, molinillos:0,
     rescates:0,
+    chapaMax:0, yappingSupremos:0, silenciosIncomodos:0, pisosVisitados:0, salinasVisitados:0, olasDerechas:0, olasIzquierdas:0,
   },
   achievements: {},
 };
@@ -452,7 +503,7 @@ let S = {
 // ================================================================
 document.addEventListener('DOMContentLoaded', renderSelection);
 
-const UNLOCK_ORDER = ['muchaga', 'noah', 'weeman4k', 'fita', 'nanduko', 'extraperlo'];
+const UNLOCK_ORDER = ['muchaga', 'noah', 'diego', 'weeman4k', 'fita', 'nanduko', 'extraperlo'];
 
 function isCharUnlocked(pid) {
   if (localStorage.getItem('penona_unlock_all') === '1') return true;
@@ -619,6 +670,9 @@ function startGame(pid) {
     appLit: 'instagram',
     chicaActive: false, chicaTimer: null, stdActive: false,
     ahogadoActive: false, ahogadoTimer: null, ahogadoDone: 0, ahogadoNeed: 0, ahogadoTimerEnd: 0, ahogadoBuffEnd: 0, ahogadoDebuffEnd: 0,
+    chapa: 0, chapaSilencioActive: false, chapaSilencioEnd: 0, yappingActive: false, yappingEnd: 0,
+    idealistaActive: false, idealistaTimer: null, idealistaPiso: null, idealistaBuffEnd: 0, idealistaBuffMult: 1,
+    olaActive: false, olaDir: null, olaTimer: null, olaBuffEnd: 0, olaDebuffEnd: 0,
     policeActive: false, policeTimer: null, policeNeed: 0, policeDone: 0,
     banyoActive: false, banyoTimer: null, banyoBuffEnd: 0,
     ligaBuffEnd: 0,
@@ -644,6 +698,7 @@ function startGame(pid) {
       looteos:0, jamones:0, perfectHits:0, perfectPoints:0,
       ultraActivations:0, papaRabiosoHits:0,
       rescates:0,
+      chapaMax:0, yappingSupremos:0, silenciosIncomodos:0, pisosVisitados:0, salinasVisitados:0, olasDerechas:0, olasIzquierdas:0,
     },
     achievements: useSave && save.achievements ? save.achievements : {},
   };
@@ -718,7 +773,7 @@ function stopGame() {
 function goBack() {
   if (!confirm('¿Seguro que quieres salir? Se perderá la sesión actual.')) return;
   stopGame();
-  [S.chicaTimer, S.ahogadoTimer, S.policeTimer, S.rocaTimer, S.fightTimer, S.banyoTimer, S.raicesTimer, S.coopersTimer, S.diarreaTimer, S.papaTimer, S.molinilloTimer].forEach(t => clearTimeout(t));
+  [S.chicaTimer, S.ahogadoTimer, S.idealistaTimer, S.olaTimer, S.policeTimer, S.rocaTimer, S.fightTimer, S.banyoTimer, S.raicesTimer, S.coopersTimer, S.diarreaTimer, S.papaTimer, S.molinilloTimer].forEach(t => clearTimeout(t));
   document.getElementById('coopers-slot').style.display = 'none';
   clearInterval(holdInterval); holdInterval = null; holdProgress = 0; holdType = null;
   S.pid = null;
@@ -758,6 +813,7 @@ function tick() {
   }
   if (S.pid === 'noah' && S.stdActive) ps *= 0.5;
   if (S.pid === 'nanduko' && S.banyoActive) ps *= 0; // reunión en el baño: todo parado
+  if (S.pid === 'diego')    tickDiego();
   if (S.pid === 'weeman4k') tickDaigo();
 
   // Furia y whisky (Muchaga + Extraperlo)
@@ -826,6 +882,7 @@ function handleMainClick(e) {
     btn.style.boxShadow  = '';
   }, 650);
 
+  if (S.pid === 'diego') clickDiegoChapa();
   const r = btn.getBoundingClientRect();
   spawnParticle(r.left + r.width/2, r.top + r.height/4, `+${fmt(val)} ${ch.icon}`);
   updateDisplays();
@@ -847,6 +904,16 @@ function calcPC() {
   }
   if ((S.pid === 'nanduko' || S.pid === 'extraperlo') && S.banyoBuffEnd && Date.now() < S.banyoBuffEnd) v *= 4;
   if (S.pid === 'noah' && S.ahogadoBuffEnd && Date.now() < S.ahogadoBuffEnd) v *= 3;
+  if (S.pid === 'diego') {
+    const c = S.chapa || 0;
+    if (S.yappingActive && Date.now() < S.yappingEnd) v *= 5;
+    else if (c >= 80) v *= 3;
+    else if (c >= 40) v *= 1.5;
+    if (S.idealistaBuffEnd && Date.now() < S.idealistaBuffEnd) v *= (S.idealistaBuffMult || 1);
+    if (S.olaBuffEnd && Date.now() < S.olaBuffEnd) v *= 2;
+    if (S.olaDebuffEnd && Date.now() < S.olaDebuffEnd) v *= 0.5;
+    if (S.chapaSilencioActive) v *= 0;
+  }
   if (S.pid === 'weeman4k') {
     if (S.ultraActive && Date.now() < S.ultraEnd) v *= 10;
     if (S.molinilloBuffEnd && Date.now() < S.molinilloBuffEnd) v *= 5;
@@ -876,6 +943,16 @@ function calcPS() {
   if (S.pid === 'noah' && S.ligaBuffEnd && Date.now() < S.ligaBuffEnd) v *= 5;
   if (S.pid === 'noah' && S.ahogadoBuffEnd && Date.now() < S.ahogadoBuffEnd) v *= 3;
   if (S.pid === 'noah' && S.ahogadoDebuffEnd && Date.now() < S.ahogadoDebuffEnd) v *= 0.4;
+  if (S.pid === 'diego') {
+    const c = S.chapa || 0;
+    if (S.yappingActive && Date.now() < S.yappingEnd) v *= 5;
+    else if (c >= 80) v *= 3;
+    else if (c >= 40) v *= 1.5;
+    if (S.idealistaBuffEnd && Date.now() < S.idealistaBuffEnd) v *= (S.idealistaBuffMult || 1);
+    if (S.olaBuffEnd && Date.now() < S.olaBuffEnd) v *= 2;
+    if (S.olaDebuffEnd && Date.now() < S.olaDebuffEnd) v *= 0.5;
+    if (S.chapaSilencioActive) v *= 0;
+  }
   if (S.pid === 'weeman4k') {
     if (S.ultraActive && Date.now() < S.ultraEnd) v *= 10;
     if (S.molinilloBuffEnd && Date.now() < S.molinilloBuffEnd) v *= 5;
@@ -1066,7 +1143,8 @@ function checkSpecials() {
     case 'muchaga':    checkMucha();   break;
     case 'fita':       checkFita();    break;
     case 'noah':       checkNoah();    break;
-    case 'weeman4k':       checkDaigo();   break;
+    case 'diego':      checkDiego();   break;
+    case 'weeman4k':   checkDaigo();   break;
     case 'nanduko':    checkNandu();   break;
     case 'extraperlo': checkXP();      break;
   }
@@ -1505,6 +1583,194 @@ function switchApp(id) {
   showMsg(msgs[id]);
 }
 
+// ——— DIEGO ———
+const PISOS_CASTRI = [
+  { zona:'Piedrasblancas', icon:'🏘️', tier:'común',      mult:2,   sec:12, price:'165.000€', hab:3 },
+  { zona:'Avilés',         icon:'🏙️', tier:'común',      mult:1.8, sec:10, price:'148.000€', hab:2 },
+  { zona:'Arnao',          icon:'🌿', tier:'poco común',  mult:2.5, sec:15, price:'190.000€', hab:3 },
+  { zona:'Naveces',        icon:'🌾', tier:'poco común',  mult:2.5, sec:15, price:'195.000€', hab:4 },
+  { zona:'Bayas',          icon:'🏖️', tier:'raro',        mult:3.5, sec:20, price:'240.000€', hab:3 },
+  { zona:'Salinas',        icon:'⭐', tier:'LEGENDARIO',   mult:7,   sec:30, price:'420.000€', hab:3 },
+];
+
+function pickPiso() {
+  const r = Math.random();
+  if (r < 0.28) return PISOS_CASTRI[0];
+  if (r < 0.56) return PISOS_CASTRI[1];
+  if (r < 0.69) return PISOS_CASTRI[2];
+  if (r < 0.81) return PISOS_CASTRI[3];
+  if (r < 0.92) return PISOS_CASTRI[4];
+  return PISOS_CASTRI[5];
+}
+
+function checkDiego() {
+  if (!S.idealistaActive && Math.random() < 0.06) triggerIdealista();
+  if (!S.olaActive && Math.random() < 0.05) triggerOla();
+}
+
+function tickDiego() {
+  if (S.yappingActive && Date.now() >= S.yappingEnd) {
+    S.yappingActive = false;
+    S.chapa = 55;
+    renderSpecial();
+  }
+  if (S.chapaSilencioActive && Date.now() >= S.chapaSilencioEnd) {
+    S.chapaSilencioActive = false;
+    renderSpecial();
+    return;
+  }
+  if (!S.chapaSilencioActive && !S.yappingActive) {
+    S.chapa = Math.max(0, (S.chapa || 0) - 0.8);
+    if (S.chapa === 0 && !S.chapaSilencioActive) {
+      S.chapaSilencioActive = true;
+      S.chapaSilencioEnd = Date.now() + 4000;
+      S.achData.silenciosIncomodos = (S.achData.silenciosIncomodos || 0) + 1;
+      renderSpecial();
+      toast('😶 Silencio incómodo... Diego pierde el hilo.', '😶');
+    }
+  }
+}
+
+function clickDiegoChapa() {
+  if (S.chapaSilencioActive || S.yappingActive) return;
+  S.chapa = Math.min(100, (S.chapa || 0) + 8);
+  if (S.chapa > (S.achData.chapaMax || 0)) S.achData.chapaMax = S.chapa;
+  if (S.chapa >= 100 && !S.yappingActive) {
+    S.yappingActive = true;
+    S.yappingEnd = Date.now() + 8000;
+    S.achData.yappingSupremos = (S.achData.yappingSupremos || 0) + 1;
+    renderSpecial();
+    toast('🎙️ ¡YAPPING SUPREMO! ×5 — 8 segundos de gloria verbal total', '🎙️');
+  }
+}
+
+function triggerIdealista() {
+  const piso = pickPiso();
+  S.idealistaActive = true;
+  S.idealistaPiso = piso;
+  S.idealistaBuffMult = piso.mult;
+  clearTimeout(S.idealistaTimer);
+  S.idealistaTimer = setTimeout(() => {
+    if (S.idealistaActive) {
+      S.idealistaActive = false; S.idealistaPiso = null;
+      renderSpecial();
+      toast('🏠 Se fue el piso. Lo pillaron antes.', '😤');
+    }
+  }, piso.sec * 1000);
+  renderSpecial();
+  const urgencia = piso.tier === 'LEGENDARIO' ? '⭐⭐⭐ ¡¡SALINAS!!' : `📍 ${piso.zona}`;
+  toast(`🏠 IDEALISTA: ${urgencia} — ${piso.hab} hab · ${piso.price}`, '🏠');
+}
+
+function clickIdealista() {
+  if (!S.idealistaActive || !S.idealistaPiso) return;
+  clearTimeout(S.idealistaTimer);
+  const piso = S.idealistaPiso;
+  S.idealistaActive = false; S.idealistaPiso = null;
+  S.achData.pisosVisitados = (S.achData.pisosVisitados || 0) + 1;
+  if (piso.zona === 'Salinas') S.achData.salinasVisitados = (S.achData.salinasVisitados || 0) + 1;
+  S.idealistaBuffEnd = Date.now() + piso.sec * 1000;
+  S.idealistaBuffMult = piso.mult;
+  S.chapa = Math.min(100, (S.chapa || 0) + 30);
+  renderSpecial();
+  const msg = piso.zona === 'Salinas'
+    ? `⭐ ¡¡SALINAS LEGENDARIO!! ×${piso.mult} durante ${piso.sec}s — Diego tiene MUCHO que contar`
+    : `🏠 Visitado ${piso.zona} · ×${piso.mult} durante ${piso.sec}s`;
+  toast(msg, piso.zona === 'Salinas' ? '⭐' : '🏠', piso.zona === 'Salinas' ? 'toast-achievement' : '');
+  updateDisplays();
+}
+
+function triggerOla() {
+  S.olaActive = true;
+  S.olaDir = Math.random() < 0.55 ? 'derecha' : 'izquierda';
+  clearTimeout(S.olaTimer);
+  S.olaTimer = setTimeout(() => {
+    if (S.olaActive) {
+      S.olaActive = false; S.olaDir = null;
+      renderSpecial();
+      toast('🌊 La ola pasó. Había que estar atento.', '🌊');
+    }
+  }, 5000);
+  renderSpecial();
+  toast(`🌊 ¡OLA ${S.olaDir.toUpperCase()}! — ${S.olaDir === 'derecha' ? '¡Cógela!' : '¡No la cojas!'}`, '🌊');
+}
+
+function clickOla() {
+  if (!S.olaActive) return;
+  clearTimeout(S.olaTimer);
+  const dir = S.olaDir;
+  S.olaActive = false; S.olaDir = null;
+  renderSpecial();
+  if (dir === 'derecha') {
+    S.achData.olasDerechas = (S.achData.olasDerechas || 0) + 1;
+    S.olaBuffEnd = Date.now() + 15000;
+    toast('🏄 ¡DERECHA PERFECTA! ×2 durante 15s — cerdo trufero puro', '🏄');
+  } else {
+    S.achData.olasIzquierdas = (S.achData.olasIzquierdas || 0) + 1;
+    S.olaDebuffEnd = Date.now() + 20000;
+    toast('😤 ¡¡IZQUIERDA!! Diego está de mal humor. ×0.5 durante 20s', '😤');
+  }
+  updateDisplays();
+}
+
+function buildDiego(ch) {
+  const chapa   = S.chapa || 0;
+  const silencio = S.chapaSilencioActive;
+  const yapping  = S.yappingActive && Date.now() < S.yappingEnd;
+  const yappingSec = yapping ? Math.ceil((S.yappingEnd - Date.now()) / 1000) : 0;
+
+  let chapaClass = 'chapa-fill';
+  let chapaLabel = '💬 Calentando el rollo...';
+  if (silencio) { chapaClass += ' chapa-silencio'; chapaLabel = '😶 Silencio incómodo...'; }
+  else if (yapping) { chapaClass += ' chapa-yapping'; chapaLabel = `🎙️ YAPPING SUPREMO ×5 (${yappingSec}s)`; }
+  else if (chapa >= 80) { chapaClass += ' chapa-max'; chapaLabel = `🎙️ MODO YAPPING ×3`; }
+  else if (chapa >= 40) { chapaClass += ' chapa-caliente'; chapaLabel = `🔥 Soltando chapa ×1.5`; }
+
+  let html = `<div class="chapa-box">
+    <div class="chapa-lbl"><span>${chapaLabel}</span><span>${Math.floor(chapa)}%</span></div>
+    <div class="chapa-track"><div class="${chapaClass}" style="width:${Math.min(100,chapa)}%"></div></div>
+  </div>`;
+
+  if (S.idealistaActive && S.idealistaPiso) {
+    const p = S.idealistaPiso;
+    const esSalinas = p.zona === 'Salinas';
+    html += `<div class="idealista-event${esSalinas ? ' salinas-legendario' : ''}">
+      <div class="idealista-header">${esSalinas ? '⭐⭐⭐ SALINAS — LEGENDARIO' : `🏠 NUEVO PISO EN IDEALISTA`}</div>
+      <div class="idealista-info">${p.icon} ${p.zona} · ${p.hab} hab · ${p.price}</div>
+      <div class="idealista-buff">Buff: ×${p.mult} durante ${p.sec}s</div>
+      <button class="idealista-btn${esSalinas ? ' salinas-btn' : ''}" onclick="clickIdealista()">
+        ${esSalinas ? '⭐ ¡¡VISITAR SALINAS!!' : '🏠 Visitar piso'}
+      </button>
+    </div>`;
+  }
+
+  if (S.olaActive) {
+    const esDerecha = S.olaDir === 'derecha';
+    html += `<div class="ola-event${esDerecha ? ' ola-derecha' : ' ola-izquierda'}">
+      <div class="ola-dir">${esDerecha ? '→ OLA DERECHA ←' : '← OLA IZQUIERDA →'}</div>
+      <div class="ola-hint">${esDerecha ? '¡Cógela! ×2 durante 15s' : '¡No la cojas! (mal humor si la coges)'}</div>
+      <button class="ola-btn${esDerecha ? '' : ' ola-peligro'}" onclick="clickOla()">
+        ${esDerecha ? '🏄 ¡COGER!' : '💀 ¡COGER! (izquierda)'}
+      </button>
+    </div>`;
+  }
+
+  if (S.idealistaBuffEnd && Date.now() < S.idealistaBuffEnd) {
+    const sec = Math.ceil((S.idealistaBuffEnd - Date.now()) / 1000);
+    html += `<div class="wsk-active">🏠 PISO VISITADO — ×${S.idealistaBuffMult} (${sec}s)</div>`;
+  }
+  if (S.olaBuffEnd && Date.now() < S.olaBuffEnd) {
+    const sec = Math.ceil((S.olaBuffEnd - Date.now()) / 1000);
+    html += `<div class="wsk-active">🏄 DERECHA PERFECTA — ×2 (${sec}s)</div>`;
+  }
+  if (S.olaDebuffEnd && Date.now() < S.olaDebuffEnd) {
+    const sec = Math.ceil((S.olaDebuffEnd - Date.now()) / 1000);
+    html += `<div class="police-calm raices-debuff">😤 Mal humor por izquierda — ×0.5 (${sec}s)</div>`;
+  }
+
+  return html;
+}
+
 // ——— NANDUKO ———
 function checkNandu() {
   if (S.raicesDebuffEnd && Date.now() >= S.raicesDebuffEnd) { S.raicesDebuffEnd = 0; renderSpecial(); }
@@ -1734,7 +2000,8 @@ function renderSpecial() {
     case 'muchaga':    content = buildWSK(ch);     break;
     case 'fita':       content = buildDobletazo(); break;
     case 'noah':       content = buildNoah(ch);    break;
-    case 'weeman4k':       content = buildDaigo(ch);    break;
+    case 'diego':      content = buildDiego(ch);   break;
+    case 'weeman4k':   content = buildDaigo(ch);   break;
     case 'nanduko':    content = buildNandu();      break;
     case 'extraperlo': content = buildXP(ch);       break;
   }

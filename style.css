@@ -892,6 +892,93 @@ body {
   border-radius: 8px; cursor: pointer; font-size: 0.83rem; font-family: inherit;
 }
 
+/* ============================================================
+   DIEGO — CHAPA / IDEALISTA / OLA
+   ============================================================ */
+.chapa-box {
+  width: 100%; padding: 0.7rem 0.8rem;
+  background: linear-gradient(135deg, #1a0a00, #2a1200);
+  border: 1.5px solid var(--theme); border-radius: 12px;
+  margin-bottom: 0.5rem;
+}
+.chapa-lbl { display:flex; justify-content:space-between; font-size:0.78rem; font-weight:700; margin-bottom:0.4rem; color:var(--theme); }
+.chapa-track { height: 12px; background: rgba(255,255,255,.1); border-radius: 6px; overflow:hidden; }
+.chapa-fill { height:100%; border-radius:6px; transition: width .12s linear; background: rgba(255,255,255,.3); }
+.chapa-caliente { background: linear-gradient(90deg, #e76f51, #f4a261); }
+.chapa-max      { background: linear-gradient(90deg, #e76f51, #ff4500); box-shadow: 0 0 8px rgba(255,69,0,.6); }
+.chapa-yapping  { background: linear-gradient(90deg, #ffd700, #ff8c00); box-shadow: 0 0 12px rgba(255,215,0,.8); animation: chapa-pulse .4s ease-in-out infinite alternate; }
+.chapa-silencio { background: #333; }
+@keyframes chapa-pulse {
+  from { box-shadow: 0 0 6px rgba(255,215,0,.5); }
+  to   { box-shadow: 0 0 22px rgba(255,215,0,1); }
+}
+
+/* Idealista event */
+.idealista-event {
+  width:100%; padding:0.8rem;
+  background: linear-gradient(135deg, #001a0a, #002a15);
+  border: 2px solid #00b050; border-radius: 12px;
+  text-align:center; margin-bottom:0.5rem;
+  animation: idealista-pop .5s ease-in-out infinite alternate;
+}
+.salinas-legendario {
+  background: linear-gradient(135deg, #1a1000, #2e1e00, #1a1000) !important;
+  border-color: #ffd700 !important;
+  animation: ach-pulse 1.2s ease-in-out infinite !important;
+}
+@keyframes idealista-pop {
+  from { box-shadow: 0 0 8px rgba(0,176,80,.3); }
+  to   { box-shadow: 0 0 22px rgba(0,176,80,.8); }
+}
+.idealista-header { font-size:0.85rem; font-weight:900; color:#00e060; margin-bottom:0.2rem; }
+.salinas-legendario .idealista-header { color:#ffd700; }
+.idealista-info { font-size:0.76rem; color:#aaa; margin-bottom:0.2rem; }
+.idealista-buff { font-size:0.72rem; color:#00b050; font-weight:700; margin-bottom:0.5rem; }
+.salinas-legendario .idealista-buff { color:#ffd700; }
+.idealista-btn {
+  width:100%; padding:0.6rem;
+  background: #00b050; border:none;
+  color:#000; font-weight:900; font-size:0.88rem;
+  border-radius:8px; cursor:pointer; font-family:inherit;
+  transition:filter .1s, transform .08s;
+}
+.salinas-btn {
+  background: linear-gradient(135deg, #ffd700, #ffaa00) !important;
+  font-size:0.95rem !important;
+}
+.idealista-btn:active { transform:scale(.94); }
+
+/* Ola event */
+.ola-event {
+  width:100%; padding:0.8rem;
+  border-radius:12px; text-align:center; margin-bottom:0.5rem;
+}
+.ola-derecha {
+  background: linear-gradient(135deg, #001530, #002550);
+  border: 2px solid #1a9be8;
+  animation: ola-right .6s ease-in-out infinite alternate;
+}
+.ola-izquierda {
+  background: linear-gradient(135deg, #1a0000, #2a0000);
+  border: 2px solid #cc2200;
+  animation: ola-left .5s ease-in-out infinite alternate;
+}
+@keyframes ola-right { from { box-shadow: 0 0 8px rgba(26,155,232,.4); } to { box-shadow: 0 0 24px rgba(26,155,232,.9); } }
+@keyframes ola-left  { from { box-shadow: 0 0 8px rgba(204,34,0,.4); }   to { box-shadow: 0 0 24px rgba(204,34,0,.9); } }
+.ola-dir { font-size:1rem; font-weight:900; margin-bottom:0.2rem; }
+.ola-derecha .ola-dir   { color:#7dd3fc; }
+.ola-izquierda .ola-dir { color:#ff7744; }
+.ola-hint { font-size:0.74rem; color:#aaa; margin-bottom:0.5rem; }
+.ola-btn {
+  width:100%; padding:0.6rem;
+  background:#1a9be8; border:none;
+  color:#fff; font-weight:900; font-size:0.88rem;
+  border-radius:8px; cursor:pointer; font-family:inherit;
+  transition:filter .1s, transform .08s;
+}
+.ola-peligro { background:#cc2200 !important; }
+.ola-btn:active { transform:scale(.94); }
+
 /* Ahogado event */
 .ahogado-event {
   width: 100%; padding: 0.9rem;
