@@ -411,7 +411,7 @@ let S = {
   // Fita
   energy: 100, tripleActive: false, tripleEnd: 0,
   yeyoActive: false, debuffEnd: 0, dblCoolEnd: 0,
-  chupaActive: false, chupaTimer: null, chupaDone: 0, chupaNeed: 0,
+  chupaActive: false, chupaTimer: null, chupaCorners: null, chupaNeed: 0,
   // Muchaga fight
   fightActive: false, fightTimer: null, fightPunch: null, fightReacted: false,
   // Noah
@@ -614,7 +614,7 @@ function startGame(pid) {
     energy:    useSave ? (save.energy ?? 100) : 100,
     tripleActive: false, tripleEnd: 0,
     yeyoActive: false, debuffEnd: 0, dblCoolEnd: 0,
-    chupaActive: false, chupaTimer: null, chupaDone: 0, chupaNeed: 0,
+    chupaActive: false, chupaTimer: null, chupaCorners: null, chupaNeed: 0,
     app:       useSave ? (save.app || 'instagram') : 'instagram',
     appLit: 'instagram',
     chicaActive: false, chicaTimer: null, stdActive: false,
@@ -1288,12 +1288,12 @@ function checkFita() {
 }
 
 function triggerChupa() {
-  S.chupaActive = true;
-  S.chupaDone   = 0;
-  S.chupaNeed   = 18 + Math.floor(Math.random() * 8);
+  S.chupaActive  = true;
+  S.chupaCorners = [0, 0, 0, 0];
+  S.chupaNeed    = 4;
   renderSpecial();
-  toast('🛍️ ¡CHUPA LA BOLSA! ¡Dale caña!', '🛍️');
-  showMsg('Sin energía pero con recursos. Chupa la bolsa y vuelves al tajo.');
+  toast('🛍️ ¡CHUPA LAS ESQUINAS! ¡Las 4, rápido!', '👅');
+  showMsg('Sin energía pero con recursos. Lame las cuatro esquinas de la bolsa y vuelves al tajo.');
   clearTimeout(S.chupaTimer);
   S.chupaTimer = setTimeout(() => {
     if (S.chupaActive) {
@@ -1301,13 +1301,15 @@ function triggerChupa() {
       renderSpecial();
       toast('Se acabó la bolsa. Sin triplete.', '😩');
     }
-  }, 5000);
+  }, 6000);
 }
 
-function clickChupa() {
+function clickChupaCorner(idx) {
   if (!S.chupaActive) return;
-  S.chupaDone++;
-  if (S.chupaDone >= S.chupaNeed) {
+  if (S.chupaCorners[idx] >= S.chupaNeed) return;
+  S.chupaCorners[idx]++;
+  const allDone = S.chupaCorners.every(c => c >= S.chupaNeed);
+  if (allDone) {
     clearTimeout(S.chupaTimer);
     S.chupaActive  = false;
     S.tripleActive = true;
@@ -2127,12 +2129,20 @@ function buildDobletazo() {
   html += `</div>`;
 
   if (S.chupaActive) {
-    const pctC = Math.floor((S.chupaDone / S.chupaNeed) * 100);
+    const c = S.chupaCorners;
+    const n = S.chupaNeed;
+    const corners = [0,1,2,3].map(i => {
+      const pct = Math.min(100, Math.floor(c[i] / n * 100));
+      const done = c[i] >= n;
+      return `<button class="chupa-corner${done ? ' licked' : ''}" onclick="clickChupaCorner(${i})">
+        <div class="corner-fill-bg"><div class="corner-fill-bar" style="height:${pct}%"></div></div>
+        <span class="corner-icon">${done ? '✅' : '👅'}</span>
+      </button>`;
+    });
     html += `<div class="chupa-event">
-      <h4>🛍️ ¡CHUPA LA BOLSA!</h4>
-      <p>${S.chupaDone}/${S.chupaNeed} — ¡Dale! → TRIPLETE ×10 (3s)</p>
-      <div class="gresca-track"><div class="gresca-fill" style="width:${pctC}%"></div></div>
-      <button class="chupa-btn" onclick="clickChupa()">🛍️ ¡CHUPA!</button>
+      <h4>🛍️ ¡CHUPA LAS ESQUINAS!</h4>
+      <p>Lame las 4 antes de que se acabe → TRIPLETE ×10</p>
+      <div class="chupa-bolsa">${corners.join('')}</div>
     </div>`;
   }
 
