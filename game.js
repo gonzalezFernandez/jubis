@@ -464,7 +464,7 @@ let S = {
   app: 'instagram', appLit: 'instagram', chicaActive: false, chicaTimer: null, stdActive: false,
   ahogadoActive: false, ahogadoTimer: null, ahogadoDone: 0, ahogadoNeed: 0, ahogadoTimerEnd: 0, ahogadoBuffEnd: 0, ahogadoDebuffEnd: 0,
   // Diego
-  chapa: 0, chapaSilencioActive: false, chapaSilencioEnd: 0, yappingActive: false, yappingEnd: 0,
+  chapa: 0, chapaSilencioActive: false, chapaSilencioEnd: 0, yappingActive: false, yappingEnd: 0, yappingCooldownEnd: 0,
   idealistaActive: false, idealistaTimer: null, idealistaPiso: null, idealistaBuffEnd: 0, idealistaBuffMult: 1,
   olaActive: false, olaDir: null, olaTimer: null, olaRevealed: false, olaBuffEnd: 0, olaDebuffEnd: 0,
   interrumpidorActive: false, interrumpidorTimer: null, callarBuffEnd: 0,
@@ -672,7 +672,7 @@ function startGame(pid) {
     appLit: 'instagram',
     chicaActive: false, chicaTimer: null, stdActive: false,
     ahogadoActive: false, ahogadoTimer: null, ahogadoDone: 0, ahogadoNeed: 0, ahogadoTimerEnd: 0, ahogadoBuffEnd: 0, ahogadoDebuffEnd: 0,
-    chapa: 0, chapaSilencioActive: false, chapaSilencioEnd: 0, yappingActive: false, yappingEnd: 0,
+    chapa: 0, chapaSilencioActive: false, chapaSilencioEnd: 0, yappingActive: false, yappingEnd: 0, yappingCooldownEnd: 0,
     idealistaActive: false, idealistaTimer: null, idealistaPiso: null, idealistaBuffEnd: 0, idealistaBuffMult: 1,
     olaActive: false, olaDir: null, olaTimer: null, olaRevealed: false, olaBuffEnd: 0, olaDebuffEnd: 0,
     interrumpidorActive: false, interrumpidorTimer: null, callarBuffEnd: 0,
@@ -1663,8 +1663,10 @@ function patchChapaBar() {
   const lbl = box.querySelector('.chapa-lbl');
   if (lbl) {
     let text = '💬 Calentando el rollo...';
+    const cooldown = !S.yappingActive && S.yappingCooldownEnd && Date.now() < S.yappingCooldownEnd;
     if (silencio)       text = '😶 Silencio incómodo...';
     else if (yapping)   text = `🎙️ YAPPING SUPREMO ×5 (${Math.ceil((S.yappingEnd - Date.now()) / 1000)}s)`;
+    else if (cooldown)  text = `⏳ Cooldown (${Math.ceil((S.yappingCooldownEnd - Date.now()) / 1000)}s)`;
     else if (chapa >= 80) text = `🎙️ MODO YAPPING ×3`;
     else if (chapa >= 40) text = `🔥 Soltando chapa ×1.5`;
     else if (chapa < 20 && chapa > 0) text = `💀 Sin fuelle — 0 puntos`;
@@ -1675,6 +1677,7 @@ function patchChapaBar() {
 function tickDiego() {
   if (S.yappingActive && Date.now() >= S.yappingEnd) {
     S.yappingActive = false;
+    S.yappingCooldownEnd = Date.now() + 3000;
     renderSpecial();
   }
   if (S.chapaSilencioActive && Date.now() >= S.chapaSilencioEnd) {
@@ -1701,7 +1704,7 @@ function clickDiegoChapa() {
   S.chapa = Math.min(100, (S.chapa || 0) + 6);
   if (S.chapa > (S.achData.chapaMax || 0)) S.achData.chapaMax = S.chapa;
   patchChapaBar();
-  if (S.chapa >= 100 && !S.yappingActive) {
+  if (S.chapa >= 100 && !S.yappingActive && Date.now() >= (S.yappingCooldownEnd || 0)) {
     S.yappingActive = true;
     S.yappingEnd = Date.now() + 8000;
     S.achData.yappingSupremos = (S.achData.yappingSupremos || 0) + 1;
@@ -1839,8 +1842,11 @@ function buildDiego(ch) {
 
   let chapaClass = 'chapa-fill';
   let chapaLabel = '💬 Calentando el rollo...';
+  const cooldown = !yapping && S.yappingCooldownEnd && Date.now() < S.yappingCooldownEnd;
+  const cooldownSec = cooldown ? Math.ceil((S.yappingCooldownEnd - Date.now()) / 1000) : 0;
   if (silencio) { chapaClass += ' chapa-silencio'; chapaLabel = '😶 Silencio incómodo...'; }
-  else if (yapping) { chapaClass += ' chapa-yapping'; chapaLabel = `🎙️ YAPPING SUPREMO ×5 (${yappingSec}s)`; }
+  else if (yapping)  { chapaClass += ' chapa-yapping'; chapaLabel = `🎙️ YAPPING SUPREMO ×5 (${yappingSec}s)`; }
+  else if (cooldown) { chapaClass += ' chapa-silencio'; chapaLabel = `⏳ Cooldown (${cooldownSec}s)`; }
   else if (chapa >= 80) { chapaClass += ' chapa-max'; chapaLabel = `🎙️ MODO YAPPING ×3`; }
   else if (chapa >= 20) { chapaClass += ' chapa-caliente'; chapaLabel = `🔥 Soltando chapa ×1.5`; }
   else if (chapa > 0)   { chapaClass += ' chapa-muerto'; chapaLabel = `💀 Sin fuelle — 0 puntos`; }
