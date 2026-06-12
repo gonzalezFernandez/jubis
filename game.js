@@ -324,7 +324,7 @@ const CHARS = {
     theme: '#e63946', themeD: '#b01828', themeG: 'rgba(230,57,70,0.28)',
     special: 'extraperlo',
     upgrades: [
-      { id:'entrada',    name:'Entrada de Festival',  icon:'🎟️', desc:'La base de todo buen caos.',                        cost:15,    prod:0.2,  cbonus:0,   base:15    },
+      { id:'entrada',    name:'Tunelinos',             icon:'🎟️', desc:'La base de todo buen caos.',                        cost:15,    prod:0.2,  cbonus:0,   base:15    },
       { id:'botella',    name:'Botella en Mochila',   icon:'🍾', desc:'El contrabando festivalero básico.',                 cost:100,   prod:1,    cbonus:1,   base:100   },
       { id:'pase',       name:'Pase VIP',             icon:'🏷️', desc:'Acceso a todo menos al backstage.',                  cost:600,   prod:4,    cbonus:2,   base:600   },
       { id:'dj',         name:'Amigo del DJ',         icon:'🎧', desc:'Te pone en la cabina. Casi.',                        cost:3000,  prod:16,   cbonus:6,   base:3000  },
@@ -1401,7 +1401,7 @@ function startHold(type) {
         S.olaRevealed = true;
         const txt = document.querySelector('.ola-reveal-txt');
         if (txt) {
-          txt.textContent = S.olaDir === 'derecha' ? '→ ¡ES UNA DERECHA! ¡Aguanta!' : '← ¡ES UNA IZQUIERDA!';
+          txt.textContent = S.olaDir === 'derecha' ? '→ ¡ES UNA DERECHA! ¡DALE DALE!' : '← ¡ES UNA IZQUIERDA!';
           txt.style.color = S.olaDir === 'derecha' ? '#7dd3fc' : '#ff3300';
           txt.style.fontWeight = '900';
           txt.style.fontSize = '1rem';
@@ -1695,7 +1695,7 @@ function pickPiso() {
 
 function checkDiego() {
   if (!S.idealistaActive && Math.random() < 0.06) triggerIdealista();
-  if (!S.olaActive && !holdType && Math.random() < 0.05) triggerOla();
+  if (!S.olaActive && !holdType && Math.random() < 0.09) triggerOla();
   const inYapping = S.yappingActive && Date.now() < S.yappingEnd;
   const inModoYapping = !inYapping && (S.chapa || 0) >= 80;
   if ((inYapping || inModoYapping) && !S.interrumpidorActive && (!inYapping || (S.yappingEnd - Date.now()) > 3000) && Math.random() < 0.35) triggerInterruptor();
@@ -1989,7 +1989,7 @@ function buildDiego(ch) {
     const revealed  = S.olaRevealed;
     html += `<div class="ola-event${revealed ? (S.olaDir === 'derecha' ? ' ola-derecha' : ' ola-izquierda') : ' ola-misterio'}">
       <div class="ola-dir ola-reveal-txt">${revealed
-        ? (S.olaDir === 'derecha' ? '→ ¡ES UNA DERECHA! ¡Aguanta!' : '← ¡ES UNA IZQUIERDA!')
+        ? (S.olaDir === 'derecha' ? '→ ¡ES UNA DERECHA! ¡DALE DALE!' : '← ¡ES UNA IZQUIERDA!')
         : '🌊 ¿Derecha o izquierda? Aguanta para ver...'}</div>
       <div class="surf-track"><div class="surf-fill" style="width:${isHolding ? holdProgress : 0}%"></div></div>
       <div class="nose-wrap"
@@ -2181,7 +2181,7 @@ function checkXP() {
   // Noah — ahogado
   if (!S.ahogadoActive && Math.random() < 0.05) triggerAhogado();
   // Diego — ola
-  if (!S.olaActive && !holdType && Math.random() < 0.04) triggerOla();
+  if (!S.olaActive && !holdType && Math.random() < 0.07) triggerOla();
 }
 
 function triggerLimpiarVasos() {
@@ -2987,7 +2987,7 @@ function buildXP(ch) {
     const revealed  = S.olaRevealed;
     html += `<div class="ola-event${revealed ? (S.olaDir === 'derecha' ? ' ola-derecha' : ' ola-izquierda') : ' ola-misterio'}">
       <div class="ola-dir ola-reveal-txt">${revealed
-        ? (S.olaDir === 'derecha' ? '→ ¡ES UNA DERECHA! ¡Aguanta!' : '← ¡ES UNA IZQUIERDA!')
+        ? (S.olaDir === 'derecha' ? '→ ¡ES UNA DERECHA! ¡DALE DALE!' : '← ¡ES UNA IZQUIERDA!')
         : '🌊 ¿Derecha o izquierda? Aguanta para ver...'}</div>
       <div class="surf-track"><div class="surf-fill" style="width:${isHolding ? holdProgress : 0}%"></div></div>
       <div class="nose-wrap"
