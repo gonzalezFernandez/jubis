@@ -1462,8 +1462,8 @@ function triggerChupa() {
   S.chupaCorners = [0, 0, 0, 0];
   S.chupaNeed    = 4;
   renderSpecial();
-  toast('🛍️ ¡CHUPA LAS ESQUINAS! ¡Las 4, rápido!', '👅');
-  showMsg('Sin energía pero con recursos. Lame las cuatro esquinas de la bolsa y vuelves al tajo.');
+  toast('🛍️ ¡CHUPA LA BOLSA! ¡Lame las esquinas, las 4, rápido!', '👅');
+  showMsg('Sin energía pero con recursos. Chupa la bolsa — lame las cuatro esquinas y vuelves al tajo.');
   clearTimeout(S.chupaTimer);
   S.chupaTimer = setTimeout(() => {
     if (S.chupaActive) {
@@ -2729,7 +2729,7 @@ function buildDobletazo() {
       </button>`;
     });
     html += `<div class="chupa-event">
-      <h4>🛍️ ¡CHUPA LAS ESQUINAS!</h4>
+      <h4>🛍️ ¡CHUPA LA BOLSA — LAME LAS ESQUINAS!</h4>
       <p>Lame las 4 antes de que se acabe → TRIPLETE ×10</p>
       <div class="chupa-bolsa">${corners.join('')}</div>
     </div>`;
