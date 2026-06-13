@@ -2850,7 +2850,7 @@ function buildNandu() {
   if (S.banyoActive) {
     const need = BANYO_DRUGS.find(d => d.id === S.banyoNeed);
     const now = Date.now();
-    if (!S.banyoShuffled || now - S.banyoShuffleTs > 2500) {
+    if (!S.banyoShuffled || now - S.banyoShuffleTs > 1200) {
       S.banyoShuffled = [...BANYO_DRUGS].sort(() => Math.random() - 0.5);
       S.banyoShuffleTs = now;
     }
@@ -2976,7 +2976,7 @@ function buildXP(ch) {
   if (S.banyoActive) {
     const need = BANYO_DRUGS.find(d => d.id === S.banyoNeed);
     const now = Date.now();
-    if (!S.banyoShuffled || now - S.banyoShuffleTs > 2500) {
+    if (!S.banyoShuffled || now - S.banyoShuffleTs > 1200) {
       S.banyoShuffled = [...BANYO_DRUGS].sort(() => Math.random() - 0.5);
       S.banyoShuffleTs = now;
     }
