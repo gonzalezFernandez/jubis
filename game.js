@@ -469,14 +469,14 @@ const ACHIEVEMENTS = {
     { id:'sin_respiro',      icon:'⚡', name:'Sin un Respiro',          desc:'10000 caos en menos de 5 minutos. El caos no espera y tú tampoco.',              cond: s => s.totalCurrency >= 10000 && (s.achData.timeSec||0) <= 300 },
     { id:'noche_loca',       icon:'🌙', name:'Noche Loca',             desc:'10 millones de caos. Esto ya no es un festival, es una secta.',                  cond: s => s.totalCurrency >= 10000000 },
     { id:'caos_250k',        icon:'💥', name:'Explosión de Caos',      desc:'250000 caos. Eres el festival aunque el festival no lo sepa.',                   cond: s => s.totalCurrency >= 250000 },
-    { id:'primer_invasor',   icon:'🎭', name:'Guarda de Seguridad',    desc:'Primer invasor parado. El escenario tiene un guardián ridículo pero funciona.',  cond: s => (s.achData.invasoresParados||0) >= 1 },
-    { id:'nadie_pasa',       icon:'🛡️', name:'Nadie Pasa',             desc:'5 invasores parados. Eres el muro del Extraperlo. Un muro con cerveza.',        cond: s => (s.achData.invasoresParados||0) >= 5 },
+    { id:'setas_1',          icon:'🍄', name:'Primer Batidiño',         desc:'Primera vez que sirves el batidiño. El cliente tenía los ojos como platos.',    cond: s => (s.achData.setasServidas||0) >= 1 },
+    { id:'setas_3',          icon:'🍄🍄', name:'El Champiñonero',      desc:'3 batidiños servidos. Ya eres el dealer oficial de la zona de setas del festival.', cond: s => (s.achData.setasServidas||0) >= 3 },
     { id:'electricista',     icon:'🔌', name:'Electricista de Festival',desc:'Primer corte de luz restaurado. La banda te lleva en hombros brevemente.',      cond: s => (s.achData.cortesRestaurados||0) >= 1 },
     { id:'sin_apagones',     icon:'💡', name:'Sin Apagones',           desc:'3 cortes restaurados. Tienes llave del cuadro eléctrico del festival.',          cond: s => (s.achData.cortesRestaurados||0) >= 3 },
     { id:'caos_1m',          icon:'🌋', name:'El Festival Eterno',     desc:'1 millón de caos. Salinas ya te quiere como mascota oficial del municipio.',     cond: s => s.totalCurrency >= 1000000 },
     { id:'roca_20',          icon:'🤘', name:'Su Manager',             desc:'20 veces con Roca Pintada. Os compartís el camerino. No es voluntario.',        cond: s => (s.achData.rocaHits||0) >= 20 },
     { id:'vasos_20',         icon:'🪣', name:'El Friegaplatos',        desc:'20 rondas de vasos. Tienes más horas de fregadero que de festival.',             cond: s => (s.achData.vasosLimpiados||0) >= 20 },
-    { id:'invasor_10',       icon:'🚫', name:'El Bouncer',             desc:'10 invasores parados. La puerta del escenario ya tiene tu foto enmarcada.',     cond: s => (s.achData.invasoresParados||0) >= 10 },
+    { id:'setas_10',         icon:'🌀', name:'El Gurú de las Setas',   desc:'10 batidiños servidos. Tienes más clientes que Roca Pintada tiene fans.',       cond: s => (s.achData.setasServidas||0) >= 10 },
     { id:'luz_5',            icon:'🔦', name:'El Técnico de Guardia',  desc:'5 cortes restaurados. Tienes llave del cuadro eléctrico de Salinas también.',   cond: s => (s.achData.cortesRestaurados||0) >= 5 },
     { id:'rescate_5',        icon:'🌊', name:'Boya Humana',            desc:'5 rescates en el Extraperlo. Eres más útil en el agua que en tierra. Triste.',  cond: s => (s.achData.rescates||0) >= 5 },
   ],
@@ -522,7 +522,7 @@ let S = {
   // Extraperlo
   rocaActive: false, rocaTimer: null, rocaNeed: 0, rocaDone: 0,
   vasosActive: false, vasosTimer: null, vasosNeed: 0, vasosDone: 0, vasosFrase: '',
-  invasorActive: false, invasorTimer: null, invasorNeed: 0, invasorDone: 0, invasorDebuffEnd: 0,
+  setasActive: false, setasTimer: null, setasDone: 0, setasBuffEnd: 0, setasDebuffEnd: 0,
   corteLuzActive: false, corteLuzTimer: null, corteLuzBuffEnd: 0, corteLuzDebuffEnd: 0,
   // Shared tracking for achievements
   achData: {
@@ -536,7 +536,7 @@ let S = {
     rescates:0,
     chapaMax:0, yappingSupremos:0, silenciosIncomodos:0, pisosVisitados:0, salinasVisitados:0, olasDerechas:0, olasIzquierdas:0,
     avilesVisitados:0, interrupciones:0,
-    invasoresParados:0, cortesRestaurados:0,
+    setasServidas:0, cortesRestaurados:0,
   },
   achievements: {},
 };
@@ -731,7 +731,7 @@ function startGame(pid) {
     cooperLootBuffEnd: 0, cooperJamonBuffEnd: 0, papaBuffEnd: 0, cagadaDebuffEnd: 0,
     rocaActive: false, rocaTimer: null, rocaNeed: 0, rocaDone: 0,
     vasosActive: false, vasosTimer: null, vasosNeed: 0, vasosDone: 0, vasosFrase: '',
-    invasorActive: false, invasorTimer: null, invasorNeed: 0, invasorDone: 0, invasorDebuffEnd: 0,
+    setasActive: false, setasTimer: null, setasDone: 0, setasBuffEnd: 0, setasDebuffEnd: 0,
     corteLuzActive: false, corteLuzTimer: null, corteLuzBuffEnd: 0, corteLuzDebuffEnd: 0,
     achData: useSave && save.achData ? { raicesEscapes:0, raicesCaptures:0, cooperInteractions:0, cagadasEvitadas:0, cagadasRecogidas:0, looteos:0, jamones:0, perfectHits:0, perfectPoints:0, ultraActivations:0, papaRabiosoHits:0, ...save.achData } : {
       wskActivations:0, wskWins:0, dobletazos:0, chupaWins:0,
@@ -747,7 +747,7 @@ function startGame(pid) {
       rescates:0,
       chapaMax:0, yappingSupremos:0, silenciosIncomodos:0, pisosVisitados:0, salinasVisitados:0, olasDerechas:0, olasIzquierdas:0,
       avilesVisitados:0, interrupciones:0,
-      invasoresParados:0, cortesRestaurados:0,
+      setasServidas:0, cortesRestaurados:0,
     },
     achievements: useSave && save.achievements ? save.achievements : {},
   };
@@ -822,7 +822,7 @@ function stopGame() {
 function goBack() {
   if (!confirm('¿Seguro que quieres salir? Se perderá la sesión actual.')) return;
   stopGame();
-  [S.chicaTimer, S.ahogadoTimer, S.idealistaTimer, S.olaTimer, S.interrumpidorTimer, S.policeTimer, S.rocaTimer, S.fightTimer, S.banyoTimer, S.raicesTimer, S.coopersTimer, S.diarreaTimer, S.papaTimer, S.molinilloTimer].forEach(t => clearTimeout(t));
+  [S.chicaTimer, S.ahogadoTimer, S.idealistaTimer, S.olaTimer, S.interrumpidorTimer, S.policeTimer, S.rocaTimer, S.fightTimer, S.banyoTimer, S.raicesTimer, S.coopersTimer, S.diarreaTimer, S.papaTimer, S.molinilloTimer, S.setasTimer, S.corteLuzTimer].forEach(t => clearTimeout(t));
   document.getElementById('coopers-slot').style.display = 'none';
   clearInterval(holdInterval); holdInterval = null; holdProgress = 0; holdType = null;
   S.pid = null;
@@ -958,7 +958,8 @@ function calcPC() {
   if (S.pid === 'extraperlo' && S.olaDebuffEnd && Date.now() < S.olaDebuffEnd) v *= 0.5;
   if (S.pid === 'extraperlo' && S.corteLuzBuffEnd && Date.now() < S.corteLuzBuffEnd) v *= 2;
   if (S.pid === 'extraperlo' && S.corteLuzDebuffEnd && Date.now() < S.corteLuzDebuffEnd) v *= 0;
-  if (S.pid === 'extraperlo' && S.invasorDebuffEnd && Date.now() < S.invasorDebuffEnd) v *= 0.3;
+  if (S.pid === 'extraperlo' && S.setasBuffEnd && Date.now() < S.setasBuffEnd) v *= 2;
+  if (S.pid === 'extraperlo' && S.setasDebuffEnd && Date.now() < S.setasDebuffEnd) v *= 0;
   if (S.pid === 'diego') {
     const c = S.chapa || 0;
     if (S.yappingActive && Date.now() < S.yappingEnd) v *= 5;
@@ -1002,7 +1003,8 @@ function calcPS() {
   if (S.pid === 'extraperlo' && S.olaDebuffEnd && Date.now() < S.olaDebuffEnd) v *= 0.5;
   if (S.pid === 'extraperlo' && S.corteLuzBuffEnd && Date.now() < S.corteLuzBuffEnd) v *= 2;
   if (S.pid === 'extraperlo' && S.corteLuzDebuffEnd && Date.now() < S.corteLuzDebuffEnd) v *= 0;
-  if (S.pid === 'extraperlo' && S.invasorDebuffEnd && Date.now() < S.invasorDebuffEnd) v *= 0.3;
+  if (S.pid === 'extraperlo' && S.setasBuffEnd && Date.now() < S.setasBuffEnd) v *= 2;
+  if (S.pid === 'extraperlo' && S.setasDebuffEnd && Date.now() < S.setasDebuffEnd) v *= 0;
   if (S.pid === 'noah' && S.ligaBuffEnd && Date.now() < S.ligaBuffEnd) v *= 5;
   if ((S.pid === 'noah' || S.pid === 'extraperlo') && S.ahogadoBuffEnd && Date.now() < S.ahogadoBuffEnd) v *= 3;
   if ((S.pid === 'noah' || S.pid === 'extraperlo') && S.ahogadoDebuffEnd && Date.now() < S.ahogadoDebuffEnd) v *= 0.4;
@@ -2205,8 +2207,8 @@ function checkXP() {
   // Extraperlo-specific
   if (!S.rocaActive && Math.random() < 0.10) triggerRoca();
   if (!S.vasosActive && Math.random() < 0.12) triggerLimpiarVasos();
-  if (!S.invasorActive && !S.corteLuzActive && tc > 100 && Math.random() < 0.07) triggerInvasor();
-  if (!S.corteLuzActive && !S.invasorActive && tc > 300 && Math.random() < 0.05) triggerCorteLuz();
+  if (!S.setasActive && !S.corteLuzActive && tc > 100 && Math.random() < 0.07) triggerSetas();
+  if (!S.corteLuzActive && !S.setasActive && tc > 300 && Math.random() < 0.05) triggerCorteLuz();
   // Noah — ahogado
   if (!S.ahogadoActive && Math.random() < 0.05) triggerAhogado();
   // Diego — ola
@@ -2277,38 +2279,51 @@ function clickRoca() {
   } else { renderSpecial(); }
 }
 
-function triggerInvasor() {
-  S.invasorActive = true;
-  S.invasorNeed = 8 + Math.floor(Math.random() * 7);
-  S.invasorDone = 0;
+function triggerSetas() {
+  S.setasActive = true;
+  S.setasDone = 0;
   renderSpecial();
-  toast('🎭 ¡¡INVASOR EN EL ESCENARIO!! ¡Sácalo de ahí!', '🎭');
-  clearTimeout(S.invasorTimer);
-  S.invasorTimer = setTimeout(() => {
-    if (S.invasorActive) {
-      S.invasorActive = false;
-      S.invasorDebuffEnd = Date.now() + 8000;
+  toast('🍄 ¡BATIDIÑO DE SETAS! Para en la zona verde.', '🍄');
+  showMsg('Un tío con los ojos como platos quiere su batidiño especial. Bate y para en la zona verde. Si te pasas, la lías.');
+  clearTimeout(S.setasTimer);
+  S.setasTimer = setTimeout(() => {
+    if (S.setasActive) {
+      S.setasActive = false;
       renderSpecial();
-      toast('El invasor ha hecho el numerito completo. ×0.3 durante 8s', '😤');
+      toast('⏰ Batidiño sin terminar. El cliente se fue a otra barra.', '😑');
+      updateDisplays();
     }
-  }, 7000);
+  }, 10000);
 }
 
-function clickInvasor() {
-  if (!S.invasorActive) return;
-  S.invasorDone++;
-  if (S.invasorDone >= S.invasorNeed) {
-    clearTimeout(S.invasorTimer);
-    S.invasorActive = false;
-    S.achData.invasoresParados = (S.achData.invasoresParados || 0) + 1;
-    const reward = Math.max(150, Math.floor(S.currency * 0.2));
-    earn(reward);
+function clickSetasBatir() {
+  if (!S.setasActive) return;
+  S.setasDone = Math.min(100, S.setasDone + 10);
+  if (S.setasDone >= 90) {
+    clearTimeout(S.setasTimer);
+    S.setasActive = false;
+    S.setasDebuffEnd = Date.now() + 8000;
     renderSpecial();
+    toast('🤯 ¡SOBREDOSIS DE SETAS! Todo parado 8 segundos.', '💀');
+    showMsg('Te pasaste. Mucho. El festival entero lo nota. Producción a 0 durante 8s.');
     updateDisplays();
-    toast(`🎭 ¡INVASOR EXPULSADO! +${fmt(reward)} Caos`, '💪');
   } else {
     renderSpecial();
   }
+}
+
+function clickSetasServir() {
+  if (!S.setasActive || S.setasDone < 50) return;
+  clearTimeout(S.setasTimer);
+  S.setasActive = false;
+  S.achData.setasServidas = (S.achData.setasServidas || 0) + 1;
+  const bonus = Math.max(200, Math.floor(S.currency * 0.35));
+  earn(bonus);
+  S.setasBuffEnd = Date.now() + 12000;
+  renderSpecial();
+  toast(`🍄 ¡Batidiño perfecto! +${fmt(bonus)} Caos ×2 durante 12s`, '🌟');
+  showMsg('El tío está encantado. Todo el festival quiere uno. ×2 activo 12s.');
+  updateDisplays();
 }
 
 function triggerCorteLuz() {
@@ -3059,20 +3074,31 @@ function buildXP(ch) {
     html += `<div class="police-calm raices-debuff">😤 Mal humor por izquierda — ×0.5 (${sec}s)</div>`;
   }
 
-  // Invasor del escenario (Extraperlo)
-  if (S.invasorActive) {
-    const pct = Math.floor((S.invasorDone / S.invasorNeed) * 100);
-    html += `<div class="invasor-event">
-      <div style="font-size:1.8rem">🎭</div>
-      <h4>¡¡INVASOR EN EL ESCENARIO!!</h4>
-      <p>${S.invasorDone}/${S.invasorNeed} — ¡sácalo de ahí!</p>
-      <div class="police-track"><div class="police-fill" style="width:${pct}%;background:linear-gradient(90deg,#ff6600,#ffcc00)"></div></div>
-      <button class="invasor-btn" onclick="clickInvasor()">💪 ¡FUERA DEL ESCENARIO!</button>
+  // Batidiño de Setas (Extraperlo)
+  if (S.setasActive) {
+    const pct = S.setasDone;
+    const inZone = pct >= 50 && pct < 90;
+    html += `<div class="setas-event">
+      <div style="font-size:1.8rem">🍄</div>
+      <h4>🍄 BATIDIÑO DE SETAS</h4>
+      <p>Bate y para en la zona verde. ¡Sin pasarse!</p>
+      <div class="setas-bar-wrap">
+        <div class="setas-zone"></div>
+        <div class="setas-fill" style="width:${pct}%"></div>
+      </div>
+      <div class="setas-btns">
+        <button class="setas-btn" onclick="clickSetasBatir()">🍄 BATIR</button>
+        ${inZone ? `<button class="setas-btn setas-servir" onclick="clickSetasServir()">✅ SERVIR</button>` : ''}
+      </div>
     </div>`;
   }
-  if (S.invasorDebuffEnd && Date.now() < S.invasorDebuffEnd) {
-    const sec = Math.ceil((S.invasorDebuffEnd - Date.now()) / 1000);
-    html += `<div class="police-calm raices-debuff">🎭 Bochorno en el escenario — ×0.3 (${sec}s)</div>`;
+  if (S.setasBuffEnd && Date.now() < S.setasBuffEnd) {
+    const sec = Math.ceil((S.setasBuffEnd - Date.now()) / 1000);
+    html += `<div class="wsk-active">🍄 BATIDIÑO PERFECTO — ×2 (${sec}s)</div>`;
+  }
+  if (S.setasDebuffEnd && Date.now() < S.setasDebuffEnd) {
+    const sec = Math.ceil((S.setasDebuffEnd - Date.now()) / 1000);
+    html += `<div class="police-calm raices-debuff">🤯 Sobredosis de setas — ×0 (${sec}s)</div>`;
   }
 
   // Corte de luz (Extraperlo)
@@ -3096,7 +3122,7 @@ function buildXP(ch) {
 
   const anyActive = S.pizzaActive || S.wskActive || S.grescaActive || S.fightActive || S.chicaActive || S.stdActive ||
                     S.policeActive || S.banyoActive || S.rocaActive || S.vasosActive || S.ahogadoActive || S.olaActive ||
-                    S.invasorActive || S.corteLuzActive;
+                    S.setasActive || S.corteLuzActive;
   if (!anyActive) html += `<div class="police-calm">🎪 El caos se toma un descanso... brevemente.</div>`;
 
   return html;
