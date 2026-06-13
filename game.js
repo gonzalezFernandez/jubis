@@ -508,7 +508,7 @@ let S = {
   salinasConteo: 0, avilesDebuffEnd: 0,
   // Nanduko
   policeActive: false, policeTimer: null, policeNeed: 0, policeDone: 0,
-  banyoActive: false, banyoTimer: null, banyoBuffEnd: 0,
+  banyoActive: false, banyoTimer: null, banyoBuffEnd: 0, banyoNeed: null,
   raicesActive: false, raicesTimer: null, raicesBad: null, raicesDebuffEnd: 0,
   // Weeman4k
   coopersPct: 0, coopersEvent: null, coopersTimer: null,
@@ -719,7 +719,7 @@ function startGame(pid) {
     interrumpidorActive: false, interrumpidorTimer: null, interrumpidorStartMs: 0, interrumpidorLayout: null, callarBuffEnd: 0, lastChapaClickMs: 0,
     salinasConteo: 0, avilesDebuffEnd: 0,
     policeActive: false, policeTimer: null, policeNeed: 0, policeDone: 0,
-    banyoActive: false, banyoTimer: null, banyoBuffEnd: 0,
+    banyoActive: false, banyoTimer: null, banyoBuffEnd: 0, banyoNeed: null,
     ligaBuffEnd: 0,
     raicesActive: false, raicesTimer: null, raicesBad: null, raicesDebuffEnd: 0,
     coopersPct: 0, coopersEvent: null, coopersTimer: null,
@@ -1436,7 +1436,6 @@ function stopHold(success) {
     const t = holdType;
     holdProgress = 0; holdType = null;
     if (t === 'yeyo')  resolveYeyo();
-    if (t === 'banyo') resolveBanyo();
     if (t === 'ola')   resolveOla();
   } else {
     const t = holdType;
@@ -2035,34 +2034,62 @@ function checkNandu() {
   if (!S.raicesActive && !S.policeActive && S.totalCurrency > 100 && Math.random() < 0.10) triggerRaices();
 }
 
+const BANYO_DRUGS = [
+  { id:'weed',  name:'Weed',  icon:'🌿' },
+  { id:'hash',  name:'Hash',  icon:'🟫' },
+  { id:'trigo', name:'Trigo', icon:'🌾' },
+  { id:'m',     name:'M',     icon:'💊' },
+  { id:'keta',  name:'Keta',  icon:'🐴' },
+];
+
 function triggerBanyo() {
+  const drug = BANYO_DRUGS[Math.floor(Math.random() * BANYO_DRUGS.length)];
   S.banyoActive = true;
-  renderSpecial(); toast('¡REUNIÓN EN EL BAÑO! 🚽 Mantén pulsado...', '🤫');
-  showMsg('El cliente quiere una reunión privada. En el baño. Mantén pulsado la nariz para cerrar el trato.');
+  S.banyoNeed = drug.id;
+  renderSpecial();
+  toast(`🚽 REUNIÓN EN EL BAÑO — el cliente pide ${drug.icon} ${drug.name}`, '🤫');
+  showMsg(`Cliente en el baño. Pide ${drug.name}. Dásela antes de que se canse.`);
   clearTimeout(S.banyoTimer);
   S.banyoTimer = setTimeout(() => {
     if (S.banyoActive) {
       S.banyoActive = false;
-      if (holdType === 'banyo') { clearInterval(holdInterval); holdInterval = null; holdType = null; holdProgress = 0; }
+      S.banyoNeed = null;
       const fine = Math.max(80, Math.floor(S.currency * 0.3));
       S.currency = Math.max(0, S.currency - fine);
-      renderSpecial(); toast(`¡Plantón! El cliente se fue. -${fmt(fine)} 💵`, '😤');
-      showMsg('El cliente esperó en el baño 20 segundos. Ha perdido la confianza en tu empresa.');
+      renderSpecial(); toast(`⏰ ¡Plantón! El cliente se largó. -${fmt(fine)} 💵`, '😤');
+      showMsg('El cliente esperó y esperó. Ha perdido la confianza en tu empresa.');
       updateDisplays();
     }
-  }, 20000);
+  }, 15000);
 }
 
 function resolveBanyo() {
-  holdProgress = 0; holdType = null;
-  clearTimeout(S.banyoTimer); S.banyoActive = false;
+  clearTimeout(S.banyoTimer);
+  S.banyoActive = false;
+  S.banyoNeed = null;
   const b = Math.max(150, Math.floor(S.currency * 0.45));
   S.currency += b; S.totalCurrency += b;
   S.achData.banyoWins++;
   S.banyoBuffEnd = Date.now() + 10000;
-  renderSpecial(); toast(`¡Trato cerrado! +${fmt(b)} 💵 × 4 durante 10s 💼`, '🤝');
+  renderSpecial(); toast(`💼 ¡Trato cerrado! +${fmt(b)} 💵 ×4 durante 10s`, '🤝');
   showMsg('Reunión productiva. Breve. Discreta. El cliente sale contento y tú también. ×4 activado.');
   updateDisplays();
+}
+
+function clickBanyoDrug(drugId) {
+  if (!S.banyoActive) return;
+  if (drugId === S.banyoNeed) {
+    resolveBanyo();
+  } else {
+    clearTimeout(S.banyoTimer);
+    S.banyoActive = false;
+    S.banyoNeed = null;
+    const fine = Math.max(50, Math.floor(S.currency * 0.2));
+    S.currency = Math.max(0, S.currency - fine);
+    renderSpecial(); toast(`❌ ¡Droga equivocada! El cliente se pira. -${fmt(fine)} 💵`, '😬');
+    showMsg('Le diste lo que no quería. Negocio roto. Reputación por los suelos.');
+    updateDisplays();
+  }
 }
 
 // ——— VIAJE A RAÍCES ———
@@ -2821,8 +2848,15 @@ function buildNandu() {
   }
 
   if (S.banyoActive) {
-    const isHolding = holdType === 'banyo';
-    html += buildHoldNose('banyo', '🚽 REUNIÓN EN EL BAÑO', 'El cliente espera dentro. Todo está en pausa. Mantén pulsado para cerrar el trato.', isHolding);
+    const need = BANYO_DRUGS.find(d => d.id === S.banyoNeed);
+    const shuffled = [...BANYO_DRUGS].sort(() => Math.random() - 0.5);
+    html += `<div class="banyo-event">
+      <h4>🚽 REUNIÓN EN EL BAÑO</h4>
+      <p>El cliente quiere: <strong>${need ? need.icon + ' ' + need.name : '??'}</strong> — dáselo antes de que se vaya</p>
+      <div class="drug-grid">
+        ${shuffled.map(d => `<button class="drug-btn" onclick="clickBanyoDrug('${d.id}')">${d.icon}<span>${d.name}</span></button>`).join('')}
+      </div>
+    </div>`;
   }
 
   if (S.raicesActive) {
@@ -2936,8 +2970,15 @@ function buildXP(ch) {
 
   // Reunión en el baño (Nanduko)
   if (S.banyoActive) {
-    const isHolding = holdType === 'banyo';
-    html += buildHoldNose('banyo', '🚽 REUNIÓN EN EL BAÑO', 'El cliente espera dentro. Todo está en pausa. Mantén pulsado para cerrar el trato.', isHolding);
+    const need = BANYO_DRUGS.find(d => d.id === S.banyoNeed);
+    const shuffled = [...BANYO_DRUGS].sort(() => Math.random() - 0.5);
+    html += `<div class="banyo-event">
+      <h4>🚽 REUNIÓN EN EL BAÑO</h4>
+      <p>El cliente quiere: <strong>${need ? need.icon + ' ' + need.name : '??'}</strong> — dáselo antes de que se vaya</p>
+      <div class="drug-grid">
+        ${shuffled.map(d => `<button class="drug-btn" onclick="clickBanyoDrug('${d.id}')">${d.icon}<span>${d.name}</span></button>`).join('')}
+      </div>
+    </div>`;
   }
 
   // Roca Pintada (Extraperlo)

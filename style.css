@@ -1788,3 +1788,31 @@ body {
 .raices-btn:active { transform: scale(0.96); }
 .raices-btn span { font-size: 0.65rem; font-weight: 600; color: #789030; }
 .raices-debuff { color: #ff6644 !important; font-weight: 700 !important; }
+
+.banyo-event {
+  width: 100%; padding: 0.9rem;
+  background: linear-gradient(135deg, #100a1a, #18102a);
+  border: 2px solid #5a2080;
+  border-radius: 14px; text-align: center;
+  animation: banyo-flash 0.7s ease-in-out infinite alternate;
+}
+@keyframes banyo-flash {
+  from { border-color: #5a2080; box-shadow: 0 0 6px rgba(130,60,200,0.3); }
+  to   { border-color: #9a50e0; box-shadow: 0 0 20px rgba(160,80,240,0.55); }
+}
+.banyo-event h4 { color: #c97fff; font-size: 1rem; margin-bottom: 0.3rem; }
+.banyo-event p  { font-size: 0.76rem; color: #9060b0; margin-bottom: 0.7rem; line-height: 1.4; }
+.banyo-event p strong { color: #ddb0ff; }
+.drug-grid { display: flex; gap: 0.4rem; justify-content: center; flex-wrap: wrap; }
+.drug-btn {
+  flex: 1; min-width: 52px; max-width: 72px; padding: 0.6rem 0.2rem;
+  background: linear-gradient(135deg, #1a0d2e, #260f3e);
+  border: 1.5px solid #7a30c0; color: #c97fff;
+  border-radius: 10px; cursor: pointer; font-family: inherit;
+  font-size: 1.1rem; font-weight: 700;
+  display: flex; flex-direction: column; align-items: center; gap: 0.15rem;
+  transition: filter .15s, transform .1s;
+}
+.drug-btn:hover { filter: brightness(1.35); transform: scale(1.06); border-color: #c97fff; }
+.drug-btn:active { transform: scale(0.92); }
+.drug-btn span { font-size: 0.62rem; font-weight: 600; color: #9060b0; }
