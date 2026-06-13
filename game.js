@@ -306,8 +306,8 @@ const CHARS = {
     theme: '#2ecc71', themeD: '#18a050', themeG: 'rgba(46,204,113,0.22)',
     special: 'nanduko',
     upgrades: [
-      { id:'porro',    name:'Porros del Barrio',     icon:'🌿', desc:'El clásico. Lo pides, llega en 10 min.',             cost:10,    prod:0.1,  cbonus:0,   base:10    },
-      { id:'pastis',   name:'Pastillas del Club',    icon:'💊', desc:'Cuando la música no pega sola.',                     cost:80,    prod:0.5,  cbonus:0,   base:80    },
+      { id:'porro',    name:'Porros del Barrio',     icon:'🍃', desc:'El clásico. Lo pides, llega en 10 min.',             cost:10,    prod:0.1,  cbonus:0,   base:10    },
+      { id:'pastis',   name:'Lulas sin Receta',      icon:'💊', desc:'Cuando la música no pega sola.',                     cost:80,    prod:0.5,  cbonus:0,   base:80    },
       { id:'hachis',   name:'Hachís Marroquí',       icon:'🟫', desc:'Importación directa. Calidad garantizada.',          cost:450,   prod:2,    cbonus:1,   base:450   },
       { id:'especial', name:'Pedido Especial 🤫',    icon:'📦', desc:'No preguntes qué hay dentro. Solo confía.',          cost:2200,  prod:10,   cbonus:4,   base:2200  },
       { id:'red',      name:'Red de Distribución',   icon:'🗺️', desc:'Tienes a los chicos en 5 barrios.',                  cost:12000, prod:50,   cbonus:12,  base:12000 },
