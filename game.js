@@ -466,7 +466,7 @@ const ACHIEVEMENTS = {
     { id:'socorrista_pro',   icon:'🚑', name:'Socorrista de Festival', desc:'3 rescates. La playa te pertenece aunque no lo sepa la playa.',                  cond: s => (s.achData.rescates||0) >= 3 },
     { id:'el_xtraperlo',     icon:'👑', name:'El Extraperlo Total',    desc:'Mejora final conseguida. Técnicas, Procedimientos y Roca Pintada a tus pies.',   cond: s => (s.upgrades.xtraperlo||0) >= 1 },
     { id:'combo_infierno',   icon:'🌀', name:'El Combo del Infierno',  desc:'5 Rocas + 5 vasos + 3 rescates. Ya has sufrido suficiente. Casi.',               cond: s => (s.achData.rocaHits||0) >= 5 && (s.achData.vasosLimpiados||0) >= 5 && (s.achData.rescates||0) >= 3 },
-    { id:'sin_respiro',      icon:'⚡', name:'Sin un Respiro',          desc:'10000 caos en menos de 5 minutos. El caos no espera y tú tampoco.',              cond: s => s.totalCurrency >= 10000 && (s.achData.timeSec||0) <= 300 },
+    { id:'cabeza_seta',      icon:'🤯', name:'Cabeza de Seta',          desc:'Primera sobredosis. A veces hay que aprender a las malas. A veces varias.',    cond: s => (s.achData.setasSobredosis||0) >= 1 },
     { id:'noche_loca',       icon:'🌙', name:'Noche Loca',             desc:'10 millones de caos. Esto ya no es un festival, es una secta.',                  cond: s => s.totalCurrency >= 10000000 },
     { id:'caos_250k',        icon:'💥', name:'Explosión de Caos',      desc:'250000 caos. Eres el festival aunque el festival no lo sepa.',                   cond: s => s.totalCurrency >= 250000 },
     { id:'setas_1',          icon:'🍄', name:'Primer Batidiño',         desc:'Primera vez que sirves el batidiño. El cliente tenía los ojos como platos.',    cond: s => (s.achData.setasServidas||0) >= 1 },
@@ -536,7 +536,7 @@ let S = {
     rescates:0,
     chapaMax:0, yappingSupremos:0, silenciosIncomodos:0, pisosVisitados:0, salinasVisitados:0, olasDerechas:0, olasIzquierdas:0,
     avilesVisitados:0, interrupciones:0,
-    setasServidas:0, cortesRestaurados:0,
+    setasServidas:0, setasSobredosis:0, cortesRestaurados:0,
   },
   achievements: {},
 };
@@ -563,6 +563,7 @@ function isCharUnlocked(pid) {
 function tryUnlockAll() {
   const input = document.getElementById('unlock-pass');
   if (!input) return;
+  // Pedazo de CTF eh, HACKER DE PACOTILLA...
   if (input.value === 'FITADINAMITA') {
     localStorage.setItem('penona_unlock_all', '1');
     renderSelection();
@@ -747,7 +748,7 @@ function startGame(pid) {
       rescates:0,
       chapaMax:0, yappingSupremos:0, silenciosIncomodos:0, pisosVisitados:0, salinasVisitados:0, olasDerechas:0, olasIzquierdas:0,
       avilesVisitados:0, interrupciones:0,
-      setasServidas:0, cortesRestaurados:0,
+      setasServidas:0, setasSobredosis:0, cortesRestaurados:0,
     },
     achievements: useSave && save.achievements ? save.achievements : {},
   };
@@ -2303,6 +2304,7 @@ function clickSetasBatir() {
     clearTimeout(S.setasTimer);
     S.setasActive = false;
     S.setasDebuffEnd = Date.now() + 8000;
+    S.achData.setasSobredosis = (S.achData.setasSobredosis || 0) + 1;
     renderSpecial();
     toast('🤯 ¡SOBREDOSIS DE SETAS! Todo parado 8 segundos.', '💀');
     showMsg('Te pasaste. Mucho. El festival entero lo nota. Producción a 0 durante 8s.');
