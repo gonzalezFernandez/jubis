@@ -508,7 +508,7 @@ let S = {
   salinasConteo: 0, avilesDebuffEnd: 0,
   // Nanduko
   policeActive: false, policeTimer: null, policeNeed: 0, policeDone: 0,
-  banyoActive: false, banyoTimer: null, banyoBuffEnd: 0, banyoNeed: null,
+  banyoActive: false, banyoTimer: null, banyoBuffEnd: 0, banyoNeed: null, banyoShuffled: null, banyoShuffleTs: 0,
   raicesActive: false, raicesTimer: null, raicesBad: null, raicesDebuffEnd: 0,
   // Weeman4k
   coopersPct: 0, coopersEvent: null, coopersTimer: null,
@@ -719,7 +719,7 @@ function startGame(pid) {
     interrumpidorActive: false, interrumpidorTimer: null, interrumpidorStartMs: 0, interrumpidorLayout: null, callarBuffEnd: 0, lastChapaClickMs: 0,
     salinasConteo: 0, avilesDebuffEnd: 0,
     policeActive: false, policeTimer: null, policeNeed: 0, policeDone: 0,
-    banyoActive: false, banyoTimer: null, banyoBuffEnd: 0, banyoNeed: null,
+    banyoActive: false, banyoTimer: null, banyoBuffEnd: 0, banyoNeed: null, banyoShuffled: null, banyoShuffleTs: 0,
     ligaBuffEnd: 0,
     raicesActive: false, raicesTimer: null, raicesBad: null, raicesDebuffEnd: 0,
     coopersPct: 0, coopersEvent: null, coopersTimer: null,
@@ -2849,12 +2849,16 @@ function buildNandu() {
 
   if (S.banyoActive) {
     const need = BANYO_DRUGS.find(d => d.id === S.banyoNeed);
-    const shuffled = [...BANYO_DRUGS].sort(() => Math.random() - 0.5);
+    const now = Date.now();
+    if (!S.banyoShuffled || now - S.banyoShuffleTs > 2500) {
+      S.banyoShuffled = [...BANYO_DRUGS].sort(() => Math.random() - 0.5);
+      S.banyoShuffleTs = now;
+    }
     html += `<div class="banyo-event">
       <h4>🚽 REUNIÓN EN EL BAÑO</h4>
       <p>El cliente quiere: <strong>${need ? need.icon + ' ' + need.name : '??'}</strong> — dáselo antes de que se vaya</p>
       <div class="drug-grid">
-        ${shuffled.map(d => `<button class="drug-btn" onclick="clickBanyoDrug('${d.id}')">${d.icon}<span>${d.name}</span></button>`).join('')}
+        ${S.banyoShuffled.map(d => `<button class="drug-btn" onclick="clickBanyoDrug('${d.id}')">${d.icon}<span>${d.name}</span></button>`).join('')}
       </div>
     </div>`;
   }
@@ -2971,12 +2975,16 @@ function buildXP(ch) {
   // Reunión en el baño (Nanduko)
   if (S.banyoActive) {
     const need = BANYO_DRUGS.find(d => d.id === S.banyoNeed);
-    const shuffled = [...BANYO_DRUGS].sort(() => Math.random() - 0.5);
+    const now = Date.now();
+    if (!S.banyoShuffled || now - S.banyoShuffleTs > 2500) {
+      S.banyoShuffled = [...BANYO_DRUGS].sort(() => Math.random() - 0.5);
+      S.banyoShuffleTs = now;
+    }
     html += `<div class="banyo-event">
       <h4>🚽 REUNIÓN EN EL BAÑO</h4>
       <p>El cliente quiere: <strong>${need ? need.icon + ' ' + need.name : '??'}</strong> — dáselo antes de que se vaya</p>
       <div class="drug-grid">
-        ${shuffled.map(d => `<button class="drug-btn" onclick="clickBanyoDrug('${d.id}')">${d.icon}<span>${d.name}</span></button>`).join('')}
+        ${S.banyoShuffled.map(d => `<button class="drug-btn" onclick="clickBanyoDrug('${d.id}')">${d.icon}<span>${d.name}</span></button>`).join('')}
       </div>
     </div>`;
   }
